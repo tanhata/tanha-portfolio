@@ -113,7 +113,7 @@ const ProjectDetailPage = ({ project, onBack, theme }) => {
           "",
           "Above all, this project reflects a belief that as models become more collaborative, so too must our tools—giving people a way to reason about AI reasoning."
         ],
-        images: ['/public/images/mcp.gif', '/public/images/projects/mcp/Conversation.png', '/public/images/projects/mcp/Dev.png', '/public/images/projects/mcp/History.png', '/public/images/projects/mcp/mcp-1.png', '/public/images/projects/mcp/Model Guide.png', '/public/images/projects/mcp/Setup.png', '/public/images/projects/mcp/Share.png', '/public/images/projects/mcp/Trace.png', '/public/images/projects/mcp/Understanding Agents.png', '/public/images/projects/mcp/user journey.png']
+        images: ['/images/mcp.gif', '/images/projects/mcp/Conversation.png', '/images/projects/mcp/Dev.png', '/images/projects/mcp/History.png', '/images/projects/mcp/mcp-1.png', '/images/projects/mcp/Model Guide.png', '/images/projects/mcp/Setup.png', '/images/projects/mcp/Share.png', '/images/projects/mcp/Trace.png', '/images/projects/mcp/Understanding Agents.png', '/images/projects/mcp/user journey.png']
       },
       'forma': {
         subtitle: "TEXT-SVG-IMAGE GENERATION ITERATION PLATFORM",
@@ -154,12 +154,12 @@ const ProjectDetailPage = ({ project, onBack, theme }) => {
           "Leverages similarity search across training embeddings to surface likely inspirations behind generated works. These matched artists are credited, and users can explore their original pieces - spotlighting the real creatives behind the data.",
         ],
         images: [
-          '/public/images/forma.jpg',
-          '/public/images/projects/forma/forma1.png',
-          '/public/images/projects/forma/forma2.png', 
-          '/public/images/projects/forma/forma3.png',
-          '/public/images/projects/forma/forma4.png',
-          '/public/images/projects/forma/forma5.png'
+          '/images/forma.jpg',
+          '/images/projects/forma/forma1.png',
+          '/images/projects/forma/forma2.png', 
+          '/images/projects/forma/forma3.png',
+          '/images/projects/forma/forma4.png',
+          '/images/projects/forma/forma5.png'
         ]
       },
       'muse': {
@@ -199,21 +199,21 @@ const ProjectDetailPage = ({ project, onBack, theme }) => {
           "Python (data pipeline), BigQuery (storage & queries), Scikit-learn (prototype ML models), Metabase (dashboard), Figma (UX/UI)"
         ],
         images: [
-          '/public/images/projects/muse/muse1.png',
-          '/public/images/projects/muse/muse2.png',
-          '/public/images/projects/muse/muse3.png',
-          '/public/images/projects/muse/muse4.png',
-          '/public/images/projects/muse/muse5.png',
-          '/public/images/projects/muse/muse6.png',
-          '/public/images/projects/muse/muse7.png',
-          '/public/images/projects/muse/muse8.gif',
-          '/public/images/projects/muse/muse9.gif',
-          '/public/images/projects/muse/muse10.png',
-          '/public/images/projects/muse/muse11.gif|/public/images/projects/muse/muse12.gif',
-          '/public/images/projects/muse/muse13.png',
-          '/public/images/projects/muse/muse14.png',
-          '/public/images/projects/muse/muse15.png',
-          '/public/images/projects/muse/muse16.png',
+          '/images/projects/muse/muse1.png',
+          '/images/projects/muse/muse2.png',
+          '/images/projects/muse/muse3.png',
+          '/images/projects/muse/muse4.png',
+          '/images/projects/muse/muse5.png',
+          '/images/projects/muse/muse6.png',
+          '/images/projects/muse/muse7.png',
+          '/images/projects/muse/muse8.gif',
+          '/images/projects/muse/muse9.gif',
+          '/images/projects/muse/muse10.png',
+          '/images/projects/muse/muse11.gif|/images/projects/muse/muse12.gif',
+          '/images/projects/muse/muse13.png',
+          '/images/projects/muse/muse14.png',
+          '/images/projects/muse/muse15.png',
+          '/images/projects/muse/muse16.png',
         ]
       },
       'default': {
@@ -361,7 +361,7 @@ const AboutPage = () => {
   const filmPhotos = [
     {
       id: 1,
-      src: '/public/images/tanha.jpg',
+      src: '/images/tanha.jpg',
       caption: 'Candid in Kyoto',
       galleryX: 15,
       galleryY: 68,
@@ -371,7 +371,7 @@ const AboutPage = () => {
     },
     {
       id: 2,
-      src: '/public/images/about/8AF0AAAC-B8CB-4347-8DDE-D1504A0358BA.jpg',
+      src: '/images/about/8AF0AAAC-B8CB-4347-8DDE-D1504A0358BA.jpg',
       caption: 'phase 1 build',
       galleryX: 27,
       galleryY: 68,
@@ -381,7 +381,7 @@ const AboutPage = () => {
     },
     {
       id: 3,
-      src: '/public/images/about/776A973B-1C0C-4623-A390-4F5469BA2454.JPG',
+      src: '/images/about/776A973B-1C0C-4623-A390-4F5469BA2454.JPG',
       caption: 'mom & I in Berkeley',
       galleryX: 39,
       galleryY: 68,
@@ -391,7 +391,7 @@ const AboutPage = () => {
     },
     {
       id: 4,
-      src: '/public/images/about/IMG_2989.JPG',
+      src: '/images/about/IMG_2989.JPG',
       caption: 'Arabica % in Japan',
       galleryX: 51,
       galleryY: 68,
@@ -401,7 +401,7 @@ const AboutPage = () => {
     },
     {
       id: 5,
-      src: '/public/images/about/IMG_9950.JPG',
+      src: '/images/about/IMG_9950.JPG',
       caption: 'Nemahsis concert @ Webster Hall, NYC',
       galleryX: 63,
       galleryY: 68,
@@ -411,7 +411,7 @@ const AboutPage = () => {
     },
     {
       id: 6,
-      src: '/public/images/about/IMG_8660.JPG',
+      src: '/images/about/IMG_8660.JPG',
       caption: 'Chiapas, Mexico',
       galleryX: 75,
       galleryY: 68,
@@ -421,7 +421,7 @@ const AboutPage = () => {
     },
     {
       id: 7,
-      src: '/public/images/about/IMG_4848.JPEG',
+      src: '/images/about/IMG_4848.JPEG',
       caption: 'Iceland',
       galleryX: 15,
       galleryY: 78,
@@ -431,7 +431,7 @@ const AboutPage = () => {
     },
     {
       id: 8,
-      src: '/public/images/about/IMG_4970.JPEG',
+      src: '/images/about/IMG_4970.JPEG',
       caption: 'I love Paris',
       galleryX: 27,
       galleryY: 78,
@@ -441,7 +441,7 @@ const AboutPage = () => {
     },
     {
       id: 9,
-      src: '/public/images/about/IMG_2222.JPG',
+      src: '/images/about/IMG_2222.JPG',
       caption: 'double shot latte',
       galleryX: 39,
       galleryY: 78,
@@ -451,7 +451,7 @@ const AboutPage = () => {
     },
     {
       id: 10,
-      src: '/public/images/about/IMG_1640.JPG',
+      src: '/images/about/IMG_1640.JPG',
       caption: 'happy place',
       galleryX: 51,
       galleryY: 78,
@@ -461,7 +461,7 @@ const AboutPage = () => {
     },
     {
       id: 11,
-      src: '/public/images/about/coffeesteel.JPEG',
+      src: '/images/about/coffeesteel.JPEG',
       caption: 'a steel cafe in Paris',
       galleryX: 63,
       galleryY: 78,
@@ -471,7 +471,7 @@ const AboutPage = () => {
     },
     {
       id: 12,
-      src: '/public/images/about/IDG_20250720_144222_364.jpg',
+      src: '/images/about/IDG_20250720_144222_364.jpg',
       caption: 'Vancouver',
       galleryX: 75,
       galleryY: 78,
@@ -817,7 +817,7 @@ const VisualPage = () => {
       description: 'Album cover design featuring bold typography and atmospheric visual elements.',
       category: 'visual-design-branding',
       className: 'art-project',
-      imageData: '/public/images/visual/followme.png',
+      imageData: '/images/visual/followme.png',
       externalLink: true
     },
     {
@@ -827,7 +827,7 @@ const VisualPage = () => {
       description: 'Abstract.',
       category: 'art',
       className: 'art-project',
-      imageData: '/public/images/visual/mecollage.jpg'
+      imageData: '/images/visual/mecollage.jpg'
     },
     {
       id: 'hejaz-saudi',
@@ -836,7 +836,7 @@ const VisualPage = () => {
       description: 'Cultural branding project celebrating the heritage and identity of the Hejaz region.',
       category: 'visual-design-branding',
       className: 'branding-project',
-      imageData: '/public/images/visual/hejaz.gif'
+      imageData: '/images/visual/hejaz.gif'
     },
     {
       id: 'nyc-commissioner',
@@ -845,7 +845,7 @@ const VisualPage = () => {
       description: 'Detailed architectural illustration capturing the historic character of NYC landmark.',
       category: 'illustration',
       className: 'illustration-project',
-      imageData: '/public/images/visual/bldg.jpg'
+      imageData: '/images/visual/bldg.jpg'
     },
     {
       id: 'sheikhdallah-corp',
@@ -854,7 +854,7 @@ const VisualPage = () => {
       description: 'Corporate identity and graphic design solutions for business branding needs.',
       category: 'graphic-design',
       className: 'graphic-project',
-      imageData: '/public/images/visual/sheikhdallah_corp.jpg'
+      imageData: '/images/visual/sheikhdallah_corp.jpg'
     },
     {
       id: 'jism-body-series',
@@ -863,7 +863,7 @@ const VisualPage = () => {
       description: 'Anatomical illustration series exploring the human form through artistic interpretation.',
       category: 'illustration',
       className: 'art-project',
-      imageData: '/public/images/visual/jism.jpg'
+      imageData: '/images/visual/jism.jpg'
     },
     {
       id: 'arab-tech-collective',
@@ -872,7 +872,7 @@ const VisualPage = () => {
       description: 'Modern identity design for tech community bridging Arab culture and innovation.',
       category: 'graphic-design',
       className: 'branding-project',
-      imageData: '/public/images/visual/atc.jpg'
+      imageData: '/images/visual/atc.jpg'
     },
     {
       id: 'year-2050-festival',
@@ -881,7 +881,7 @@ const VisualPage = () => {
       description: 'Futuristic poster design commission capturing the essence of forward-thinking cinema.',
       category: 'visual-design-branding',
       className: 'poster-project',
-      imageData: '/public/images/visual/year2050.png'
+      imageData: '/images/visual/year2050.png'
     }
   ];
 
@@ -1025,7 +1025,7 @@ const Portfolio = () => {
       description: 'Real-time monitoring and analytics dashboard for machine learning model performance.',
       category: 'product-design',
       className: 'web-project',
-      imageData: '/public/images/model-pulse.jpg',
+      imageData: '/images/model-pulse.jpg',
       externalLink: 'https://tanhata.github.io/modelpulse-v2/'
     },
     {
@@ -1035,17 +1035,17 @@ const Portfolio = () => {
       description: 'Comprehensive framework for AI model interactions and communication protocols.',
       category: 'product-design',
       className: 'design-project',
-      imageData: '/public/images/mcp.gif'
+      imageData: '/images/mcp.gif'
     },
     
     {
       id: 'subliminal-learning',
-      title: 'Subliminal Learning: When "Clean" Data Isn't Clean',
+      title: 'Subliminal Learning: When “Clean” Data Isn’t Clean',
       type: 'writing',
-      description: 'Reflections on Anthropic's July 2025 paper and what it means for AI safety & product design.',
+      description: 'Reflections on Anthropic’s July 2025 paper and what it means for AI safety & product design.',
       category: 'writing',
       className: 'ml-writing',
-      imageData: '/public/images/subliminal.png',
+      imageData: '/images/subliminal.png',
       externalLink: 'https://talshe.substack.com/p/subliminal-learning-when-clean-data'
     },
     {
@@ -1055,7 +1055,7 @@ const Portfolio = () => {
       description: 'Large language model trained to analyze and critique visual art with contextual understanding.',
       category: 'ai-ml',
       className: 'ml-project',
-      imageData: '/public/images/art-critic.gif',
+      imageData: '/images/art-critic.gif',
       externalLink: 'https://github.com/tanhata/ArtCrit_Blip/tree/main'
     },
     {
@@ -1065,7 +1065,7 @@ const Portfolio = () => {
       description: 'Interactive data visualization exploring recursive patterns and orbital mechanics.',
       category: 'data-visualization',
       className: 'data-project',
-      imageData: '/public/images/recursive-orbit.gif',
+      imageData: '/images/recursive-orbit.gif',
       externalLink: 'https://observablehq.com/@tanhas-canvas/recursive-orbit'
     },
     {
@@ -1075,7 +1075,7 @@ const Portfolio = () => {
       description: 'Interactive analysis of urban park accessibility and environmental impact across major cities.',
       category: 'data-analysis',
       className: 'data-project',
-      imageData: '/public/images/green_spaces.gif',
+      imageData: '/images/green_spaces.gif',
       externalLink: 'https://tanhata.github.io/Green-Spaces-in-NYC/'
     },
     {
@@ -1085,7 +1085,7 @@ const Portfolio = () => {
       description: 'Mobile application design focused on form and user experience optimization.',
       category: 'mobile-design',
       className: 'mobile-project',
-      imageData: '/public/images/forma.jpg'
+      imageData: '/images/forma.jpg'
     },
     {
       id: 'muse',
@@ -1094,7 +1094,7 @@ const Portfolio = () => {
       description: 'iOS application design with focus on creative tools and user inspiration.',
       category: 'mobile-design',
       className: 'mobile-project',
-      imageData: '/public/images/muse.gif'
+      imageData: '/images/muse.gif'
     },
     {
       id: 'building-dreams',
@@ -1103,7 +1103,7 @@ const Portfolio = () => {
       description: 'Deep learning model for architectural design generation and optimization.',
       category: 'ai-ml',
       className: 'ml-project',
-      imageData: '/public/images/building-dreams.gif',
+      imageData: '/images/building-dreams.gif',
       externalLink: 'https://github.com/tanhata/finetuning-dreambooth'
     },
     {
@@ -1113,7 +1113,7 @@ const Portfolio = () => {
       description: 'Comprehensive product analytics platform for data-driven decision making.',
       category: 'data-analysis',
       className: 'data-project',
-      imageData: '/public/images/bitlot.gif',
+      imageData: '/images/bitlot.gif',
       externalLink: 'https://drive.google.com/file/d/1xA02RVjg-bTAI-DFs1xzg0PV7-OURb8G/view?usp=sharing',
     },   
     {
@@ -1123,7 +1123,7 @@ const Portfolio = () => {
       description: 'Predictive modeling for building heating load optimization and energy efficiency.',
       category: 'ai-ml',
       className: 'ml-project',
-      imageData: '/public/images/heating-loads.gif',
+      imageData: '/images/heating-loads.gif',
       externalLink: 'https://colab.research.google.com/drive/1qw4iJjcNdQUgGYq_wglaRoQflFcMhDZr?authuser=3'
     },
     {
@@ -1133,7 +1133,7 @@ const Portfolio = () => {
       description: 'Exploration of adaptive interfaces that respond to human behavior and context.',
       category: 'human-computer-interaction',
       className: 'design-project',
-      imageData: '/public/images/living-computing.gif',
+      imageData: '/images/living-computing.gif',
       externalLink: 'https://www.youtube.com/watch?v=Geo17VbvWtU'
     },
   ];
@@ -1212,7 +1212,7 @@ const Portfolio = () => {
               <div className="container">
               <div className="profile-image-container">
                 <img 
-                  src={currentTheme === 'light' ? '/public/images/profile-light.gif' : '/public/images/profile-dark.gif'}
+                  src={currentTheme === 'light' ? '/images/profile-light.gif' : '/images/profile-dark.gif'}
                   alt="Tanha profile"
                   style={{
                     width: '500px',
@@ -1729,3 +1729,33 @@ const Portfolio = () => {
             font-size: 36px;
           }
         }
+      `}</style>
+
+      <header>
+        <nav>
+          <div className="theme-switcher">
+            {Object.entries(themes).map(([key, theme]) => (
+              <button
+                key={key}
+                className={`theme-button ${currentTheme === key ? 'active' : ''}`}
+                onClick={() => setCurrentTheme(key)}
+              >
+                {theme.name}
+              </button>
+            ))}
+          </div>
+          <ul className="nav-links">
+            <li><a onClick={(e) => { e.preventDefault(); setCurrentPage('home'); }} className="greeting-nav">hello سَلَام</a></li>
+            <li><a onClick={(e) => { e.preventDefault(); setCurrentPage('about'); }}>about</a></li>
+            <li><a onClick={(e) => { e.preventDefault(); setCurrentPage('visual'); }}>visual</a></li>
+            <li><a onClick={(e) => { e.preventDefault(); setCurrentPage('contact'); }}>contact</a></li>
+          </ul>
+        </nav>
+      </header>
+
+      {renderPage()}
+    </div>
+  );
+};
+
+export default Portfolio;
