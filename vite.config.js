@@ -1,1 +1,1 @@
-echo "export default {}" > vite.config.js
+export default {}
