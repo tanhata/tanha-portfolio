@@ -1,5 +1,5 @@
 export default {
-  base: '/',
+  base: '/tanha-portfolio/',
   build: {
     outDir: 'dist'
   }
