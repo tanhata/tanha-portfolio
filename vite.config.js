@@ -1,6 +1,1 @@
-export default {
-  base: '/tanha-portfolio/',
-  build: {
-    outDir: 'dist'
-  }
-}
+echo "export default {}" > vite.config.js
