@@ -483,30 +483,11 @@ const AboutPage = () => {
 
   return (
     <>
+
       <style>
         {`
-          @keyframes fallToGallery {
-            0% { 
-              transform: translateY(-150vh); 
-              opacity: 0; 
-            }
-            10% {
-              opacity: 1;
-            }
-            70% { 
-              transform: translateY(10px); 
-              opacity: 1; 
-            }
-            100% { 
-              transform: translateY(0px); 
-              opacity: 1; 
-            }
-          }
-          
           .film-photo {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
-            animation: fallToGallery 3.5s ease-out both;
             user-select: none;
           }
           
@@ -940,52 +921,44 @@ const ContactPage = () => (
   <section className="contact-page">
     <div className="container" style={{ paddingTop: '150px', paddingBottom: '100px' }}>
       <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
-        <p style={{ fontSize: '18px', lineHeight: '1.6', color: 'inherit', opacity: '0.8', marginBottom: '50px' }}>
-          I'm always interested in collaborating on projects that sit at the intersection of data, 
-          design, and meaningful impact. Whether you're looking for data insights, product design, 
-          or just want to chat about the latest in AI and UX.
+        <p style={{ fontSize: '20px', lineHeight: '1.6', color: 'inherit', opacity: '0.8', marginBottom: '80px' }}>
+          Always open to learning and collaboration — feel free to reach out and say hi! 
         </p>
         
         <div style={{ 
-          display: 'grid', 
-          gap: '30px',
+          display: 'flex', 
+          flexDirection: 'column',
+          gap: '40px',
+          alignItems: 'center',
           marginBottom: '50px'
         }}>
-          <div style={{ 
-            padding: '30px', 
-            background: 'rgba(255, 255, 255, 0.1)', 
-            border: '1px solid rgba(255, 255, 255, 0.2)', 
-            borderRadius: '12px' 
-          }}>
-            <h3 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '15px', color: 'inherit' }}>
+          <div style={{ textAlign: 'center' }}>
+            <h3 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '10px', color: 'inherit' }}>
               Email
             </h3>
             <a href="mailto:hello@tanha.com" style={{ 
-              fontSize: '16px', 
+              fontSize: '18px', 
               color: 'inherit', 
               textDecoration: 'none',
-              borderBottom: '1px solid currentColor',
-              paddingBottom: '2px'
+              borderBottom: '2px solid currentColor',
+              paddingBottom: '4px',
+              transition: 'all 0.3s ease'
             }}>
               hello@tanha.com
             </a>
           </div>
           
-          <div style={{ 
-            padding: '30px', 
-            background: 'rgba(255, 255, 255, 0.1)', 
-            border: '1px solid rgba(255, 255, 255, 0.2)', 
-            borderRadius: '12px' 
-          }}>
-            <h3 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '15px', color: 'inherit' }}>
+          <div style={{ textAlign: 'center' }}>
+            <h3 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '10px', color: 'inherit' }}>
               LinkedIn
             </h3>
-            <a href="https://linkedin.com/in/tanha" style={{ 
-              fontSize: '16px', 
+            <a href="https://linkedin.com/in/tanha" target="_blank" rel="noopener noreferrer" style={{ 
+              fontSize: '18px', 
               color: 'inherit', 
               textDecoration: 'none',
-              borderBottom: '1px solid currentColor',
-              paddingBottom: '2px'
+              borderBottom: '2px solid currentColor',
+              paddingBottom: '4px',
+              transition: 'all 0.3s ease'
             }}>
               linkedin.com/in/tanha
             </a>
@@ -1227,7 +1200,7 @@ const Portfolio = () => {
                 />
               </div>
                   
-                <h1 className="hero-title">I'm a Product Designer and Data Scientist based in New York City.</h1>
+                <h1 className="hero-title">I'm a Product Designer and Data Scientist.</h1>
                 <p className="hero-subtitle"></p>
                 <p className="hero-description">
                 I design from the inside out. I focus on turning AI driven systems into intuitive tools.
@@ -1284,7 +1257,7 @@ const Portfolio = () => {
 
   return (
     <div style={{ 
-      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      fontFamily: '"Inter", sans-serif',
       background: currentThemeConfig.background,
       color: currentThemeConfig.text,
       lineHeight: '1.6',
@@ -1320,8 +1293,6 @@ const Portfolio = () => {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          max-width: 1200px;
-          margin: 0 auto;
           padding: 0 40px;
         }
 
@@ -1359,7 +1330,7 @@ const Portfolio = () => {
           color: ${currentThemeConfig.text};
           text-decoration: none;
           font-weight: 500;
-          font-size: 16px;
+          font-size: 20px;
           transition: all 0.3s ease;
           cursor: pointer;
           position: relative;
@@ -1421,7 +1392,7 @@ const Portfolio = () => {
           width: 100%;
           height: 2px;
           background: ${currentThemeConfig.gradient !== 'none' ? currentThemeConfig.gradient : currentThemeConfig.border};
-          margin: 80px 0;
+          margin: 0px 0;
           border-radius: 2px;
         }
 
@@ -1754,8 +1725,24 @@ const Portfolio = () => {
       </header>
 
       {renderPage()}
+      
+      <footer style={{
+        padding: '40px 0',
+        textAlign: 'center',
+        borderTop: `1px solid ${currentThemeConfig.border}`,
+        marginTop: '60px'
+      }}>
+        <div className="container">
+          <p style={{
+            fontSize: '14px',
+            color: currentThemeConfig.secondary,
+            margin: '0'
+          }}>
+            © Tanha Alsheikhdallah 2025
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
-
 export default Portfolio;
