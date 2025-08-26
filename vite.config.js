@@ -5,15 +5,6 @@ export default defineConfig({
   plugins: [react()],
   base: '/tanha-portfolio/',
   build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-    rollupOptions: {
-      output: {
-        manualChunks: undefined,
-      },
-    },
-  },
-  server: {
-    port: 5173
+    outDir: 'dist'
   }
 })
