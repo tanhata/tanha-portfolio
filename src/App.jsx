@@ -681,7 +681,7 @@ const AboutPage = () => {
             paddingLeft: '40px', 
             marginBottom: '10px',
             maxWidth: '800px',
-            margin: '0 auto 60px'
+            margin: '0 auto 10px'
           }}>
             <div style={{
               position: 'absolute',
@@ -769,12 +769,12 @@ const AboutPage = () => {
 
           <div style={{
             textAlign: 'center',
-            marginBottom: '40px',
+            marginBottom: '100px',
             maxWidth: '800px',
-            margin: '0 auto 40px'
+            margin: '0 auto 100px'
           }}>
             
-            <p style={{ fontSize: '16px', marginBottom: '15px', opacity: 0.7 }}>
+            <p style={{ fontSize: '16px', marginBottom: '5px', opacity: 0.7 }}>
               My mother's ambition, intelligence, kindness, and tenacity have deeply shaped my values and drive. 
               She remains the inspiration behind my pursuit of meaningful work.
             </p>
