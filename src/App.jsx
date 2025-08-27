@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
+
 
 const ProjectCard = ({ project, theme }) => {
   if (project.externalLink) {
@@ -504,17 +506,17 @@ const AboutPage = () => {
         style={{ 
           fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
           paddingTop: '150px', 
-          paddingBottom: '350px',
+          paddingBottom: '450px', // Increased from 350px
           position: 'relative',
           overflow: 'hidden',
-          minHeight: '130vh'
+          minHeight: '140vh' // Increased from 130vh
         }}
       >
         {/* Responsive Gallery Grid */}
         <div style={{
           position: 'absolute',
           left: '50%',
-          top: '75%',
+          top: '85%', // Increased from 75% to push photos down
           transform: 'translateX(-50%)',
           display: 'grid',
           gridTemplateColumns: 'repeat(6, 1fr)',
@@ -893,7 +895,7 @@ const VisualPage = () => {
             margin: '0 auto'
           }}>
             <strong>Got an idea? <a 
-              href="mailto:hello@tanha.com" 
+              href="mailto:tanharchitecture@gmail.com" 
               style={{ 
                 color: 'inherit', 
                 textDecoration: 'underline',
@@ -921,7 +923,7 @@ const ContactPage = () => (
   <section className="contact-page">
     <div className="container" style={{ paddingTop: '150px', paddingBottom: '100px' }}>
       <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
-        <p style={{ fontSize: '20px', lineHeight: '1.6', color: 'inherit', opacity: '0.8', marginBottom: '80px' }}>
+        <p style={{ fontSize: '20px', lineHeight: '1.6', color: 'inherit', opacity: '0.8', marginBottom: '20px' }}>
           Always open to learning and collaboration — feel free to reach out and say hi! 
         </p>
         
@@ -934,26 +936,24 @@ const ContactPage = () => (
         }}>
           <div style={{ textAlign: 'center' }}>
             <h3 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '10px', color: 'inherit' }}>
-              Email
             </h3>
-            <a href="mailto:hello@tanha.com" style={{ 
-              fontSize: '18px', 
+            <a href="mailto:tanharchitecture@gmail.com" style={{ 
+              fontSize: '28px', 
               color: 'inherit', 
               textDecoration: 'none',
               borderBottom: '2px solid currentColor',
               paddingBottom: '4px',
               transition: 'all 0.3s ease'
             }}>
-              hello@tanha.com
+              email
             </a>
           </div>
           
           <div style={{ textAlign: 'center' }}>
             <h3 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '10px', color: 'inherit' }}>
-              LinkedIn
             </h3>
             <a href="https://linkedin.com/in/tanha" target="_blank" rel="noopener noreferrer" style={{ 
-              fontSize: '18px', 
+              fontSize: '28px', 
               color: 'inherit', 
               textDecoration: 'none',
               borderBottom: '2px solid currentColor',
@@ -1256,6 +1256,7 @@ const Portfolio = () => {
   };
 
   return (
+    <Router>
     <div style={{ 
       fontFamily: '"Inter", sans-serif',
       background: currentThemeConfig.background,
@@ -1266,11 +1267,18 @@ const Portfolio = () => {
       minHeight: '100vh',
       transition: 'all 0.3s ease'
     }}>
+
       <style>{`
         * {
           margin: 0;
           padding: 0;
           box-sizing: border-box;
+        }
+
+          html, body {
+          overflow-x: hidden;
+          width: 100%;
+          max-width: 100%;
         }
 
         .container {
@@ -1676,30 +1684,21 @@ const Portfolio = () => {
           border: 1px solid ${currentThemeConfig.border};
         }
 
-        @media (max-width: 768px) {
-          .container, nav, .project-detail {
-            padding: 0 20px;
-          }
-
-          .projects-grid {
-            grid-template-columns: 1fr;
-            gap: 40px;
-          }
-
-          .side-by-side-images {
-            grid-template-columns: 1fr;
-            gap: 15px;
-          }
-
-          .filter-item {
-            font-size: 32px;
-            margin: 0 20px 20px 0;
-          }
-
-          .hero-title, .project-detail-title {
-            font-size: 36px;
-          }
+        @media (max-width: 480px) {
+        .filter-item {
+          font-size: 18px !important;
+          margin: 0 20px 20px 0;
         }
+        
+        .hero-title, .project-detail-title {
+          font-size: 36px !important;
+        }
+        
+        .projects-grid {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+      }
       `}</style>
 
       <header>
@@ -1715,17 +1714,93 @@ const Portfolio = () => {
               </button>
             ))}
           </div>
-          <ul className="nav-links">
-            <li><a onClick={(e) => { e.preventDefault(); setCurrentPage('home'); }} className="greeting-nav">hello سَلَام</a></li>
-            <li><a onClick={(e) => { e.preventDefault(); setCurrentPage('about'); }}>about</a></li>
-            <li><a onClick={(e) => { e.preventDefault(); setCurrentPage('visual'); }}>visual</a></li>
-            <li><a onClick={(e) => { e.preventDefault(); setCurrentPage('contact'); }}>contact</a></li>
-          </ul>
+            <ul className="nav-links">
+              <li><Link to="/" className="greeting-nav">hello سَلَام</Link></li>
+              <li><Link to="/about">about</Link></li>
+              <li><Link to="/visual">visual</Link></li>
+              <li><Link to="/contact">contact</Link></li>
+            </ul>
         </nav>
       </header>
+      <Routes>
+        <Route path="/" element={
+          <>
+            <section className="hero">
+              <div className="container">
+                <div className="profile-image-container">
+                  <img 
+                    src={currentTheme === 'light' ? '/images/profile-light.gif' : '/images/profile-dark.gif'}
+                    alt="Tanha profile"
+                    style={{
+                      width: '500px',
+                      height: '500px',
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      objectPosition: 'center center',
+                      border: '0px solid currentColor',
+                      display: 'block',
+                      margin: '0 auto'
+                    }}
+                  />
+                </div>
+                    
+                <h1 className="hero-title">I'm a Product Designer and Data Scientist.</h1>
+                <p className="hero-subtitle"></p>
+                <p className="hero-description">
+                I design from the inside out. I focus on turning AI driven systems into intuitive tools.
+                </p>
+                
+                <div className="divider"></div>
+              </div>
+            </section>
 
-      {renderPage()}
-      
+            <section id="work" className="projects">
+              <div className="container">
+                <h2 style={{ 
+                  fontSize: '48px', 
+                  fontWeight: '700', 
+                  marginBottom: '10px',
+                  color: currentThemeConfig.text 
+                }}>
+                  Work
+                </h2>
+                
+                <div className="filters">
+                  {[
+                    { id: 'product-design', label: 'Product Design' },
+                    { id: 'ai-ml', label: 'AI/ML' },
+                    { id: 'data-visualization', label: 'Data Visualization' },
+                    { id: 'data-analysis', label: 'Data Analysis' },
+                    { id: 'writing', label: 'Writing/Research'},
+                    { id: 'mobile-design', label: 'Mobile Design' },
+                    { id: 'spatial-geospatial', label: 'Spatial/Geospatial' },
+                    { id: 'human-computer-interaction', label: 'Human Computer Interaction' }
+                  ].map(filter => (
+                    <label key={filter.id} className="filter-item">
+                      <input
+                        type="checkbox"
+                        checked={checkedFilters[filter.id]}
+                        onChange={() => handleFilterChange(filter.id)}
+                      />
+                      <span>{filter.label}</span>
+                    </label>
+                  ))}
+                </div>
+                
+                <div className="projects-grid">
+                  {filteredProjects.map(project => (
+                    <ProjectCard key={project.id} project={project} theme={currentThemeConfig} />
+                  ))}
+                </div>
+              </div>
+            </section>
+          </>
+        } />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/visual" element={<VisualPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+      </Routes>
+
       <footer style={{
         padding: '40px 0',
         textAlign: 'center',
@@ -1743,6 +1818,7 @@ const Portfolio = () => {
         </div>
       </footer>
     </div>
+    </Router> 
   );
 };
 export default Portfolio;
