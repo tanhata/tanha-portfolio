@@ -1294,7 +1294,6 @@ const Portfolio = () => {
       minHeight: '100vh',
       transition: 'all 0.3s ease'
     }}>
-
       <style>{`
         * {
           margin: 0;
@@ -1734,19 +1733,16 @@ const Portfolio = () => {
             font-size: 12px !important;
           }
           
-          /* Fix top padding for all page content on mobile */
+          /* Only add extra padding to hero section (image area), not the work section */
           .hero {
-            padding: 180px 0 100px !important;
+            padding: 220px 0 100px !important;
           }
           
+          /* Separate pages need top padding */
           .about-page {
             padding-top: 180px !important;
             padding-bottom: 200px !important;
             min-height: 100vh !important;
-          }
-          
-          .projects {
-            padding: 180px 0 100px !important;
           }
           
           .contact-page .container {
@@ -1861,18 +1857,15 @@ const Portfolio = () => {
         }
 
         @media (max-width: 480px) {
-          /* Increase top padding even more for smaller screens */
+          /* Increase hero padding even more for smaller screens */
           .hero {
-            padding: 200px 0 100px !important;
+            padding: 240px 0 100px !important;
           }
           
+          /* Separate pages padding */
           .about-page {
             padding-top: 200px !important;
             padding-bottom: 200px !important;
-          }
-          
-          .projects {
-            padding: 200px 0 100px !important;
           }
           
           .contact-page .container {
