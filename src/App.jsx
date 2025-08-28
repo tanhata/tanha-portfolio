@@ -358,6 +358,33 @@ const ProjectDetailPage = ({ project, onBack, theme }) => {
 
 const AboutPage = () => {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [screenSize, setScreenSize] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenSize(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Then in your grid div:
+  <div style={{
+    position: 'absolute',
+    left: '50%',
+    top: '85%',
+    transform: 'translateX(-50%)',
+    display: 'grid',
+    gridTemplateColumns: screenSize <= 480 ? 'repeat(2, 1fr)' : screenSize <= 768 ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
+    gridTemplateRows: screenSize <= 768 ? 'repeat(4, 1fr)' : 'repeat(2, 1fr)',
+    gap: screenSize <= 480 ? '8px' : '20px',
+    width: screenSize <= 768 ? '95vw' : 'min(90vw, 1100px)',
+    maxWidth: '1100px',
+    zIndex: 1
+  }}>
+
+  </div>
 
   // Film photos centered and compact for better widescreen display
   const filmPhotos = [
@@ -516,13 +543,13 @@ const AboutPage = () => {
         <div style={{
           position: 'absolute',
           left: '50%',
-          top: '85%', // Increased from 75% to push photos down
+          top: '85%',
           transform: 'translateX(-50%)',
           display: 'grid',
-          gridTemplateColumns: 'repeat(6, 1fr)',
-          gridTemplateRows: 'repeat(2, 1fr)',
-          gap: '20px',
-          width: 'min(90vw, 1100px)',
+          gridTemplateColumns: window.innerWidth <= 480 ? 'repeat(2, 1fr)' : window.innerWidth <= 768 ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
+          gridTemplateRows: window.innerWidth <= 768 ? 'repeat(4, 1fr)' : 'repeat(2, 1fr)',
+          gap: window.innerWidth <= 480 ? '8px' : '20px',
+          width: window.innerWidth <= 768 ? '95vw' : 'min(90vw, 1100px)',
           maxWidth: '1100px',
           zIndex: 1
         }}>
@@ -1275,7 +1302,7 @@ const Portfolio = () => {
           box-sizing: border-box;
         }
 
-          html, body {
+        html, body {
           overflow-x: hidden;
           width: 100%;
           max-width: 100%;
@@ -1338,7 +1365,7 @@ const Portfolio = () => {
           color: ${currentThemeConfig.text};
           text-decoration: none;
           font-weight: 500;
-          font-size: 20px;
+          font-size: 14px;
           transition: all 0.3s ease;
           cursor: pointer;
           position: relative;
@@ -1684,21 +1711,178 @@ const Portfolio = () => {
           border: 1px solid ${currentThemeConfig.border};
         }
 
+        @media (max-width: 768px) {
+          .container, nav, .project-detail {
+            padding: 0 15px !important;
+            max-width: 100%;
+          }
+          
+          header nav {
+            flex-direction: column !important;
+            align-items: center !important;
+            padding: 15px !important;
+          }
+          
+          .nav-links {
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+            gap: 15px !important;
+          }
+          
+          .nav-links a, .greeting-nav {
+            font-size: 12px !important;
+          }
+          
+          .hero-title {
+            font-size: 32px !important;
+            text-align: center;
+            line-height: 1.2;
+          }
+          
+          .hero-description {
+            font-size: 20px !important;
+            text-align: center;
+            padding: 0 10px;
+          }
+          
+          .hero-subtitle {
+            font-size: 18px !important;
+            text-align: center;
+          }
+          
+          .profile-image-container img {
+            width: 250px !important;
+            height: 250px !important;
+          }
+          
+          .filters {
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 40px;
+          }
+          
+          .filter-item {
+            font-size: 18px !important;
+            margin: 0 0 15px 0 !important;
+            width: 100%;
+          }
+          
+          .filter-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+          }
+          
+          .filter-item span {
+            font-size: 18px !important;
+          }
+          
+          .projects-grid {
+            grid-template-columns: 1fr !important;
+            gap: 30px;
+          }
+          
+          .project-detail-title {
+            font-size: 28px !important;
+            line-height: 1.2;
+          }
+          
+          .project-detail-subtitle {
+            font-size: 18px !important;
+          }
+          
+          .content-heading {
+            font-size: 22px !important;
+            margin: 40px 0 20px 0;
+          }
+          
+          .content-paragraph {
+            font-size: 16px !important;
+          }
+          
+          .theme-switcher {
+            flex-wrap: wrap;
+            gap: 8px;
+          }
+          
+          .theme-button {
+            padding: 6px 10px;
+            font-size: 11px;
+          }
+
+          .side-by-side-images {
+            grid-template-columns: 1fr;
+            gap: 15px;
+          }
+          
+          .about-page {
+            padding-top: 120px !important;
+            padding-bottom: 200px !important;
+            min-height: 100vh !important;
+          }
+          
+          .about-page div[style*="gridTemplateColumns"] {
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 10px !important;
+            width: 95vw !important;
+          }
+          
+          .film-photo {
+            transform: scale(0.7) !important;
+          }
+          
+          .about-page p {
+            font-size: 14px !important;
+          }
+          
+          .about-page div[style*="paddingLeft: 40px"] {
+            padding-left: 20px !important;
+          }
+        }
+
         @media (max-width: 480px) {
-        .filter-item {
-          font-size: 18px !important;
-          margin: 0 20px 20px 0;
+          .hero-title {
+            font-size: 28px !important;
+          }
+          
+          .hero-description {
+            font-size: 18px !important;
+          }
+          
+          .nav-links a, .greeting-nav {
+            font-size: 14px !important;
+          }
+          
+          .profile-image-container img {
+            width: 200px !important;
+            height: 200px !important;
+          }
+
+          .project-detail-title {
+            font-size: 24px !important;
+          }
+          
+          .about-page div[style*="gridTemplateColumns"] {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 5px !important;
+          }
+          
+          .film-photo {
+            transform: scale(0.5) !important;
+          }
+          
+          nav {
+            flex-direction: column !important;
+            gap: 10px !important;
+          }
+          
+          .nav-links {
+            flex-direction: column !important;
+            gap: 15px !important;
+            text-align: center !important;
+          }
         }
-        
-        .hero-title, .project-detail-title {
-          font-size: 36px !important;
-        }
-        
-        .projects-grid {
-          grid-template-columns: 1fr;
-          gap: 40px;
-        }
-      }
       `}</style>
 
       <header>
