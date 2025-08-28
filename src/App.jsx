@@ -1005,7 +1005,6 @@ const Portfolio = () => {
     'data-visualization': true,
     'writing':true,
     'mobile-design': true,
-    'spatial-geospatial': true,
     'human-computer-interaction': true,
     'data-analysis': true
   });
@@ -1746,7 +1745,7 @@ const Portfolio = () => {
           }
           
           .contact-page .container {
-            padding-top: 180px !important;
+            padding-top: 250px !important;
           }
           
           .project-detail {
@@ -1878,7 +1877,7 @@ const Portfolio = () => {
           }
           
           .contact-page .container {
-            padding-top: 200px !important;
+            padding-top: 280px !important;
           }
           
           .project-detail {
@@ -2001,7 +2000,6 @@ const Portfolio = () => {
                     { id: 'data-analysis', label: 'Data Analysis' },
                     { id: 'writing', label: 'Writing/Research'},
                     { id: 'mobile-design', label: 'Mobile Design' },
-                    { id: 'spatial-geospatial', label: 'Spatial/Geospatial' },
                     { id: 'human-computer-interaction', label: 'Human Computer Interaction' }
                   ].map(filter => (
                     <label key={filter.id} className="filter-item">
