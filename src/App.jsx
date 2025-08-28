@@ -1294,7 +1294,7 @@ const Portfolio = () => {
       minHeight: '100vh',
       transition: 'all 0.3s ease'
     }}>
-      <style>{`
+      <style>{
         * {
           margin: 0;
           padding: 0;
@@ -1738,9 +1738,9 @@ const Portfolio = () => {
             padding: 220px 0 30px !important;
           }
           
-          /* Separate pages need top padding */
+          /* AboutPage needs more padding to overcome inline styles */
           .about-page {
-            padding-top: 180px !important;
+            padding-top: 250px !important;
             padding-bottom: 200px !important;
             min-height: 100vh !important;
           }
@@ -1871,9 +1871,9 @@ const Portfolio = () => {
             padding: 240px 0 20px !important;
           }
           
-          /* Separate pages padding */
+          /* AboutPage needs even more padding on small screens */
           .about-page {
-            padding-top: 200px !important;
+            padding-top: 280px !important;
             padding-bottom: 200px !important;
           }
           
