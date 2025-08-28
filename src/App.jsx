@@ -1733,9 +1733,9 @@ const Portfolio = () => {
             font-size: 12px !important;
           }
           
-          /* Only add extra padding to hero section (image area), not the work section */
+          /* Tighter spacing between nav and work section */
           .hero {
-            padding: 220px 0 100px !important;
+            padding: 220px 0 30px !important;
           }
           
           /* Separate pages need top padding */
@@ -1790,9 +1790,18 @@ const Portfolio = () => {
           }
           
           .filter-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
+            width: 20px !important;
+            height: 20px !important;
             margin-right: 12px;
+            border-width: 2px !important;
+          }
+          
+          .filter-item input[type="checkbox"]:checked::after {
+            left: 3px !important;
+            top: 1px !important;
+            width: 6px !important;
+            height: 10px !important;
+            border-width: 0 2px 2px 0 !important;
           }
           
           .filter-item span {
@@ -1857,9 +1866,9 @@ const Portfolio = () => {
         }
 
         @media (max-width: 480px) {
-          /* Increase hero padding even more for smaller screens */
+          /* Tighter spacing for small phones */
           .hero {
-            padding: 240px 0 100px !important;
+            padding: 240px 0 20px !important;
           }
           
           /* Separate pages padding */
@@ -1920,7 +1929,6 @@ const Portfolio = () => {
           }
         }
       `}</style>
-
       <header>
         <nav>
           <div className="theme-switcher">
