@@ -1294,7 +1294,7 @@ const Portfolio = () => {
       minHeight: '100vh',
       transition: 'all 0.3s ease'
     }}>
-      <style>{
+      <style>{`
         * {
           margin: 0;
           padding: 0;
