@@ -1734,6 +1734,31 @@ const Portfolio = () => {
             font-size: 12px !important;
           }
           
+          /* Fix top padding for all page content on mobile */
+          .hero {
+            padding: 180px 0 100px !important;
+          }
+          
+          .about-page {
+            padding-top: 180px !important;
+            padding-bottom: 200px !important;
+            min-height: 100vh !important;
+          }
+          
+          .projects {
+            padding: 180px 0 100px !important;
+          }
+          
+          .contact-page .container {
+            padding-top: 180px !important;
+          }
+          
+          .project-detail {
+            padding: 180px 0 100px !important;
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+          }
+          
           .hero-title {
             font-size: 32px !important;
             text-align: center;
@@ -1816,12 +1841,6 @@ const Portfolio = () => {
             gap: 15px;
           }
           
-          .about-page {
-            padding-top: 120px !important;
-            padding-bottom: 200px !important;
-            min-height: 100vh !important;
-          }
-          
           .about-page div[style*="gridTemplateColumns"] {
             grid-template-columns: repeat(3, 1fr) !important;
             gap: 10px !important;
@@ -1838,13 +1857,34 @@ const Portfolio = () => {
           
           .about-page div[style*="paddingLeft: 40px"] {
             padding-left: 20px !important;
-
-          .hero {
-            padding: 200px 0 100px !important; /* Increased from 150px */
           }
         }
 
         @media (max-width: 480px) {
+          /* Increase top padding even more for smaller screens */
+          .hero {
+            padding: 200px 0 100px !important;
+          }
+          
+          .about-page {
+            padding-top: 200px !important;
+            padding-bottom: 200px !important;
+          }
+          
+          .projects {
+            padding: 200px 0 100px !important;
+          }
+          
+          .contact-page .container {
+            padding-top: 200px !important;
+          }
+          
+          .project-detail {
+            padding: 200px 0 100px !important;
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+          }
+          
           .hero-title {
             font-size: 28px !important;
           }
@@ -1884,9 +1924,6 @@ const Portfolio = () => {
             flex-direction: column !important;
             gap: 15px !important;
             text-align: center !important;
-
-          .hero {
-            padding: 220px 0 100px !important;  
           }
         }
       `}</style>
