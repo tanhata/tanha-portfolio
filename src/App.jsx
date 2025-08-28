@@ -1838,6 +1838,9 @@ const Portfolio = () => {
           
           .about-page div[style*="paddingLeft: 40px"] {
             padding-left: 20px !important;
+
+          .hero {
+            padding: 200px 0 100px !important; /* Increased from 150px */
           }
         }
 
@@ -1881,6 +1884,9 @@ const Portfolio = () => {
             flex-direction: column !important;
             gap: 15px !important;
             text-align: center !important;
+
+          .hero {
+            padding: 220px 0 100px !important;  
           }
         }
       `}</style>
