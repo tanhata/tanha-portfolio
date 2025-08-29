@@ -901,7 +901,7 @@ const VisualPage = () => {
         <div style={{ 
           textAlign: 'center', 
           marginBottom: '80px',
-          paddingTop: '50px'
+          paddingTop: '250px'
         }}>
           <p style={{ 
             fontSize: '24px', 
@@ -1035,6 +1035,17 @@ const Portfolio = () => {
       category: 'product-design',
       className: 'design-project',
       imageData: '/images/mcp.gif'
+    },
+    
+    {
+      id: 'intention-grounding',
+      title: 'From "Hand Me That Thing" to Trust: Intention Grounding',
+      type: 'writing',
+      description: 'Reflections on Visual Intention Grounding for Egocentric Assistants. ICCV 2025 — Sun, Xiao, Tse, Li, Akula, Yao',
+      category: 'writing',
+      className: 'ml-writing',
+      imageData: '/images/intentiongrounding.png',
+      externalLink: 'https://talshe.substack.com/p/from-hand-me-that-thing-to-trust?r=2iqmd4'
     },
     
     {
@@ -1745,7 +1756,7 @@ const Portfolio = () => {
           }
           
           .contact-page .container {
-            padding-top: 250px !important;
+            padding-top: 350px !important;
           }
           
           .project-detail {
