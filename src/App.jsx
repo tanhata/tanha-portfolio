@@ -6,15 +6,15 @@ const ProjectCard = ({ project, theme }) => {
   if (project.externalLink) {
     return (
       <a 
-        href={project.externalLink} 
-        target="_blank" 
+        href={project.externalLink}
+        target="_blank"
         rel="noopener noreferrer"
-        className={`project ${project.className}`} 
+        className={`project ${project.className}`}
         data-category={project.category}
       >
         <div className="project-image">
           <img 
-            src={project.imageData} 
+            src={project.imageData}
             alt={project.title}
           />
           <div className="external-link-indicator">
@@ -29,32 +29,35 @@ const ProjectCard = ({ project, theme }) => {
   }
 
   return (
-    <a 
-      href="#" 
-      onClick={(e) => { e.preventDefault(); window.currentPortfolio?.setCurrentPage(`project-${project.id}`); }} 
-      className={`project ${project.className}`} 
+    <Link
+      to={`/project/${project.id}`}
+      className={`project ${project.className}`}
       data-category={project.category}
     >
       <div className="project-image">
         <img 
-          src={project.imageData} 
+          src={project.imageData}
           alt={project.title}
         />
       </div>
       <h3 className="project-title">{project.title}</h3>
       <div className="project-type">{project.type}</div>
       <p className="project-description">{project.description}</p>
-    </a>
+    </Link>
   );
 };
 
-const ProjectDetailPage = ({ project, onBack, theme }) => {
-  if (!project) return null;
+const ProjectDetailPage = ({ theme }) => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  
+  if (!id) return null;
 
   // Project-specific content based on ID
   const getProjectContent = (projectId) => {
     const contentMap = {
       'mcp': {
+        title: "MCP Interface",
         subtitle: "Interface for Multi-Agent Interaction",
         role: "Lead Product Designer",
         team: "Founding Machine Learning Developers, Product Manager, Frontend Engineers",
@@ -115,9 +118,11 @@ const ProjectDetailPage = ({ project, onBack, theme }) => {
           "",
           "Above all, this project reflects a belief that as models become more collaborative, so too must our tools—giving people a way to reason about AI reasoning."
         ],
-        images: ['/images/mcp.gif', '/images/projects/mcp/Conversation.png', '/images/projects/mcp/Dev.png', '/images/projects/mcp/History.png', '/images/projects/mcp/mcp-1.png', '/images/projects/mcp/Model Guide.png', '/images/projects/mcp/Setup.png', '/images/projects/mcp/Share.png', '/images/projects/mcp/Trace.png', '/images/projects/mcp/Understanding Agents.png', '/images/projects/mcp/user journey.png']
+        images: ['/images/projects/mcp/mcp-1.png','/images/projects/mcp/Setup.png', '/images/projects/mcp/Conversation.png', '/images/projects/mcp/Understanding Agents.png', '/images/projects/mcp/History.png', '/images/projects/mcp/Dev.png', '/images/projects/mcp/journey.png', '/images/projects/mcp/Model Guide.png']
       },
+
       'forma': {
+        title: "Forma Platform",
         subtitle: "TEXT-SVG-IMAGE GENERATION ITERATION PLATFORM",
         role: "Sr. Product Designer",
         team: "Machine Learning Engineer, Founding Frontend Developer",
@@ -146,25 +151,33 @@ const ProjectDetailPage = ({ project, onBack, theme }) => {
           "## USER PROFILE",
           "",
           "Each user has a profile with tabs for created, liked, saved, and reposted work. The UI encourages identity-building and creative exploration, while tracking iteration timelines to celebrate the craft of generative art.",
+          "",
           "## MACHINE LEARNING FOUNDATIONS",
+          "",
           "The creative engine is powered by a few key ML-driven features that enhance control and transparency throughout the generation pipeline:",
+          "",
           "## Prompt Temperature",
+          "",
           "Controls allow users to modulate the randomness and creative looseness of their image generations, from structured to wildly abstract.",
+          "",
           "## SVG-Based Output & Iteration Tracking",
+          "",
           "Each visual is editable post-generation. Users can fine-tune details, mask out elements, and re-generate parts, creating a clear history of iterative effort.",
+          "",
           "## Artist Influence Matching",
+          "",
           "Leverages similarity search across training embeddings to surface likely inspirations behind generated works. These matched artists are credited, and users can explore their original pieces - spotlighting the real creatives behind the data.",
         ],
         images: [
-          '/images/forma.jpg',
-          '/images/projects/forma/forma1.png',
           '/images/projects/forma/forma2.png', 
           '/images/projects/forma/forma3.png',
           '/images/projects/forma/forma4.png',
-          '/images/projects/forma/forma5.png'
+          '/images/projects/forma/forma6.png',
+          '/images/projects/forma/forma7.png',
         ]
       },
       'muse': {
+        title: "Museum Experience",
         subtitle: "Reimagining the Museum Experience: Smart Navigation & AR Exploration Confidential Client 8XX579",
         role: "Sr. Product Designer",
         team: "Frontend Developer, Product Manager, Software Engineer (FS), iOS Mobile Engineer, MLE: AR/VR ",
@@ -173,7 +186,7 @@ const ProjectDetailPage = ({ project, onBack, theme }) => {
           "Most museum apps are functional but flat. They provide basic maps and lists, but don't account for the way people actually move through and experience space. This project reimagined the museum guide — not as a static app, but as a context-aware spatial experience layered with exploration, orientation, and storytelling.",
           "## Mapping the Existing User Journey",
           "The existing flow revealed long stretches without context, requiring users to exit the app or retrace steps. It became clear that content needed to be tightly integrated with spatial navigation — not siloed in menus.",
-          
+          "",
           "Analyzing visitor behavior uncovered two core insights: Over 40% of visit time was spent trying to find locations. Most users abandoned the app after the first map interaction. These findings guided the structural redesign — the experience needed to adapt to physical movement and reduce friction in discovery.",
           "## Designing the Flow", 
           "The redesigned system flows naturally from 2D map → 3D environment → object-level stories. This progression lets users zoom in and out as they explore, surfacing relevant content without overwhelming the interface. Wireframes were built to test structure, hierarchy, and movement. The goal was to make exploration feel intuitive — like you're walking through the space, not clicking through an app.",
@@ -183,12 +196,10 @@ const ProjectDetailPage = ({ project, onBack, theme }) => {
           "This structure lets visitors zoom in and out naturally — from building → exhibit → object — without losing their place or context.", 
           "## 2D Map Navigation",
           "A clean, zoomable map helps users orient themselves within the museum. Visitors can tap to preview galleries, view current location, and follow visual wayfinding cues designed to mirror real-world signage.",
-          "Original artists are credited throughout. Their profiles feature original works, a tab of inspired creations, and short bios with imagery - reinforcing transparency and showing their influence across the platform.",
           "",
           "## 3D Spatial Experience",
           "The 3D mode offers a layered, immersive view of the museum layout. Users can explore floors and rooms in spatial context, making the app feel like an extension of the physical space.",
-          "The creative engine is powered by a few key ML-driven features that enhance control and transparency throughout the generation pipeline:",
-
+          "",
           "## Featured Exhibits & Object Detail",
           "A curated section surfaces key works and exhibitions. Each object opens into an editorial-style layout, offering rich descriptions, artist context, and optional AR previews for selected pieces.",
           "## System Architecture Overview",
@@ -201,89 +212,84 @@ const ProjectDetailPage = ({ project, onBack, theme }) => {
           "Python (data pipeline), BigQuery (storage & queries), Scikit-learn (prototype ML models), Metabase (dashboard), Figma (UX/UI)"
         ],
         images: [
-          '/images/projects/muse/muse1.png',
           '/images/projects/muse/muse2.png',
           '/images/projects/muse/muse3.png',
           '/images/projects/muse/muse4.png',
           '/images/projects/muse/muse5.png',
           '/images/projects/muse/muse6.png',
           '/images/projects/muse/muse7.png',
-          '/images/projects/muse/muse8.gif',
-          '/images/projects/muse/muse9.gif',
           '/images/projects/muse/muse10.png',
-          '/images/projects/muse/muse11.gif|/images/projects/muse/muse12.gif',
           '/images/projects/muse/muse13.png',
-          '/images/projects/muse/muse14.png',
-          '/images/projects/muse/muse15.png',
-          '/images/projects/muse/muse16.png',
         ]
       },
       'default': {
+        title: "Project",
         content: [
           "This project showcases innovative design and technical solutions.",
           "",
           "Details about this project will be available soon."
         ],
-        images: [project.imageData]
+        images: []
       }
     };
 
     return contentMap[projectId] || contentMap['default'];
   };
 
-  const content = getProjectContent(project.id);
+  const content = getProjectContent(id);
+
+  // Define specific image mappings for each project
+  const getImageForHeading = (heading, projectId, images) => {
+    const mappings = {
+      'muse': {
+        "Reimagining the Museum Experience": 0,
+        "Mapping the Existing User Journey": 1,
+        "Designing the Flow": 2,
+        "A Layered Experience": 3,
+        "2D Map Navigation": 4,
+        "3D Spatial Experience": 5,
+        "Featured Exhibits & Object Detail": 6,
+        "System Architecture Overview": 7,
+        "Model Outputs": 8,
+        "Tooling": 9
+      },
+      'mcp': {
+        "Unblocking the Workflow": 0,
+        "Designing for Dialogue": 1,
+        "Conversation Playback": 2,
+        "Agent & Model Onboarding": 3,
+        "Session History & Sharing": 4,
+        "Developer Console: Multi-Agent Config & Execution": 5,
+        "User Journey & Flow": 6,
+        "Making Model Communication Legible": 7,
+        "Reflection & Future Directions": 8
+      },
+      'forma': {
+        "WELCOME": 0,
+        "DISCOVER": 1,
+        "CREATE + ITERATE": 2,
+        "ARTISTIC LINEAGE": 3,
+        "USER PROFILE": 4,
+        "MACHINE LEARNING FOUNDATIONS": 5
+      }
+    };
+    
+    const projectMapping = mappings[projectId];
+    if (projectMapping && projectMapping[heading] !== undefined) {
+      return images[projectMapping[heading]];
+    }
+    return null;
+  };
 
   const renderContent = () => {
     const elements = [];
-    
-    // Define specific image mappings for each project
-    const getImageForHeading = (heading, projectId) => {
-      const mappings = {
-        'muse': {
-          "Reimagining the Museum Experience": 0,
-          "Mapping the Existing User Journey": 1,
-          "Designing the Flow": 2,
-          "A Layered Experience": 3,
-          "2D Map Navigation": 4,
-          "3D Spatial Experience": 5,
-          "Featured Exhibits & Object Detail": 6,
-          "System Architecture Overview": 7,
-          "Model Outputs": 8,
-          "Tooling": 9
-        },
-        'mcp': {
-          "Unblocking the Workflow": 1,
-          "Designing for Dialogue": 2,
-          "Conversation Playback": 3,
-          "Agent & Model Onboarding": 4,
-          "Session History & Sharing": 5,
-          "Developer Console: Multi-Agent Config & Execution": 6,
-          "User Journey & Flow": 7,
-          "Making Model Communication Legible": 8,
-          "Reflection & Future Directions": 9
-        },
-        'forma': {
-          "WELCOME": 1,
-          "DISCOVER": 2,
-          "CREATE + ITERATE": 3,
-          "ARTISTIC LINEAGE": 4,
-          "USER PROFILE": 5,
-          "MACHINE LEARNING FOUNDATIONS": 6
-        }
-      };
-      
-      const projectMapping = mappings[projectId];
-      if (projectMapping && projectMapping[heading] !== undefined) {
-        return content.images[projectMapping[heading]];
-      }
-      return null;
-    };
 
     content.content.forEach((text, index) => {
       if (text === "") {
         elements.push(<br key={`br-${index}`} />);
       } else if (text.startsWith("## ")) {
         const headingText = text.replace("## ", "");
+        
         elements.push(
           <h2 key={`h2-${index}`} className="content-heading">
             {headingText}
@@ -291,7 +297,7 @@ const ProjectDetailPage = ({ project, onBack, theme }) => {
         );
         
         // Get the specific image for this heading
-        const imageData = getImageForHeading(headingText, project.id);
+        const imageData = getImageForHeading(headingText, id, content.images);
         
         if (imageData) {
           if (typeof imageData === 'string' && imageData.includes('|')) {
@@ -299,15 +305,15 @@ const ProjectDetailPage = ({ project, onBack, theme }) => {
             elements.push(
               <div key={`img-${index}`} className="content-image-pair">
                 <div className="side-by-side-images">
-                  <img src={leftImg} alt={`${project.title} - ${headingText} (1)`} />
-                  <img src={rightImg} alt={`${project.title} - ${headingText} (2)`} />
+                  <img src={leftImg} alt={`${content.title} - ${headingText} (1)`} />
+                  <img src={rightImg} alt={`${content.title} - ${headingText} (2)`} />
                 </div>
               </div>
             );
           } else {
             elements.push(
               <div key={`img-${index}`} className="content-image">
-                <img src={imageData} alt={`${project.title} - ${headingText}`} />
+                <img src={imageData} alt={`${content.title} - ${headingText}`} />
               </div>
             );
           }
@@ -327,13 +333,13 @@ const ProjectDetailPage = ({ project, onBack, theme }) => {
   return (
     <div className="project-detail">
       <div className="project-detail-header">
-        <button onClick={onBack} className="back-button">
+        <button onClick={() => navigate('/')} className="back-button">
           ← Back to Work
         </button>
       </div>
 
       <div className="project-hero-simple">
-        <h1 className="project-detail-title">{project.title}</h1>
+        <h1 className="project-detail-title">{content.title}</h1>
         {content.subtitle && (
           <p className="project-detail-subtitle">{content.subtitle}</p>
         )}
@@ -2036,6 +2042,7 @@ const Portfolio = () => {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/visual" element={<VisualPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/project/:id" element={<ProjectDetailPage />} />
       </Routes>
 
       <footer style={{
