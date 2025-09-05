@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams } 
 
 
 const ProjectCard = ({ project, theme }) => {
+  // Check if it's a project with detail page content defined
+  const hasDetailPage = ['mcp', 'forma', 'muse'].includes(project.id);
+  
   if (project.externalLink) {
     return (
       <a 
@@ -25,6 +28,27 @@ const ProjectCard = ({ project, theme }) => {
         <div className="project-type">{project.type}</div>
         <p className="project-description">{project.description}</p>
       </a>
+    );
+  }
+
+  // If it doesn't have a detail page, render as non-clickable
+  if (!hasDetailPage) {
+    return (
+      <div
+        className={`project ${project.className}`}
+        data-category={project.category}
+        style={{ cursor: 'default' }}
+      >
+        <div className="project-image">
+          <img 
+            src={project.imageData}
+            alt={project.title}
+          />
+        </div>
+        <h3 className="project-title">{project.title}</h3>
+        <div className="project-type">{project.type}</div>
+        <p className="project-description">{project.description}</p>
+      </div>
     );
   }
 
@@ -221,15 +245,6 @@ const ProjectDetailPage = ({ theme }) => {
           '/images/projects/muse/muse10.png',
           '/images/projects/muse/muse13.png',
         ]
-      },
-      'default': {
-        title: "Project",
-        content: [
-          "This project showcases innovative design and technical solutions.",
-          "",
-          "Details about this project will be available soon."
-        ],
-        images: []
       }
     };
 
