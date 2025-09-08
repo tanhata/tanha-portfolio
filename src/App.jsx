@@ -565,7 +565,7 @@ const AboutPage = () => {
           position: 'absolute',
           left: '50%',
           top: '85%',
-          transform: 'translateX(-50%)',
+          transform: 'translateX(-40%)',
           display: 'grid',
           gridTemplateColumns: window.innerWidth <= 480 ? 'repeat(2, 1fr)' : window.innerWidth <= 768 ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
           gridTemplateRows: window.innerWidth <= 768 ? 'repeat(4, 1fr)' : 'repeat(2, 1fr)',
@@ -1068,6 +1068,16 @@ const Portfolio = () => {
       imageData: '/images/intentiongrounding.png',
       externalLink: 'https://talshe.substack.com/p/from-hand-me-that-thing-to-trust?r=2iqmd4'
     },
+    {
+      id: 'geo-viz',
+      title: 'Geo Climate Data Visualization Tool',
+      type: 'product design',
+      description: 'An internal climate visualization tool that helps architects, planners, and sustainability teams understand climate data through interactive maps.',
+      category: 'product-design',
+      className: 'product-design',
+      imageData: '/images/main-interface.png',
+      externalLink: 'https://tanhata.github.io/geo-viz/'
+    },
     
     {
       id: 'subliminal-learning',
@@ -1126,16 +1136,6 @@ const Portfolio = () => {
       category: 'mobile-design',
       className: 'mobile-project',
       imageData: '/images/muse.gif'
-    },
-    {
-      id: 'building-dreams',
-      title: 'Building Dreams',
-      type: 'llm, deep learning',
-      description: 'Deep learning model for architectural design generation and optimization.',
-      category: 'ai-ml',
-      className: 'ml-project',
-      imageData: '/images/building-dreams.gif',
-      externalLink: 'https://github.com/tanhata/finetuning-dreambooth'
     },
     {
       id: 'bitlot',
