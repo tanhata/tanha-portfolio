@@ -16,22 +16,43 @@ const ProjectCard = ({ project, theme }) => {
         data-category={project.category}
       >
         <div className="project-image">
-          <img 
-            src={project.imageData}
-            alt={project.title}
-          />
-          <div className="external-link-indicator">
-            <span>↗</span>
-          </div>
+          <img src={project.imageData} alt={project.title} />
+          {project.externalLink && (
+            <div className="external-link-indicator">
+              <span>↗</span>
+            </div>
+          )}
         </div>
+
+        {/* ADD THIS NEW METADATA SECTION */}
         <h3 className="project-title">{project.title}</h3>
+
+        {/* THEN year/company metadata */}
+        {(project.year || project.company) && (
+          <div className="project-meta">
+            <span className="project-year-company">
+              {project.year}{project.year && project.company && ' • '}{project.company}
+            </span>
+          </div>
+        )}
         <div className="project-type">{project.type}</div>
         <p className="project-description">{project.description}</p>
+
+        {/* ADD THIS NEW TAGS SECTION */}
+        {project.tags && project.tags.length > 0 && (
+          <div className="project-tags">
+            {project.tags.slice(0, 3).map((tag, index) => (
+              <span key={index} className="project-tag">{tag}</span>
+            ))}
+            {project.tags.length > 3 && (
+              <span className="project-tag-more">+{project.tags.length - 3}</span>
+            )}
+          </div>
+        )}
       </a>
     );
   }
-
-  // If it doesn't have a detail page, render as non-clickable
+  /* If it doesn't have a detail page, render as non-clickable */
   if (!hasDetailPage) {
     return (
       <div
@@ -40,18 +61,39 @@ const ProjectCard = ({ project, theme }) => {
         style={{ cursor: 'default' }}
       >
         <div className="project-image">
-          <img 
+          <img
             src={project.imageData}
             alt={project.title}
           />
         </div>
         <h3 className="project-title">{project.title}</h3>
+        
+        {/* ADD THIS METADATA */}
+        {(project.year || project.company) && (
+          <div className="project-meta">
+            <span className="project-year-company">
+              {project.year}{project.year && project.company && ' • '}{project.company}
+            </span>
+          </div>
+        )}
+        
         <div className="project-type">{project.type}</div>
         <p className="project-description">{project.description}</p>
+        
+        {/* ADD TAGS */}
+        {project.tags && project.tags.length > 0 && (
+          <div className="project-tags">
+            {project.tags.slice(0, 3).map((tag, index) => (
+              <span key={index} className="project-tag">{tag}</span>
+            ))}
+            {project.tags.length > 3 && (
+              <span className="project-tag-more">+{project.tags.length - 3}</span>
+            )}
+          </div>
+        )}
       </div>
     );
   }
-
   return (
     <Link
       to={`/project/${project.id}`}
@@ -59,18 +101,39 @@ const ProjectCard = ({ project, theme }) => {
       data-category={project.category}
     >
       <div className="project-image">
-        <img 
+        <img
           src={project.imageData}
           alt={project.title}
         />
       </div>
       <h3 className="project-title">{project.title}</h3>
+      
+      {/* ADD THIS METADATA */}
+      {(project.year || project.company) && (
+        <div className="project-meta">
+          <span className="project-year-company">
+            {project.year}{project.year && project.company && ' • '}{project.company}
+          </span>
+        </div>
+      )}
+      
       <div className="project-type">{project.type}</div>
       <p className="project-description">{project.description}</p>
+      
+      {/* ADD TAGS */}
+      {project.tags && project.tags.length > 0 && (
+        <div className="project-tags">
+          {project.tags.slice(0, 3).map((tag, index) => (
+            <span key={index} className="project-tag">{tag}</span>
+          ))}
+          {project.tags.length > 3 && (
+            <span className="project-tag-more">+{project.tags.length - 3}</span>
+          )}
+        </div>
+      )}
     </Link>
-  );
+    );
 };
-
 const ProjectDetailPage = ({ theme }) => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -376,7 +439,6 @@ const ProjectDetailPage = ({ theme }) => {
     </div>
   );
 };
-
 const AboutPage = () => {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [screenSize, setScreenSize] = useState(window.innerWidth);
@@ -390,31 +452,12 @@ const AboutPage = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Then in your grid div:
-  <div style={{
-    position: 'absolute',
-    left: '50%',
-    top: '85%',
-    transform: 'translateX(-50%)',
-    display: 'grid',
-    gridTemplateColumns: screenSize <= 480 ? 'repeat(2, 1fr)' : screenSize <= 768 ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
-    gridTemplateRows: screenSize <= 768 ? 'repeat(4, 1fr)' : 'repeat(2, 1fr)',
-    gap: screenSize <= 480 ? '8px' : '20px',
-    width: screenSize <= 768 ? '95vw' : 'min(90vw, 1100px)',
-    maxWidth: '1100px',
-    zIndex: 1
-  }}>
-
-  </div>
-
-  // Film photos centered and compact for better widescreen display
+  // Film photos data
   const filmPhotos = [
     {
       id: 1,
       src: '/images/tanha.jpg',
       caption: 'Candid in Kyoto',
-      galleryX: 15,
-      galleryY: 68,
       width: 140,
       height: 180,
       orientation: 'portrait'
@@ -423,8 +466,6 @@ const AboutPage = () => {
       id: 2,
       src: '/images/about/8AF0AAAC-B8CB-4347-8DDE-D1504A0358BA.jpg',
       caption: 'phase 1 build',
-      galleryX: 27,
-      galleryY: 68,
       width: 160,
       height: 120,
       orientation: 'landscape'
@@ -433,8 +474,6 @@ const AboutPage = () => {
       id: 3,
       src: '/images/about/776A973B-1C0C-4623-A390-4F5469BA2454.JPG',
       caption: 'mom & I in Berkeley',
-      galleryX: 39,
-      galleryY: 68,
       width: 140,
       height: 180,
       orientation: 'portrait'
@@ -443,8 +482,6 @@ const AboutPage = () => {
       id: 4,
       src: '/images/about/IMG_2989.JPG',
       caption: 'Arabica % in Japan',
-      galleryX: 51,
-      galleryY: 68,
       width: 140,
       height: 180,
       orientation: 'portrait'
@@ -453,8 +490,6 @@ const AboutPage = () => {
       id: 5,
       src: '/images/about/IMG_9950.JPG',
       caption: 'Nemahsis concert @ Webster Hall, NYC',
-      galleryX: 63,
-      galleryY: 68,
       width: 160,
       height: 120,
       orientation: 'landscape'
@@ -463,8 +498,6 @@ const AboutPage = () => {
       id: 6,
       src: '/images/about/IMG_8660.JPG',
       caption: 'Chiapas, Mexico',
-      galleryX: 75,
-      galleryY: 68,
       width: 140,
       height: 180,
       orientation: 'portrait'
@@ -473,8 +506,6 @@ const AboutPage = () => {
       id: 7,
       src: '/images/about/IMG_4848.JPEG',
       caption: 'Iceland',
-      galleryX: 15,
-      galleryY: 78,
       width: 160,
       height: 120,
       orientation: 'landscape'
@@ -483,8 +514,6 @@ const AboutPage = () => {
       id: 8,
       src: '/images/about/IMG_4970.JPEG',
       caption: 'I love Paris',
-      galleryX: 27,
-      galleryY: 78,
       width: 160,
       height: 120,
       orientation: 'landscape'
@@ -493,8 +522,6 @@ const AboutPage = () => {
       id: 9,
       src: '/images/about/IMG_2222.JPG',
       caption: 'double shot latte',
-      galleryX: 39,
-      galleryY: 78,
       width: 140,
       height: 180,
       orientation: 'portrait'
@@ -503,8 +530,6 @@ const AboutPage = () => {
       id: 10,
       src: '/images/about/IMG_1640.JPG',
       caption: 'happy place',
-      galleryX: 51,
-      galleryY: 78,
       width: 160,
       height: 120,
       orientation: 'landscape'
@@ -513,8 +538,6 @@ const AboutPage = () => {
       id: 11,
       src: '/images/about/coffeesteel.JPEG',
       caption: 'a steel cafe in Paris',
-      galleryX: 63,
-      galleryY: 78,
       width: 140,
       height: 180,
       orientation: 'portrait'
@@ -523,22 +546,57 @@ const AboutPage = () => {
       id: 12,
       src: '/images/about/IDG_20250720_144222_364.jpg',
       caption: 'Vancouver',
-      galleryX: 75,
-      galleryY: 78,
       width: 160,
       height: 120,
       orientation: 'landscape'
     }
   ];
 
+  // Responsive grid settings
+  const getGridSettings = () => {
+    if (screenSize <= 480) {
+      return {
+        columns: 'repeat(2, 1fr)',
+        rows: 'repeat(6, 1fr)',
+        gap: '8px',
+        width: '95vw',
+        scale: 0.5,
+        topPosition: '95%',
+        bottomPadding: '1000px'
+      };
+    } else if (screenSize <= 768) {
+      return {
+        columns: 'repeat(3, 1fr)',
+        rows: 'repeat(4, 1fr)',
+        gap: '10px',
+        width: '95vw',
+        scale: 0.7,
+        topPosition: '90%',
+        bottomPadding: '750px'
+      };
+    } else {
+      return {
+        columns: 'repeat(6, 1fr)',
+        rows: 'repeat(2, 1fr)',
+        gap: '20px',
+        width: 'min(90vw, 1100px)',
+        scale: 1,
+        topPosition: '75%',
+        bottomPadding: '450px'
+      };
+    }
+  };
+
+  const gridSettings = getGridSettings();
+
   return (
     <>
-
       <style>
         {`
           .film-photo {
             cursor: pointer;
             user-select: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
           }
           
           .film-photo:hover {
@@ -554,25 +612,26 @@ const AboutPage = () => {
         style={{ 
           fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
           paddingTop: '150px', 
-          paddingBottom: '450px', // Increased from 350px
+          paddingBottom: gridSettings.bottomPadding,
           position: 'relative',
           overflow: 'hidden',
-          minHeight: '140vh' // Increased from 130vh
+          minHeight: '140vh'
         }}
       >
-        {/* Responsive Gallery Grid */}
+        {/* Film Photo Grid */}
         <div style={{
           position: 'absolute',
           left: '50%',
-          top: '85%',
-          transform: 'translateX(-40%)',
+          top: gridSettings.topPosition,
+          transform: 'translateX(-50%)',
           display: 'grid',
-          gridTemplateColumns: window.innerWidth <= 480 ? 'repeat(2, 1fr)' : window.innerWidth <= 768 ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
-          gridTemplateRows: window.innerWidth <= 768 ? 'repeat(4, 1fr)' : 'repeat(2, 1fr)',
-          gap: window.innerWidth <= 480 ? '8px' : '20px',
-          width: window.innerWidth <= 768 ? '95vw' : 'min(90vw, 1100px)',
+          gridTemplateColumns: gridSettings.columns,
+          gridTemplateRows: gridSettings.rows,
+          gap: gridSettings.gap,
+          width: gridSettings.width,
           maxWidth: '1100px',
-          zIndex: 1
+          zIndex: 1,
+          justifyItems: 'center'
         }}>
           {filmPhotos.map((photo, index) => (
             <div
@@ -581,14 +640,13 @@ const AboutPage = () => {
               style={{
                 width: `${photo.width}px`,
                 height: `${photo.height}px`,
-                transform: 'rotate(0deg)',
+                transform: `scale(${gridSettings.scale})`,
                 background: 'transparent',
                 padding: '0px',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1)',
                 borderRadius: '2px',
                 zIndex: selectedPhoto === photo.id ? 999 : 10 - index,
-                animationDelay: `${index * 0.15}s`,
-                justifySelf: 'center'
+                animationDelay: `${index * 0.15}s`
               }}
               onClick={() => setSelectedPhoto(selectedPhoto === photo.id ? null : photo.id)}
             >
@@ -647,11 +705,11 @@ const AboutPage = () => {
           ))}
         </div>
 
-        {/* Enlarged Photo - gallery style */}
+        {/* Enlarged Photo */}
         {selectedPhoto && (
           <div 
             style={{
-              position: 'absolute',
+              position: 'fixed',
               left: '50%',
               top: '50%',
               transform: 'translate(-50%, -50%) scale(1.8)',
@@ -663,56 +721,53 @@ const AboutPage = () => {
               transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
               cursor: 'pointer'
             }}
-            onMouseEnter={() => {}}
-            onMouseLeave={() => {}}
             onClick={() => setSelectedPhoto(null)}
           >
             {(() => {
               const photo = filmPhotos.find(p => p.id === selectedPhoto);
               return (
-                <>
-                  <div style={{
-                    width: `${photo.width}px`,
-                    height: `${photo.height}px`,
-                    background: '#f8f8f8',
-                    marginBottom: '0px',
-                    overflow: 'hidden',
-                    position: 'relative'
+                <div style={{
+                  width: `${photo.width}px`,
+                  height: `${photo.height}px`,
+                  background: '#f8f8f8',
+                  marginBottom: '0px',
+                  overflow: 'hidden',
+                  position: 'relative'
+                }}>
+                  <img 
+                    src={photo.src}
+                    alt={photo.caption}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      filter: 'sepia(30%) saturate(1.3) contrast(1.1) brightness(1.1) hue-rotate(8deg)'
+                    }}
+                  />
+                  <p style={{
+                    position: 'absolute',
+                    bottom: '5px',
+                    left: '5px',
+                    margin: '0',
+                    fontSize: '10px',
+                    color: 'white',
+                    fontFamily: 'monospace',
+                    letterSpacing: '0.3px',
+                    textTransform: 'uppercase',
+                    textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
+                    background: 'rgba(0,0,0,0.4)',
+                    padding: '3px 6px',
+                    borderRadius: '2px'
                   }}>
-                    <img 
-                      src={photo.src}
-                      alt={photo.caption}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        filter: 'sepia(30%) saturate(1.3) contrast(1.1) brightness(1.1) hue-rotate(8deg)'
-                      }}
-                    />
-                    <p style={{
-                      position: 'absolute',
-                      bottom: '5px',
-                      left: '5px',
-                      margin: '0',
-                      fontSize: '10px',
-                      color: 'white',
-                      fontFamily: 'monospace',
-                      letterSpacing: '0.3px',
-                      textTransform: 'uppercase',
-                      textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
-                      background: 'rgba(0,0,0,0.4)',
-                      padding: '3px 6px',
-                      borderRadius: '2px'
-                    }}>
-                      {photo.caption}
-                    </p>
-                  </div>
-                </>
+                    {photo.caption}
+                  </p>
+                </div>
               );
             })()}
           </div>
         )}
 
+        {/* Main Content */}
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px', position: 'relative', zIndex: 5 }}>
           
           <div style={{ textAlign: 'center', marginBottom: '20px' }}>
@@ -725,7 +780,7 @@ const AboutPage = () => {
             </p>
           </div>
 
-          {/* Simple Timeline */}
+          {/* Timeline */}
           <div style={{ 
             position: 'relative', 
             paddingLeft: '40px', 
@@ -1038,7 +1093,7 @@ const Portfolio = () => {
   }, [setCurrentPage]);
 
   const projects = [
-    {
+  {
       id: 'model-pulse',
       title: 'Model Pulse',
       type: 'web app',
@@ -1046,7 +1101,10 @@ const Portfolio = () => {
       category: 'product-design',
       className: 'web-project',
       imageData: '/images/model-pulse.jpg',
-      externalLink: 'https://tanhata.github.io/modelpulse-v2/'
+      externalLink: 'https://tanhata.github.io/modelpulse-v2/',
+      company: 'Stealth Startup',
+      year: '2025',
+      tags: ['React', 'D3.js']
     },
     {
       id: 'mcp',
@@ -1055,7 +1113,10 @@ const Portfolio = () => {
       description: 'Comprehensive framework for AI model interactions and communication protocols.',
       category: 'product-design',
       className: 'design-project',
-      imageData: '/images/mcp.gif'
+      imageData: '/images/mcp.gif',
+      company: 'Stealth Startup',
+      year: '2024',
+      tags: ['Figma']
     },
     
     {
@@ -1066,7 +1127,10 @@ const Portfolio = () => {
       category: 'writing',
       className: 'ml-writing',
       imageData: '/images/intentiongrounding.png',
-      externalLink: 'https://talshe.substack.com/p/from-hand-me-that-thing-to-trust?r=2iqmd4'
+      externalLink: 'https://talshe.substack.com/p/from-hand-me-that-thing-to-trust?r=2iqmd4',
+      company: 'Research',
+      year: '2025',
+      tags: ['AI/ML Papers']
     },
     {
       id: 'geo-viz',
@@ -1076,7 +1140,10 @@ const Portfolio = () => {
       category: 'product-design',
       className: 'product-design',
       imageData: '/images/main-interface.png',
-      externalLink: 'https://tanhata.github.io/geo-viz/'
+      externalLink: 'https://tanhata.github.io/geo-viz/',
+      company: 'NDA',
+      year: '2022', 
+      tags: [ 'React', 'Python']
     },
     
     {
@@ -1087,7 +1154,10 @@ const Portfolio = () => {
       category: 'writing',
       className: 'ml-writing',
       imageData: '/images/subliminal.png',
-      externalLink: 'https://talshe.substack.com/p/subliminal-learning-when-clean-data'
+      externalLink: 'https://talshe.substack.com/p/subliminal-learning-when-clean-data',
+      company: 'Research',
+      year: '2025',
+      tags: ['AI/ML Research Papers']
     },
     {
       id: 'art-critic',
@@ -1097,7 +1167,10 @@ const Portfolio = () => {
       category: 'ai-ml',
       className: 'ml-project',
       imageData: '/images/art-critic.gif',
-      externalLink: 'https://github.com/tanhata/ArtCrit_Blip/tree/main'
+      externalLink: 'https://github.com/tanhata/ArtCrit_Blip/tree/main',
+      company: 'NDA',
+      year: '2023',
+      tags: ['LLM', 'Python']
     },
     {
       id: 'recursive-orbit',
@@ -1107,7 +1180,10 @@ const Portfolio = () => {
       category: 'data-visualization',
       className: 'data-project',
       imageData: '/images/recursive-orbit.gif',
-      externalLink: 'https://observablehq.com/@tanhas-canvas/recursive-orbit'
+      externalLink: 'https://observablehq.com/@tanhas-canvas/recursive-orbit',
+      company: 'Personal Project',
+      year: '2024',
+      tags: ['Observable', 'Javascript']
     },
     {
       id: 'green-spaces',
@@ -1117,7 +1193,10 @@ const Portfolio = () => {
       category: 'data-analysis',
       className: 'data-project',
       imageData: '/images/green_spaces.gif',
-      externalLink: 'https://tanhata.github.io/Green-Spaces-in-NYC/'
+      externalLink: 'https://tanhata.github.io/Green-Spaces-in-NYC/',
+      company: 'Bond Center for Urban Futures',
+      year: '2021',
+      tags: ['Python', 'React']
     },
     {
       id: 'forma',
@@ -1126,7 +1205,10 @@ const Portfolio = () => {
       description: 'Mobile application design focused on form and user experience optimization.',
       category: 'mobile-design',
       className: 'mobile-project',
-      imageData: '/images/forma.jpg'
+      imageData: '/images/forma.jpg',
+      company: 'NDA',
+      year: '2024',
+      tags: ['Figma']
     },
     {
       id: 'muse',
@@ -1135,7 +1217,10 @@ const Portfolio = () => {
       description: 'iOS application design with focus on creative tools and user inspiration.',
       category: 'mobile-design',
       className: 'mobile-project',
-      imageData: '/images/muse.gif'
+      imageData: '/images/muse.gif',
+      company: 'NDA',
+      year: '2022',
+      tags: ['Figma', 'AR/VR']
     },
     {
       id: 'bitlot',
@@ -1146,6 +1231,9 @@ const Portfolio = () => {
       className: 'data-project',
       imageData: '/images/bitlot.gif',
       externalLink: 'https://drive.google.com/file/d/1xA02RVjg-bTAI-DFs1xzg0PV7-OURb8G/view?usp=sharing',
+      company: 'Bond Center for Urban Futures',
+      year: '2021',
+      tags: ['Python']
     },   
     {
       id: 'heating-loads',
@@ -1155,7 +1243,10 @@ const Portfolio = () => {
       category: 'ai-ml',
       className: 'ml-project',
       imageData: '/images/heating-loads.gif',
-      externalLink: 'https://colab.research.google.com/drive/1qw4iJjcNdQUgGYq_wglaRoQflFcMhDZr?authuser=3'
+      externalLink: 'https://colab.research.google.com/drive/1qw4iJjcNdQUgGYq_wglaRoQflFcMhDZr?authuser=3',
+      company: 'UC Berkeley',
+      year: '2022',
+      tags: ['Python']
     },
     {
       id: 'living-computing',
@@ -1165,7 +1256,10 @@ const Portfolio = () => {
       category: 'human-computer-interaction',
       className: 'design-project',
       imageData: '/images/living-computing.gif',
-      externalLink: 'https://www.youtube.com/watch?v=Geo17VbvWtU'
+      externalLink: 'https://www.youtube.com/watch?v=Geo17VbvWtU',
+      company: 'SSA',
+      year: '2021',
+      tags: ['Arduino', 'C++']
     },
   ];
 
@@ -1529,6 +1623,42 @@ const Portfolio = () => {
           font-size: 40px;
         }
 
+        /* NEW: Company and Year Filter Styles */
+        .filter-subtitle {
+          font-size: 16px;
+          font-weight: 600;
+          margin-bottom: 15px;
+          color: ${currentThemeConfig.text};
+          margin-top: 30px;
+        }
+
+        .company-tags, .year-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-bottom: 20px;
+        }
+
+        .company-tag, .year-tag {
+          padding: 6px 12px;
+          border: 2px solid ${currentThemeConfig.border};
+          background: transparent;
+          color: ${currentThemeConfig.text};
+          border-radius: 20px;
+          cursor: pointer;
+          font-size: 12px;
+          font-weight: 500;
+          transition: all 0.3s ease;
+          font-family: inherit;
+        }
+
+        .company-tag:hover, .year-tag:hover,
+        .company-tag.active, .year-tag.active {
+          background: ${currentThemeConfig.accent};
+          color: ${currentThemeConfig.background === '#ffffff' ? '#000' : '#fff'};
+          border-color: ${currentThemeConfig.accent};
+        }
+
         .projects-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
@@ -1594,6 +1724,56 @@ const Portfolio = () => {
         
         .project:hover .project-image {
           border-color: ${currentThemeConfig.accent};
+        }
+
+        /* NEW: Project Metadata Styles */
+        .project-meta {
+          margin-bottom: 12px;
+        }
+
+        .project-year-company {
+          font-size: 11px;
+          color: ${currentThemeConfig.secondary};
+          font-weight: 500;
+          line-height: 1.3;
+        }
+
+        .project-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px;
+          margin-top: 12px;
+        }
+
+        .project-tag {
+          font-size: 9px;
+          background: ${currentThemeConfig.text}10;
+          color: ${currentThemeConfig.text};
+          padding: 2px 5px;
+          border-radius: 8px;
+          border: 1px solid ${currentThemeConfig.text}15;
+          font-weight: 500;
+          letter-spacing: 0.2px;
+        }
+
+        .project-tag-more {
+          font-size: 9px;
+          background: ${currentThemeConfig.secondary}20;
+          color: ${currentThemeConfig.secondary};
+          padding: 2px 5px;
+          border-radius: 8px;
+          font-weight: 500;
+        }
+
+        /* Enhanced hover effects for metadata */
+        .project:hover .project-year {
+          background: ${currentThemeConfig.accent}25;
+          transform: scale(1.02);
+        }
+
+        .project:hover .project-tag {
+          background: ${currentThemeConfig.text}15;
+          border-color: ${currentThemeConfig.text}25;
         }
 
         .project-title {
@@ -1838,6 +2018,43 @@ const Portfolio = () => {
           .filter-item span {
             font-size: 18px !important;
           }
+
+          /* Mobile styles for new metadata */
+          .project-meta-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 3px;
+          }
+
+          .project-company {
+            max-width: 100%;
+            text-align: left;
+            font-size: 10px;
+          }
+
+          .project-year {
+            font-size: 11px;
+            padding: 3px 6px;
+          }
+
+          .project-tags {
+            gap: 3px;
+            margin-top: 8px;
+          }
+
+          .project-tag {
+            font-size: 8px;
+            padding: 1px 4px;
+          }
+
+          .company-tags, .year-tags {
+            gap: 6px;
+          }
+
+          .company-tag, .year-tag {
+            padding: 4px 8px;
+            font-size: 11px;
+          }
           
           .projects-grid {
             grid-template-columns: 1fr !important;
@@ -2080,4 +2297,4 @@ const Portfolio = () => {
     </Router> 
   );
 };
-export default Portfolio;
+export default Portfolio; 
