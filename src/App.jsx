@@ -832,6 +832,7 @@ const AboutPage = () => {
     </>
   );
 };
+
 const VisualPage = () => {
   const visualProjects = [
     {
@@ -1114,7 +1115,7 @@ const Portfolio = () => {
       id: 'recursive-orbit',
       title: 'Recursive Orbit',
       type: 'data viz',
-      description: 'Interactive data visualization exploring recursive patterns and orbital mechanics.',
+      description: 'Interactive data visualization exploring recursive patterns in grief.',
       category: 'data-visualization',
       className: 'data-project',
       imageData: '/images/recursive-orbit.gif',
