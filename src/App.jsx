@@ -600,9 +600,13 @@ const AboutPage = () => {
           }
           
           .film-photo:hover {
-            transform: translateY(-8px) scale(1.03) !important;
+            transform: translateY(-8px) scale(1.15) !important;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important;
             z-index: 100;
+          }
+
+          .film-photo:hover img {
+            filter: sepia(25%) saturate(1.2) contrast(1.1) brightness(1.05) hue-rotate(5deg) !important;
           }
         `}
       </style>
@@ -645,10 +649,9 @@ const AboutPage = () => {
                 padding: '0px',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1)',
                 borderRadius: '2px',
-                zIndex: selectedPhoto === photo.id ? 999 : 10 - index,
+                zIndex: 10 - index,
                 animationDelay: `${index * 0.15}s`
               }}
-              onClick={() => setSelectedPhoto(selectedPhoto === photo.id ? null : photo.id)}
             >
               {/* Photo with frame */}
               <div style={{
@@ -666,9 +669,7 @@ const AboutPage = () => {
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
-                    filter: selectedPhoto === photo.id 
-                      ? 'sepia(25%) saturate(1.2) contrast(1.1) brightness(1.05) hue-rotate(5deg)' 
-                      : 'grayscale(1) contrast(1.2) brightness(0.95)',
+                    filter: 'grayscale(1) contrast(1.2) brightness(0.95)',
                     transition: 'filter 0.4s ease'
                   }}
                   onError={(e) => {
@@ -704,68 +705,6 @@ const AboutPage = () => {
             </div>
           ))}
         </div>
-
-        {/* Enlarged Photo */}
-        {selectedPhoto && (
-          <div 
-            style={{
-              position: 'fixed',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%) scale(1.8)',
-              background: 'transparent',
-              padding: '0px',
-              borderRadius: '2px',
-              boxShadow: '0 25px 60px rgba(0, 0, 0, 0.4), 0 0 0 4px rgba(255, 255, 255, 0.95)',
-              zIndex: 2000,
-              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-              cursor: 'pointer'
-            }}
-            onClick={() => setSelectedPhoto(null)}
-          >
-            {(() => {
-              const photo = filmPhotos.find(p => p.id === selectedPhoto);
-              return (
-                <div style={{
-                  width: `${photo.width}px`,
-                  height: `${photo.height}px`,
-                  background: '#f8f8f8',
-                  marginBottom: '0px',
-                  overflow: 'hidden',
-                  position: 'relative'
-                }}>
-                  <img 
-                    src={photo.src}
-                    alt={photo.caption}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      filter: 'sepia(30%) saturate(1.3) contrast(1.1) brightness(1.1) hue-rotate(8deg)'
-                    }}
-                  />
-                  <p style={{
-                    position: 'absolute',
-                    bottom: '5px',
-                    left: '5px',
-                    margin: '0',
-                    fontSize: '10px',
-                    color: 'white',
-                    fontFamily: 'monospace',
-                    letterSpacing: '0.3px',
-                    textTransform: 'uppercase',
-                    textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
-                    background: 'rgba(0,0,0,0.4)',
-                    padding: '3px 6px',
-                    borderRadius: '2px'
-                  }}>
-                    {photo.caption}
-                  </p>
-                </div>
-              );
-            })()}
-          </div>
-        )}
 
         {/* Main Content */}
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px', position: 'relative', zIndex: 5 }}>
@@ -893,7 +832,6 @@ const AboutPage = () => {
     </>
   );
 };
-
 const VisualPage = () => {
   const visualProjects = [
     {
