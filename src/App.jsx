@@ -1046,6 +1046,19 @@ const Portfolio = () => {
       tags: ['React', 'D3.js']
     },
     {
+      id: 'code gen tools for design',
+      title: 'Dissecting AI Design Capabilities',
+      type: 'writing',
+      description: ' Multi-Case Analysis of Code Generation Tools',
+      category: 'writing',
+      className: 'ml-writing',
+      imageData: '/images/designtest.png',
+      externalLink: 'https://open.substack.com/pub/talshe/p/dissecting-ai-design-capabilities?r=2iqmd4&utm_campaign=post&utm_medium=web',
+      company: 'Research',
+      year: '2025',
+      tags: ['AI/ML Research Papers']
+      },
+    {
       id: 'mcp',
       title: 'Model Communication Protocol',
       type: 'product design',
@@ -1056,20 +1069,6 @@ const Portfolio = () => {
       company: 'Stealth Startup',
       year: '2024',
       tags: ['Figma']
-    },
-    
-    {
-      id: 'intention-grounding',
-      title: 'From "Hand Me That Thing" to Trust: Intention Grounding',
-      type: 'writing',
-      description: 'Reflections on Visual Intention Grounding for Egocentric Assistants. ICCV 2025 — Sun, Xiao, Tse, Li, Akula, Yao',
-      category: 'writing',
-      className: 'ml-writing',
-      imageData: '/images/intentiongrounding.png',
-      externalLink: 'https://talshe.substack.com/p/from-hand-me-that-thing-to-trust?r=2iqmd4',
-      company: 'Research',
-      year: '2025',
-      tags: ['AI/ML Papers']
     },
     {
       id: 'geo-viz',
@@ -1086,19 +1085,6 @@ const Portfolio = () => {
     },
     
     {
-      id: 'subliminal-learning',
-      title: 'Subliminal Learning: When “Clean” Data Isn’t Clean',
-      type: 'writing',
-      description: 'Reflections on Anthropic’s July 2025 paper and what it means for AI safety & product design.',
-      category: 'writing',
-      className: 'ml-writing',
-      imageData: '/images/subliminal.png',
-      externalLink: 'https://talshe.substack.com/p/subliminal-learning-when-clean-data',
-      company: 'Research',
-      year: '2025',
-      tags: ['AI/ML Research Papers']
-    },
-    {
       id: 'art-critic',
       title: 'Art Critic',
       type: 'llm, machine learning',
@@ -1110,6 +1096,19 @@ const Portfolio = () => {
       company: 'NDA',
       year: '2023',
       tags: ['LLM', 'Python']
+    },
+    {
+      id: 'intention-grounding',
+      title: 'From "Hand Me That Thing" to Trust: Intention Grounding',
+      type: 'writing',
+      description: 'Reflections on Visual Intention Grounding for Egocentric Assistants. ICCV 2025 — Sun, Xiao, Tse, Li, Akula, Yao',
+      category: 'writing',
+      className: 'ml-writing',
+      imageData: '/images/intentiongrounding.png',
+      externalLink: 'https://talshe.substack.com/p/from-hand-me-that-thing-to-trust?r=2iqmd4',
+      company: 'Research',
+      year: '2025',
+      tags: ['AI/ML Papers']
     },
     {
       id: 'recursive-orbit',
