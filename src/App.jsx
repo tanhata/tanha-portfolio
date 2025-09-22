@@ -994,7 +994,7 @@ const ContactPage = () => (
           <div style={{ textAlign: 'center' }}>
             <h3 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '10px', color: 'inherit' }}>
             </h3>
-            <a href="https://linkedin.com/in/tanha" target="_blank" rel="noopener noreferrer" style={{ 
+            <a href="https://linkedin.com/in/tanhata" target="_blank" rel="noopener noreferrer" style={{ 
               fontSize: '28px', 
               color: 'inherit', 
               textDecoration: 'none',
