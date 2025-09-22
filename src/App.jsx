@@ -1002,7 +1002,7 @@ const ContactPage = () => (
               paddingBottom: '4px',
               transition: 'all 0.3s ease'
             }}>
-              linkedin.com/in/tanhata
+              linkedin
             </a>
           </div>
         </div>
