@@ -1079,8 +1079,7 @@ const Portfolio = () => {
       className: 'product-design',
       imageData: '/images/main-interface.png',
       externalLink: 'https://tanhata.github.io/geo-viz/',
-      company: 'NDA',
-      year: '2022', 
+      year: '2021', 
       tags: [ 'React', 'Python']
     },
     
@@ -1094,7 +1093,7 @@ const Portfolio = () => {
       imageData: '/images/art-critic.gif',
       externalLink: 'https://github.com/tanhata/ArtCrit_Blip/tree/main',
       company: 'NDA',
-      year: '2023',
+      year: '2022',
       tags: ['LLM', 'Python']
     },
     {
