@@ -1040,7 +1040,7 @@ const Portfolio = () => {
       category: 'product-design',
       className: 'web-project',
       imageData: '/images/model-pulse.jpg',
-      externalLink: 'https://tanhata.github.io/modelpulse-v2/',
+      externalLink: 'https://docs.google.com/presentation/d/1ePidVWFj8yHKuQ_lr5rFXV7a4K0Pexfv1Bt_5l6igmE/edit?usp=sharing',
       company: 'Stealth Startup',
       year: '2025',
       tags: ['React', 'D3.js']
@@ -1308,7 +1308,7 @@ const Portfolio = () => {
                   marginBottom: '10px',
                   color: currentThemeConfig.text 
                 }}>
-                  Work
+                  Selected Work
                 </h2>
                  
                 <div className="filters">
