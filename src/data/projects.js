@@ -1,27 +1,53 @@
 export const projects = [
   {
-    id: 'mcp',
-    title: 'Model Communication Protocol',
-    type: 'product design',
-    description: 'Comprehensive framework for AI model interactions and communication protocols.',
-    category: 'product-design',
-    imageData: '/images/mcp.gif'
-  },
-  {
     id: 'model-pulse',
     title: 'Model Pulse',
     type: 'web app',
     description: 'Real-time monitoring and analytics dashboard for machine learning model performance.',
     category: 'product-design',
-    imageData: '/images/model-pulse.gif'
+    className: 'web-project',
+    imageData: '/images/model-pulse.jpg',
+    externalLink: 'https://docs.google.com/presentation/d/1ePidVWFj8yHKuQ_lr5rFXV7a4K0Pexfv1Bt_5l6igmE/edit?usp=sharing',
+    company: 'Stealth Startup',
+    year: '2025',
+    tags: ['React', 'D3.js']
   },
   {
-    id: 'bitlot',
-    title: 'BitLot',
-    type: 'product data analysis',
-    description: 'Comprehensive product analytics platform for data-driven decision making.',
+    id: 'code-gen-tools',
+    title: 'Dissecting AI Design Capabilities',
+    type: 'writing',
+    description: 'Multi-Case Analysis of Code Generation Tools',
+    category: 'writing',
+    className: 'ml-writing',
+    imageData: '/images/designtest.png',
+    externalLink: 'https://open.substack.com/pub/talshe/p/dissecting-ai-design-capabilities?r=2iqmd4&utm_campaign=post&utm_medium=web',
+    company: 'Research',
+    year: '2025',
+    tags: ['AI/ML Research Papers']
+  },
+  {
+    id: 'mcp',
+    title: 'Model Communication Protocol',
+    type: 'product design',
+    description: 'Comprehensive framework for AI model interactions and communication protocols.',
     category: 'product-design',
-    imageData: '/images/bitlot.gif'
+    className: 'design-project',
+    imageData: '/images/mcp.gif',
+    company: '🔒',
+    year: '2024',
+    tags: ['Figma']
+  },
+  {
+    id: 'geo-viz',
+    title: 'Geo Climate Data Visualization Tool',
+    type: 'product design',
+    description: 'An internal climate visualization tool that helps architects, planners, and sustainability teams understand climate data through interactive maps.',
+    category: 'product-design',
+    className: 'product-design',
+    imageData: '/images/main-interface.png',
+    externalLink: 'https://tanhata.github.io/geo-viz/',
+    year: '2021',
+    tags: ['React', 'Python']
   },
   {
     id: 'art-critic',
@@ -29,71 +55,38 @@ export const projects = [
     type: 'llm, machine learning',
     description: 'Large language model trained to analyze and critique visual art with contextual understanding.',
     category: 'ai-ml',
-    imageData: '/images/art-critic.gif'
+    className: 'ml-project',
+    imageData: '/images/art-critic.gif',
+    externalLink: 'https://github.com/tanhata/ArtCrit_Blip/tree/main',
+    company: '🔒',
+    year: '2022',
+    tags: ['LLM', 'Python']
   },
   {
-    id: 'building-dreams',
-    title: 'Building Dreams',
-    type: 'llm, deep learning',
-    description: 'Deep learning model for architectural design generation and optimization.',
-    category: 'ai-ml',
-    imageData: '/images/building-dreams.gif'
-  },
-  {
-    id: 'heating-loads',
-    title: 'Heating Loads',
-    type: 'machine learning',
-    description: 'Predictive modeling for building heating load optimization and energy efficiency.',
-    category: 'ai-ml',
-    imageData: '/images/heating-loads.gif'
+    id: 'intention-grounding',
+    title: 'From "Hand Me That Thing" to Trust: Intention Grounding',
+    type: 'writing',
+    description: 'Reflections on Visual Intention Grounding for Egocentric Assistants. ICCV 2025 — Sun, Xiao, Tse, Li, Akula, Yao',
+    category: 'writing',
+    className: 'ml-writing',
+    imageData: '/images/intentiongrounding.png',
+    externalLink: 'https://talshe.substack.com/p/from-hand-me-that-thing-to-trust?r=2iqmd4',
+    company: 'Research',
+    year: '2025',
+    tags: ['AI/ML Papers']
   },
   {
     id: 'recursive-orbit',
     title: 'Recursive Orbit',
     type: 'data viz',
-    description: 'Interactive data visualization exploring recursive patterns and orbital mechanics.',
+    description: 'Interactive data visualization exploring recursive patterns in grief.',
     category: 'data-visualization',
-    imageData: '/images/recursive-orbit.gif'
-  },
-  {
-    id: 'forma',
-    title: 'FORMA',
-    type: 'mobile design',
-    description: 'Mobile application design focused on form and user experience optimization.',
-    category: 'mobile-design',
-    imageData: '/my-portfolio/images/forma.jpg'
-  },
-  {
-    id: 'muse',
-    title: 'MUSE',
-    type: 'mobile design (iOS)',
-    description: 'iOS application design with focus on creative tools and user inspiration.',
-    category: 'mobile-design',
-    imageData: '/images/muse.gif'
-  },
-  {
-    id: 'calculus-city',
-    title: 'Calculus of a City',
-    type: 'urban data analysis',
-    description: 'Mathematical modeling and analysis of urban systems and city dynamics.',
-    category: 'spatial-geospatial',
-    imageData: '/images/calculus-city.jpg'
-  },
-  {
-    id: 'brownian-motion',
-    title: 'Brownian Motion',
-    type: 'architectural design',
-    description: 'Architectural design inspired by stochastic processes and natural movement patterns.',
-    category: 'spatial-geospatial',
-    imageData: '/images/brownian-motion.gif'
-  },
-  {
-    id: 'living-computing',
-    title: 'Living Computing',
-    type: 'human computer interaction',
-    description: 'Exploration of adaptive interfaces that respond to human behavior and context.',
-    category: 'human-computer-interaction',
-    imageData: '/images/living-computing.gif'
+    className: 'data-project',
+    imageData: '/images/recursive-orbit.gif',
+    externalLink: 'https://observablehq.com/@tanhas-canvas/recursive-orbit',
+    company: 'Personal Project',
+    year: '2024',
+    tags: ['Observable', 'Javascript']
   },
   {
     id: 'green-spaces',
@@ -101,6 +94,74 @@ export const projects = [
     type: 'data analysis',
     description: 'Interactive analysis of urban park accessibility and environmental impact across major cities.',
     category: 'data-analysis',
-    imageData: '/my-portfolio/images/green-spaces.gif'
+    className: 'data-project',
+    imageData: '/images/green_spaces.gif',
+    externalLink: 'https://tanhata.github.io/Green-Spaces-in-NYC/',
+    company: 'Bond Center for Urban Futures',
+    year: '2021',
+    tags: ['Python', 'React']
+  },
+  {
+    id: 'forma',
+    title: 'FORMA',
+    type: 'mobile design',
+    description: 'Mobile application design focused on form and user experience optimization.',
+    category: 'mobile-design',
+    className: 'mobile-project',
+    imageData: '/images/forma.jpg',
+    company: '🔒',
+    year: '2024',
+    tags: ['Figma']
+  },
+  {
+    id: 'muse',
+    title: 'MUSE',
+    type: 'mobile design (iOS)',
+    description: 'iOS application design with focus on creative tools and user inspiration.',
+    category: 'mobile-design',
+    className: 'mobile-project',
+    imageData: '/images/muse.gif',
+    company: '🔒',
+    year: '2022',
+    tags: ['Figma', 'AR/VR']
+  },
+  {
+    id: 'bitlot',
+    title: 'BitLot',
+    type: 'data analysis',
+    description: 'Comprehensive product analytics platform for data-driven decision making.',
+    category: 'data-analysis',
+    className: 'data-project',
+    imageData: '/images/bitlot.gif',
+    externalLink: 'https://drive.google.com/file/d/1tAwTFKHjWch9u-SEe0oKMHvTClIR3FT8/view?usp=sharing',
+    company: 'Bond Center for Urban Futures',
+    year: '2021',
+    tags: ['Python']
+  },
+  {
+    id: 'heating-loads',
+    title: 'Heating Loads',
+    type: 'machine learning',
+    description: 'Predictive modeling for building heating load optimization and energy efficiency.',
+    category: 'ai-ml',
+    className: 'ml-project',
+    imageData: '/images/heating-loads.gif',
+    externalLink: 'https://drive.google.com/file/d/1FHQsm3s1dJWWMKKBy-QRjClEO3rS2OZ8/view?usp=sharing',
+    company: 'UC Berkeley',
+    year: '2022',
+    tags: ['Python']
+  },
+  {
+    id: 'living-computing',
+    title: 'Living Computing',
+    type: 'human computer interaction',
+    description: 'Exploration of adaptive interfaces that respond to human behavior and context.',
+    category: 'human-computer-interaction',
+    className: 'design-project',
+    imageData: '/images/living-computing.gif',
+    externalLink: 'https://www.youtube.com/watch?v=Geo17VbvWtU',
+    company: 'SSA',
+    year: '2021',
+    tags: ['Arduino', 'C++']
   }
 ];

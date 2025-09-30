@@ -1,875 +1,1193 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { useInView } from 'react-intersection-observer';
+import { projects } from './data/projects.js';
 
+/* ---------- Custom Cursor Component ---------- */
+const CustomCursor = ({ theme = "ink" }) => {
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [hovering, setHovering] = useState(false);
+  const [t, setT] = useState(0);
+  const ref = useRef();
 
-const ProjectCard = ({ project, theme }) => {
-  // Check if it's a project with detail page content defined
-  const hasDetailPage = ['mcp', 'forma', 'muse'].includes(project.id);
-  
-  if (project.externalLink) {
-    return (
-      <a 
-        href={project.externalLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`project ${project.className}`}
-        data-category={project.category}
-      >
-        <div className="project-image">
-          <img src={project.imageData} alt={project.title} />
-          {project.externalLink && (
-            <div className="external-link-indicator">
-              <span>↗</span>
-            </div>
-          )}
-        </div>
-
-        {/* ADD THIS NEW METADATA SECTION */}
-        <h3 className="project-title">{project.title}</h3>
-
-        {/* THEN year/company metadata */}
-        {(project.year || project.company) && (
-          <div className="project-meta">
-            <span className="project-year-company">
-              {project.year}{project.year && project.company && ' • '}{project.company}
-            </span>
-          </div>
-        )}
-        <div className="project-type">{project.type}</div>
-        <p className="project-description">{project.description}</p>
-
-        {/* ADD THIS NEW TAGS SECTION */}
-        {project.tags && project.tags.length > 0 && (
-          <div className="project-tags">
-            {project.tags.slice(0, 3).map((tag, index) => (
-              <span key={index} className="project-tag">{tag}</span>
-            ))}
-            {project.tags.length > 3 && (
-              <span className="project-tag-more">+{project.tags.length - 3}</span>
-            )}
-          </div>
-        )}
-      </a>
-    );
-  }
-  /* If it doesn't have a detail page, render as non-clickable */
-  if (!hasDetailPage) {
-    return (
-      <div
-        className={`project ${project.className}`}
-        data-category={project.category}
-        style={{ cursor: 'default' }}
-      >
-        <div className="project-image">
-          <img
-            src={project.imageData}
-            alt={project.title}
-          />
-        </div>
-        <h3 className="project-title">{project.title}</h3>
-        
-        {/* ADD THIS METADATA */}
-        {(project.year || project.company) && (
-          <div className="project-meta">
-            <span className="project-year-company">
-              {project.year}{project.year && project.company && ' • '}{project.company}
-            </span>
-          </div>
-        )}
-        
-        <div className="project-type">{project.type}</div>
-        <p className="project-description">{project.description}</p>
-        
-        {/* ADD TAGS */}
-        {project.tags && project.tags.length > 0 && (
-          <div className="project-tags">
-            {project.tags.slice(0, 3).map((tag, index) => (
-              <span key={index} className="project-tag">{tag}</span>
-            ))}
-            {project.tags.length > 3 && (
-              <span className="project-tag-more">+{project.tags.length - 3}</span>
-            )}
-          </div>
-        )}
-      </div>
-    );
-  }
-  return (
-    <Link
-      to={`/project/${project.id}`}
-      className={`project ${project.className}`}
-      data-category={project.category}
-    >
-      <div className="project-image">
-        <img
-          src={project.imageData}
-          alt={project.title}
-        />
-      </div>
-      <h3 className="project-title">{project.title}</h3>
-      
-      {/* ADD THIS METADATA */}
-      {(project.year || project.company) && (
-        <div className="project-meta">
-          <span className="project-year-company">
-            {project.year}{project.year && project.company && ' • '}{project.company}
-          </span>
-        </div>
-      )}
-      
-      <div className="project-type">{project.type}</div>
-      <p className="project-description">{project.description}</p>
-      
-      {/* ADD TAGS */}
-      {project.tags && project.tags.length > 0 && (
-        <div className="project-tags">
-          {project.tags.slice(0, 3).map((tag, index) => (
-            <span key={index} className="project-tag">{tag}</span>
-          ))}
-          {project.tags.length > 3 && (
-            <span className="project-tag-more">+{project.tags.length - 3}</span>
-          )}
-        </div>
-      )}
-    </Link>
-    );
-};
-const ProjectDetailPage = ({ theme }) => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  
-  if (!id) return null;
-
-  // Project-specific content based on ID
-  const getProjectContent = (projectId) => {
-    const contentMap = {
-      'mcp': {
-        title: "MCP Interface",
-        subtitle: "Interface for Multi-Agent Interaction",
-        role: "Lead Product Designer",
-        team: "Founding Machine Learning Developers, Product Manager, Frontend Engineers",
-        content: [
-          "Model Communication Protocol (MCP) is a framework for orchestrating multiple language models as coordinated agents—each with a defined role, scoped context, and turn in the reasoning chain. It shifts prompting from monolithic to modular: models summarize, critique, and rewrite each other's outputs in sequence, forming a structured dialogue.",
-          "",
-          "While MCP introduces a powerful mental model, current workflows are often fragmented—spread across notebooks, orchestration libraries, and opaque API calls.",
-          "",
-          "This project visualizes MCP from an interface perspective—making agent interactions transparent, inspectable, and user-directed. Users assign roles, define execution order, and trace how ideas evolve across model handoffs. Designed through both a product and engineering lens, the system supports reproducibility, orchestration, and step-level debugging.",
-          "",
-          "## Unblocking the Workflow",
-          "",
-          "MCPs involve multiple moving parts — developers define specs, PMs scope features, engineers implement, and designers shape behavior. But without a shared interface, the flow breaks. Specs live across Notion, Slack, and code. This tool restructures that journey: model behavior is visualized, editable, and versioned — so every role stays in sync.",
-          "",
-          "## Designing for Dialogue",
-          "",
-          "Agents can be confusing-- make model-to-model collaboration legible. I leaned on conversation as a UI structure — each agent speaks, critiques, or rewrites. Users assign roles like Summarizer, Critic, or Rewriter to selected models. The interface supports multi-step task orchestration through simple dropdowns and a guided prompt builder.",
-          "",
-          "## Conversation Playback",
-          "",
-          "Outputs are presented as threaded messages, reflecting the sequence and evolution of ideas. The interface supports user feedback mid-dialogue, offering opportunities to intervene, redirect, or co-create.",
-          "",
-          "## Agent & Model Onboarding",
-          "",
-          "Educational overlays help non-technical users understand how agent roles function, and how models differ in tone, reliability, and application.",
-          "",
-          "## Session History & Sharing",
-          "",
-          "A lightweight session dashboard where past conversations can be reviewed, duplicated, or exported. Each session displays a timestamp, the assigned models and roles, and a preview of the final output. Users can sort by agent, task type, or date to surface relevant collaborations.",
-          "",
-          "## Developer Console: Multi-Agent Config & Execution",
-          "",
-          "This screen bridges interface design with the realities of modern LLMOps. It allows developers to structure multi-agent chains by assigning roles (e.g., Summarizer, Critic) to specific models, with full control over system prompts, temperature, and token limits. Configs are output as JSON payloads — not as an afterthought, but as a first-class asset for versioning and API execution.",
-          "",
-          "Each agent's response is logged with its inputs, latency, and token usage visible — because understanding model behavior at the step level is essential when chaining reasoning tasks across systems. Every interaction is replayable and forkable, supporting fast iteration and fine-grained debugging.",
-          "",
-          "The API panel integrates directly with live endpoints and code exports, supporting transition from prototype to production. By exposing telemetry (rate limits, response times, token consumption) alongside structured configuration, this interface doesn't just make LLM workflows usable — it makes them observable and maintainable.",
-          "",
-          "## User Journey & Flow",
-          "",
-          "The user experience maps a clear path from concept to execution. Users begin by defining their multi-agent task, selecting models and assigning roles, then watch as agents collaborate in real-time. The interface provides intervention points throughout—allowing users to redirect conversations, adjust parameters, or fork successful patterns into new workflows.",
-          "",
-          "## Making Model Communication Legible",
-          "",
-          "Building this interface began as an exploration of how multiple AI agents could collaborate more transparently—but it quickly evolved into a deeper question of how humans, too, might better understand, debug, and direct these interactions. What emerged is a system that treats multi-agent workflows not as code-first automations, but as legible, structured conversations.",
-          "",
-          "Through role assignment, sequential reasoning, and step-level traceability, this tool reframes prompting as orchestration—making LLM behavior both observable and controllable.",
-          "",
-          "## Reflection & Future Directions",
-          "",
-          "While this prototype focuses on visualizing core MCP flows, there's exciting room for future exploration:",
-          "",
-          "• Inter-agent memory systems (e.g., letting agents remember and reference prior states)",
-          "• Non-linear agent logic (e.g., conditionals, feedback loops, and voting)",
-          "• Live debugging + annotation layers for teams reviewing AI behavior",
-          "• LLMOps integrations like exporting traces to LangSmith, OpenPipe, or Hugging Face Spaces",
-          "• More expressive agent identities including tone preferences, formatting styles, or instructional personas",
-          "",
-          "Above all, this project reflects a belief that as models become more collaborative, so too must our tools—giving people a way to reason about AI reasoning."
-        ],
-        images: ['/images/projects/mcp/mcp-1.png','/images/projects/mcp/Setup.png', '/images/projects/mcp/Conversation.png', '/images/projects/mcp/Understanding Agents.png', '/images/projects/mcp/History.png', '/images/projects/mcp/Dev.png', '/images/projects/mcp/journey.png', '/images/projects/mcp/Model Guide.png']
-      },
-
-      'forma': {
-        title: "Forma Platform",
-        subtitle: "TEXT-SVG-IMAGE GENERATION ITERATION PLATFORM",
-        role: "Sr. Product Designer",
-        team: "Machine Learning Engineer, Founding Frontend Developer",
-        content: [
-          "This image-generating platform reimagines how users engage with generative art by merging intuitive creation tools with a transparent ecosystem for attribution, discovery, and iteration.",
-          "While generative tools often obscure the labor behind machine-made art, this platform foregrounds the time, iteration, and inspiration behind each piece.",
-          "",
-          "## WELCOME",
-          "",
-          "The welcome flow is intentionally minimal - a three-screen sequence consisting of a logo splash, followed by sign-up or sign-in. In a product that leverages complex machine learning systems and layered image iteration, the introduction is deliberately pared back.",
-          "",
-          "## DISCOVER", 
-          "",
-          "A scrollable feed surfaces trending and curated generative works. Clicking into any image reveals its creation journey - including iterations, total time, prompt history, and credited inspiration. Featured artists are showcased with bio blurbs and linked works.",
-          "",
-          "## CREATE + ITERATE",
-          "",
-          "Users generate images using a smart fill-in-the-blank prompt system, with controls for style, influence, and vibe. Outputs are editable as SVGs with a Figma-like toolbar, making it easy to tweak, remix, and iterate. Time and edit history are tracked to reflect effort.",
-          "",
-          "## ARTISTIC LINEAGE", 
-          "",
-          "This platform doesn't erase the origin of visual inspiration. It actively surfaces the artists, styles, and practices that shape generative works. Every image carries a thread back to its non-AI source.",
-          "",
-          "Original artists are credited throughout. Their profiles feature original works, a tab of inspired creations, and short bios with imagery - reinforcing transparency and showing their influence across the platform.",
-          "",
-          "## USER PROFILE",
-          "",
-          "Each user has a profile with tabs for created, liked, saved, and reposted work. The UI encourages identity-building and creative exploration, while tracking iteration timelines to celebrate the craft of generative art.",
-          "",
-          "## MACHINE LEARNING FOUNDATIONS",
-          "",
-          "The creative engine is powered by a few key ML-driven features that enhance control and transparency throughout the generation pipeline:",
-          "",
-          "## Prompt Temperature",
-          "",
-          "Controls allow users to modulate the randomness and creative looseness of their image generations, from structured to wildly abstract.",
-          "",
-          "## SVG-Based Output & Iteration Tracking",
-          "",
-          "Each visual is editable post-generation. Users can fine-tune details, mask out elements, and re-generate parts, creating a clear history of iterative effort.",
-          "",
-          "## Artist Influence Matching",
-          "",
-          "Leverages similarity search across training embeddings to surface likely inspirations behind generated works. These matched artists are credited, and users can explore their original pieces - spotlighting the real creatives behind the data.",
-        ],
-        images: [
-          '/images/projects/forma/forma2.png', 
-          '/images/projects/forma/forma3.png',
-          '/images/projects/forma/forma4.png',
-          '/images/projects/forma/forma6.png',
-          '/images/projects/forma/forma7.png',
-        ]
-      },
-      'muse': {
-        title: "Museum Experience",
-        subtitle: "Reimagining the Museum Experience: Smart Navigation & AR Exploration Confidential Client 8XX579",
-        role: "Sr. Product Designer",
-        team: "Frontend Developer, Product Manager, Software Engineer (FS), iOS Mobile Engineer, MLE: AR/VR ",
-        content: [
-          "## Reimagining the Museum Experience",
-          "Most museum apps are functional but flat. They provide basic maps and lists, but don't account for the way people actually move through and experience space. This project reimagined the museum guide — not as a static app, but as a context-aware spatial experience layered with exploration, orientation, and storytelling.",
-          "## Mapping the Existing User Journey",
-          "The existing flow revealed long stretches without context, requiring users to exit the app or retrace steps. It became clear that content needed to be tightly integrated with spatial navigation — not siloed in menus.",
-          "",
-          "Analyzing visitor behavior uncovered two core insights: Over 40% of visit time was spent trying to find locations. Most users abandoned the app after the first map interaction. These findings guided the structural redesign — the experience needed to adapt to physical movement and reduce friction in discovery.",
-          "## Designing the Flow", 
-          "The redesigned system flows naturally from 2D map → 3D environment → object-level stories. This progression lets users zoom in and out as they explore, surfacing relevant content without overwhelming the interface. Wireframes were built to test structure, hierarchy, and movement. The goal was to make exploration feel intuitive — like you're walking through the space, not clicking through an app.",
-          "",
-          "## A Layered Experience",
-          "To solve this, the app was built around three core components, layered seamlessly into the navigation: A live 2D wayfinding map that centers the visitor in real time and helps them navigate. A 3D spatial experience that previews exhibit zones, rooms, and transitions between spaces. A Featured Works section, embedded within the map and galleries, where users can explore individual objects, stories, and artist details",
-          "This structure lets visitors zoom in and out naturally — from building → exhibit → object — without losing their place or context.", 
-          "## 2D Map Navigation",
-          "A clean, zoomable map helps users orient themselves within the museum. Visitors can tap to preview galleries, view current location, and follow visual wayfinding cues designed to mirror real-world signage.",
-          "",
-          "## 3D Spatial Experience",
-          "The 3D mode offers a layered, immersive view of the museum layout. Users can explore floors and rooms in spatial context, making the app feel like an extension of the physical space.",
-          "",
-          "## Featured Exhibits & Object Detail",
-          "A curated section surfaces key works and exhibitions. Each object opens into an editorial-style layout, offering rich descriptions, artist context, and optional AR previews for selected pieces.",
-          "## System Architecture Overview",
-          "Data Collection: User interactions (clicks, dwell time, exhibit views), indoor location (BLE beacons or WiFi triangulation), time of visit",
-          "Processing Pipeline", 
-          "Event data is streamed and cleaned using Python + BigQuery, then passed to a lightweight content recommendation engine (collaborative filtering + content-based hybrid model)",
-          "## Model Outputs",
-          "Personalized exhibit recommendations shown in the Featured tab: Dynamic reorder of UI cards based on predicted interest score. Traffic heatmaps sent to a curator-facing dashboard (Metabase prototype). Feedback loop: User behavior is re-ingested to fine-tune recommendations over time. Privacy: All data collection is anonymized and opt-in, with local storage fallback for one-time guest users",
-          "## Tooling",
-          "Python (data pipeline), BigQuery (storage & queries), Scikit-learn (prototype ML models), Metabase (dashboard), Figma (UX/UI)"
-        ],
-        images: [
-          '/images/projects/muse/muse2.png',
-          '/images/projects/muse/muse3.png',
-          '/images/projects/muse/muse4.png',
-          '/images/projects/muse/muse5.png',
-          '/images/projects/muse/muse6.png',
-          '/images/projects/muse/muse7.png',
-          '/images/projects/muse/muse10.png',
-          '/images/projects/muse/muse13.png',
-        ]
-      }
-    };
-
-    return contentMap[projectId] || contentMap['default'];
-  };
-
-  const content = getProjectContent(id);
-
-  // Define specific image mappings for each project
-  const getImageForHeading = (heading, projectId, images) => {
-    const mappings = {
-      'muse': {
-        "Reimagining the Museum Experience": 0,
-        "Mapping the Existing User Journey": 1,
-        "Designing the Flow": 2,
-        "A Layered Experience": 3,
-        "2D Map Navigation": 4,
-        "3D Spatial Experience": 5,
-        "Featured Exhibits & Object Detail": 6,
-        "System Architecture Overview": 7,
-        "Model Outputs": 8,
-        "Tooling": 9
-      },
-      'mcp': {
-        "Unblocking the Workflow": 0,
-        "Designing for Dialogue": 1,
-        "Conversation Playback": 2,
-        "Agent & Model Onboarding": 3,
-        "Session History & Sharing": 4,
-        "Developer Console: Multi-Agent Config & Execution": 5,
-        "User Journey & Flow": 6,
-        "Making Model Communication Legible": 7,
-        "Reflection & Future Directions": 8
-      },
-      'forma': {
-        "WELCOME": 0,
-        "DISCOVER": 1,
-        "CREATE + ITERATE": 2,
-        "ARTISTIC LINEAGE": 3,
-        "USER PROFILE": 4,
-        "MACHINE LEARNING FOUNDATIONS": 5
-      }
-    };
-    
-    const projectMapping = mappings[projectId];
-    if (projectMapping && projectMapping[heading] !== undefined) {
-      return images[projectMapping[heading]];
-    }
-    return null;
-  };
-
-  const renderContent = () => {
-    const elements = [];
-
-    content.content.forEach((text, index) => {
-      if (text === "") {
-        elements.push(<br key={`br-${index}`} />);
-      } else if (text.startsWith("## ")) {
-        const headingText = text.replace("## ", "");
-        
-        elements.push(
-          <h2 key={`h2-${index}`} className="content-heading">
-            {headingText}
-          </h2>
-        );
-        
-        // Get the specific image for this heading
-        const imageData = getImageForHeading(headingText, id, content.images);
-        
-        if (imageData) {
-          if (typeof imageData === 'string' && imageData.includes('|')) {
-            const [leftImg, rightImg] = imageData.split('|');
-            elements.push(
-              <div key={`img-${index}`} className="content-image-pair">
-                <div className="side-by-side-images">
-                  <img src={leftImg} alt={`${content.title} - ${headingText} (1)`} />
-                  <img src={rightImg} alt={`${content.title} - ${headingText} (2)`} />
-                </div>
-              </div>
-            );
-          } else {
-            elements.push(
-              <div key={`img-${index}`} className="content-image">
-                <img src={imageData} alt={`${content.title} - ${headingText}`} />
-              </div>
-            );
-          }
-        }
-      } else {
-        elements.push(
-          <p key={`p-${index}`} className="content-paragraph">
-            {text}
-          </p>
-        );
-      }
-    });
-
-    return elements;
-  };
-
-  return (
-    <div className="project-detail">
-      <div className="project-detail-header">
-        <button onClick={() => navigate('/')} className="back-button">
-          ← Back to Work
-        </button>
-      </div>
-
-      <div className="project-hero-simple">
-        <h1 className="project-detail-title">{content.title}</h1>
-        {content.subtitle && (
-          <p className="project-detail-subtitle">{content.subtitle}</p>
-        )}
-        
-        {content.role && (
-          <div className="project-meta-simple">
-            <p><strong>Role:</strong> {content.role}</p>
-            {content.team && <p><strong>Team:</strong> {content.team}</p>}
-          </div>
-        )}
-      </div>
-
-      <div className="project-content-simple">
-        {renderContent()}
-      </div>
-
-      <div className="project-navigation">
-      </div>
-    </div>
-  );
-};
-const AboutPage = () => {
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [screenSize, setScreenSize] = useState(window.innerWidth);
+  const accent = theme === "pearl" ? "#00bcd4" : theme === "rose" ? "#ff66cc" : "#ff4d4d";
 
   useEffect(() => {
-    const handleResize = () => {
-      setScreenSize(window.innerWidth);
+    const handleMouseMove = (e) => {
+      setPos({ x: e.clientX, y: e.clientY });
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    const handleMouseEnter = () => setHovering(true);
+    const handleMouseLeave = () => setHovering(false);
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseenter", handleMouseEnter);
+    document.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseenter", handleMouseEnter);
+      document.removeEventListener("mouseleave", handleMouseLeave);
+    };
   }, []);
 
-  // Film photos data
-  const filmPhotos = [
-    {
-      id: 1,
-      src: '/images/tanha.jpg',
-      caption: 'Candid in Kyoto',
-      width: 140,
-      height: 180,
-      orientation: 'portrait'
-    },
-    {
-      id: 2,
-      src: '/images/about/8AF0AAAC-B8CB-4347-8DDE-D1504A0358BA.jpg',
-      caption: 'phase 1 build',
-      width: 160,
-      height: 120,
-      orientation: 'landscape'
-    },
-    {
-      id: 3,
-      src: '/images/about/776A973B-1C0C-4623-A390-4F5469BA2454.JPG',
-      caption: 'mom & I in Berkeley',
-      width: 140,
-      height: 180,
-      orientation: 'portrait'
-    },
-    {
-      id: 4,
-      src: '/images/about/IMG_2989.JPG',
-      caption: 'Arabica % in Japan',
-      width: 140,
-      height: 180,
-      orientation: 'portrait'
-    },
-    {
-      id: 5,
-      src: '/images/about/IMG_9950.JPG',
-      caption: 'Nemahsis concert @ Webster Hall, NYC',
-      width: 160,
-      height: 120,
-      orientation: 'landscape'
-    },
-    {
-      id: 6,
-      src: '/images/about/IMG_8660.JPG',
-      caption: 'Chiapas, Mexico',
-      width: 140,
-      height: 180,
-      orientation: 'portrait'
-    },
-    {
-      id: 7,
-      src: '/images/about/IMG_4848.JPEG',
-      caption: 'Iceland',
-      width: 160,
-      height: 120,
-      orientation: 'landscape'
-    },
-    {
-      id: 8,
-      src: '/images/about/IMG_4970.JPEG',
-      caption: 'I love Paris',
-      width: 160,
-      height: 120,
-      orientation: 'landscape'
-    },
-    {
-      id: 9,
-      src: '/images/about/IMG_2222.JPG',
-      caption: 'double shot latte',
-      width: 140,
-      height: 180,
-      orientation: 'portrait'
-    },
-    {
-      id: 10,
-      src: '/images/about/IMG_1640.JPG',
-      caption: 'happy place',
-      width: 160,
-      height: 120,
-      orientation: 'landscape'
-    },
-    {
-      id: 11,
-      src: '/images/about/coffeesteel.JPEG',
-      caption: 'a steel cafe in Paris',
-      width: 140,
-      height: 180,
-      orientation: 'portrait'
-    },
-    {
-      id: 12,
-      src: '/images/about/IDG_20250720_144222_364.jpg',
-      caption: 'Vancouver',
-      width: 160,
-      height: 120,
-      orientation: 'landscape'
-    }
-  ];
+  useEffect(() => {
+    const animate = () => {
+      setT((prev) => prev + 0.02);
+      requestAnimationFrame(animate);
+    };
+    animate();
+  }, []);
 
-  // Responsive grid settings
-  const getGridSettings = () => {
-    if (screenSize <= 480) {
-      return {
-        columns: 'repeat(2, 1fr)',
-        rows: 'repeat(6, 1fr)',
-        gap: '8px',
-        width: '95vw',
-        scale: 0.5,
-        topPosition: '95%',
-        bottomPadding: '1000px'
-      };
-    } else if (screenSize <= 768) {
-      return {
-        columns: 'repeat(3, 1fr)',
-        rows: 'repeat(4, 1fr)',
-        gap: '10px',
-        width: '95vw',
-        scale: 0.7,
-        topPosition: '90%',
-        bottomPadding: '750px'
-      };
-    } else {
-      return {
-        columns: 'repeat(6, 1fr)',
-        rows: 'repeat(2, 1fr)',
-        gap: '20px',
-        width: 'min(90vw, 1100px)',
-        scale: 1,
-        topPosition: '75%',
-        bottomPadding: '450px'
-      };
-    }
-  };
+  return (
+    <svg
+      ref={ref}
+      width="80"
+      height="80"
+      viewBox="-40 -40 80 80"
+      style={{
+        position: "fixed",
+        left: pos.x - 40,
+        top: pos.y - 40,
+        pointerEvents: "none",
+        zIndex: 9999,
+        mixBlendMode: "difference",
+      }}
+    >
+      {/* central dot — larger + brighter */}
+      <circle
+        r="2.8"
+        fill={hovering ? accent : "#ffffff"}
+        opacity={hovering ? 1 : 0.9}
+      />
 
-  const gridSettings = getGridSettings();
+      {/* thicker crosshair lines */}
+      <line
+        x1="-8"
+        y1="0"
+        x2="8"
+        y2="0"
+        stroke="#ffffff"
+        strokeOpacity="0.4"
+        strokeWidth="1.2"
+      />
+      <line
+        x1="0"
+        y1="-8"
+        x2="0"
+        y2="8"
+        stroke="#ffffff"
+        strokeOpacity="0.4"
+        strokeWidth="1.2"
+      />
+
+      {/* Lissajous orbit — larger radius + thicker points */}
+      {Array.from({ length: 8 }).map((_, i) => {
+        const a = (i / 8) * Math.PI * 2;
+        const x = (hovering ? 20 : 14) * Math.sin((hovering ? 1.8 : 1.2) * (t + a));
+        const y = (hovering ? 20 : 14) * Math.sin((hovering ? 2.4 : 1.6) * (t + a + Math.PI / 4));
+        return (
+          <circle
+            key={i}
+            cx={x}
+            cy={y}
+            r={hovering ? 2.5 : 1.8}
+            fill={hovering ? accent : "#ffffff"}
+            opacity={hovering ? 1 : 0.85}
+          />
+        );
+      })}
+    </svg>
+  );
+};
+
+/* ---------- Math Cursor Component ---------- */
+const themeAccents = {
+  ink:   "#ff4d4d",
+  pearl: "#00bcd4",
+  rose:  "#ff66cc",
+};
+
+const MathCursor = ({ theme = "ink" }) => {
+  const accent = themeAccents[theme] || themeAccents.ink;
+  const ref = React.useRef(null);
+  const [pos, setPos] = React.useState({ x: -100, y: -100 });
+  const [hovering, setHovering] = React.useState(false);
+  const targetRef = React.useRef({ x: -100, y: -100 });
+
+  /* Track mouse movement with smoothing */
+  React.useEffect(() => {
+    const onMove = (e) => (targetRef.current = { x: e.clientX, y: e.clientY });
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
+
+  /* Animate motion */
+  React.useEffect(() => {
+    let raf;
+    const loop = () => {
+      setPos((p) => {
+        const k = 0.24;
+        const { x, y } = targetRef.current;
+        return { x: p.x + (x - p.x) * k, y: p.y + (y - p.y) * k };
+      });
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  /* Detect hover */
+  React.useEffect(() => {
+    const sel = "a, button, [role='button'], .project, .filter-item";
+    const enter = () => setHovering(true);
+    const leave = () => setHovering(false);
+    const els = document.querySelectorAll(sel);
+    els.forEach((el) => {
+      el.addEventListener("mouseenter", enter);
+      el.addEventListener("mouseleave", leave);
+    });
+    return () => els.forEach((el) => {
+      el.removeEventListener("mouseenter", enter);
+      el.removeEventListener("mouseleave", leave);
+    });
+  }, []);
 
   return (
     <>
-      <style>
-        {`
-          .film-photo {
-            cursor: pointer;
-            user-select: none;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-          }
-          
-          .film-photo:hover {
-            transform: translateY(-8px) scale(1.15) !important;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important;
-            z-index: 100;
-          }
-
-          .film-photo:hover img {
-            filter: sepia(25%) saturate(1.2) contrast(1.1) brightness(1.05) hue-rotate(5deg) !important;
-          }
-        `}
-      </style>
-      
-      <section 
-        className="about-page" 
-        style={{ 
-          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-          paddingTop: '150px', 
-          paddingBottom: gridSettings.bottomPadding,
-          position: 'relative',
-          overflow: 'hidden',
-          minHeight: '140vh'
+      <style>{`
+        @media (hover: hover) {
+          html, body { cursor: none; }
+        }
+      `}</style>
+      <svg
+        ref={ref}
+        width="60"
+        height="60"
+        viewBox="-30 -30 60 60"
+        style={{
+          position: "fixed",
+          left: pos.x - 30,
+          top: pos.y - 30,
+          pointerEvents: "none",
+          zIndex: 9999,
+          mixBlendMode: "difference",
+          filter: `drop-shadow(0 0 8px ${accent})`,
         }}
       >
-        {/* Film Photo Grid */}
-        <div style={{
-          position: 'absolute',
-          left: '50%',
-          top: gridSettings.topPosition,
-          transform: 'translateX(-50%)',
-          display: 'grid',
-          gridTemplateColumns: gridSettings.columns,
-          gridTemplateRows: gridSettings.rows,
-          gap: gridSettings.gap,
-          width: gridSettings.width,
-          maxWidth: '1100px',
-          zIndex: 1,
-          justifyItems: 'center'
-        }}>
-          {filmPhotos.map((photo, index) => (
-            <div
-              key={photo.id}
-              className="film-photo"
-              style={{
-                width: `${photo.width}px`,
-                height: `${photo.height}px`,
-                transform: `scale(${gridSettings.scale})`,
-                background: 'transparent',
-                padding: '0px',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1)',
-                borderRadius: '2px',
-                zIndex: 10 - index,
-                animationDelay: `${index * 0.15}s`
-              }}
-            >
-              {/* Photo with frame */}
-              <div style={{
-                width: '100%',
-                height: `${photo.height}px`,
-                background: '#f8f8f8',
-                marginBottom: '0px',
-                overflow: 'hidden',
-                position: 'relative'
-              }}>
-                <img 
-                  src={photo.src}
-                  alt={photo.caption}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    filter: 'grayscale(1) contrast(1.2) brightness(0.95)',
-                    transition: 'filter 0.4s ease'
-                  }}
-                  onError={(e) => {
-                    e.target.style.background = '#e5e5e5';
-                    e.target.style.display = 'flex';
-                    e.target.style.alignItems = 'center';
-                    e.target.style.justifyContent = 'center';
-                    e.target.textContent = '📷';
-                    e.target.style.fontSize = '20px';
-                    e.target.style.color = '#999';
-                  }}
-                />
-              </div>
-              
-              {/* Gallery label overlay */}
-              <p style={{
-                position: 'absolute',
-                bottom: '5px',
-                left: '5px',
-                margin: '0',
-                fontSize: '9px',
-                color: 'white',
-                fontFamily: 'monospace',
-                letterSpacing: '0.3px',
-                textTransform: 'uppercase',
-                textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
-                background: 'rgba(0,0,0,0.4)',
-                padding: '3px 6px',
-                borderRadius: '2px'
-              }}>
-                {photo.caption}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* Main Content */}
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px', position: 'relative', zIndex: 5 }}>
-          
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <p style={{ fontSize: '18px', marginBottom: '10px', lineHeight: '1.6' }}>
-              <strong>My name, Tanha (تنحى)</strong> — pronounced <em>(taan-haa)</em> — means "carving" in Arabic and mirrors the <code style={{ background: 'rgba(255, 255, 255, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>tanh</code> (hyperbolic tangent of (a)) function.
-            </p>
-            
-            <p style={{ fontSize: '16px', marginBottom: '10px', opacity: '0.9' }}>
-              That dual meaning reflects how I work: structured yet intuitive, deeply analytical but always grounded in human-centered design.
-            </p>
-          </div>
-
-          {/* Timeline */}
-          <div style={{ 
-            position: 'relative', 
-            paddingLeft: '40px', 
-            marginBottom: '10px',
-            maxWidth: '800px',
-            margin: '0 auto 10px'
-          }}>
-            <div style={{
-              position: 'absolute',
-              left: '15px',
-              top: '0',
-              bottom: '0',
-              width: '2px',
-              background: 'currentColor',
-              opacity: '0.3'
-            }}></div>
-            
-            {[
-              {
-                title: 'High School',
-                subtitle: 'Math was my first love.',
-                content: 'I used to solve equations for fun and sketch whatever I saw around me—usually while scrolling Tumblr deep into the night.'
-              },
-              {
-                title: 'Undergrad',
-                subtitle: 'I studied art and technology',
-                content: 'I explored creative tech projects that lived between mediums—coding installations, designing speculative tools, and studying how systems and people interact.'
-              },
-              {
-                title: 'Grad School',
-                subtitle: 'Architecture & Data Science era (barely slept)',
-                content: 'I pivoted to architecture to bring more math and physics into my creative work. That curiosity very quickly expanded into data science — and then transformers dropped, and suddenly I was prototyping everything from spatial tools to AI-powered workflows.'
-              },
-              {
-                title: 'Work',
-                subtitle: 'Working across disciplines',
-                content: 'I\'ve worked across disciplines—designing, analyzing, and building with teams at Google, JPMorgan Chase, The Bond Center, CUNY, and Flad. My projects have spanned everything from data platforms and digital workflows to ML-driven product experiences.'
-              },
-              {
-                title: 'Bereavement Sabbatical',
-                subtitle: 'Loss',
-                content: 'A sudden cancer diagnosis and ultimately losing my mom shattered my world. I took some time to heal.'
-              },
-              {
-                title: 'Now',
-                subtitle: 'Persevered and returned to doing what I love!',
-                content: 'I\'ve leaned fully into what I do best—crafting intuitive design systems powered by ML.'
-              }
-            ].map((item, index) => (
-              <div key={index} style={{ 
-                position: 'relative', 
-                marginBottom: '35px',
-                paddingBottom: '15px'
-              }}>
-                <div style={{
-                  position: 'absolute',
-                  left: '-32px',
-                  top: '4px',
-                  width: '12px',
-                  height: '12px',
-                  borderRadius: '50%',
-                  background: 'currentColor',
-                  border: '3px solid currentColor'
-                }}></div>
-                
-                <h2 style={{ 
-                  fontSize: '20px', 
-                  fontWeight: '700', 
-                  marginBottom: '6px', 
-                  color: 'inherit'
-                }}>
-                  {item.title}
-                </h2>
-                <p style={{ 
-                  marginBottom: '8px', 
-                  fontWeight: '600',
-                  fontSize: '16px'
-                }}>
-                  {item.subtitle}
-                </p>
-                <p style={{ 
-                  fontSize: '14px', 
-                  opacity: '0.85',
-                  lineHeight: '1.5'
-                }}>
-                  {item.content}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <div style={{
-            textAlign: 'center',
-            marginBottom: '100px',
-            maxWidth: '800px',
-            margin: '0 auto 100px'
-          }}>
-            
-            <p style={{ fontSize: '16px', marginBottom: '5px', opacity: 0.7 }}>
-              My mother's ambition, intelligence, kindness, and tenacity have deeply shaped my values and drive. 
-              She remains the inspiration behind my pursuit of meaningful work.
-            </p>
-            <p style={{ fontSize: '16px' }}>
-              Outside of work, I really enjoy traveling, fashion, food, photography, and tinkering with mechanical keyboards. 
-              I really enjoy coffee — I'm currently experimenting with grind size and brew temperature.
-            </p>
-          </div>
-        </div>
-      </section>
+        <circle
+          r={hovering ? 18 : 14}
+          fill={accent}
+          opacity={hovering ? 1 : 0.8}
+        />
+      </svg>
     </>
   );
 };
 
-const VisualPage = () => {
+/* ---------- Guide Dot Cursor Component ---------- */
+const GuideDotCursor = ({ theme = "ink", grid = 20 }) => {
+  const accent = themeAccents[theme] || themeAccents.ink;
+  const [pos, setPos] = React.useState({ x: -100, y: -100 }); // start offscreen
+
+  React.useEffect(() => {
+    const onMove = (e) => {
+      // snap to nearest grid
+      const x = Math.round(e.clientX / grid) * grid;
+      const y = Math.round(e.clientY / grid) * grid;
+      setPos({ x, y });
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, [grid]);
+
+  return (
+    <>
+      {/* only show on pointer/hover devices */}
+      <style>{`
+        @media (hover: none) {
+          .guide-dot { display: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .guide-dot { transition: none !important; }
+        }
+      `}</style>
+      <div
+        className="guide-dot"
+        style={{
+          position: "fixed",
+          left: pos.x - 4,  // center a 8x8 dot
+          top: pos.y - 4,
+          width: 8,
+          height: 8,
+          borderRadius: "50%",
+          border: `1px solid ${accent}`,
+          background: "transparent",
+          opacity: 0.45,
+          pointerEvents: "none",
+          zIndex: 9998,
+          transition: "transform 90ms linear, opacity 120ms ease",
+          transform: "translateZ(0)", // keep it crisp
+          boxShadow: `0 0 0 1px ${accent}20`,
+        }}
+      />
+    </>
+  );
+};
+
+/* ---------- Slow Typewriter Component ---------- */
+const Typewriter = ({
+  text,
+  speed = 90,        // ms per character (slower typing)
+  startDelay = 600,   // pause before starting
+  cursorChar = "▎",
+}) => {
+  const [i, setI] = React.useState(0);
+
+  React.useEffect(() => {
+    const startT = setTimeout(() => {
+      const id = setInterval(() => {
+        setI((n) => {
+          if (n >= text.length) {
+            clearInterval(id);
+            return n;
+          }
+          return n + 1;
+        });
+      }, speed);
+    }, startDelay);
+    return () => clearTimeout(startT);
+  }, [text, speed, startDelay]);
+
+    return (
+    <>
+      <style>{`
+        .tw-caret {
+          display: inline-block;
+          animation: tw-blink 1s steps(1, end) infinite;
+          margin-left: 2px;
+        }
+        @keyframes tw-blink {
+          0%, 50% { opacity: 1; }
+          50.01%, 100% { opacity: 0; }
+        }
+      `}</style>
+      <span aria-label={text}>
+        {text.slice(0, i)}
+        <span className="tw-caret">{cursorChar}</span>
+            </span>
+    </>
+  );
+};
+
+/* ---------- Typewriter Text Component ---------- */
+const TypewriterText = ({
+  text,
+  speed = 28,          // ms per character
+  delayStart = 300,     // wait before typing
+  showCursor = true
+}) => {
+  const [out, setOut] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) {
+      setOut(text);
+      setDone(true);
+      return;
+    }
+
+    let i = 0;
+    const start = setTimeout(() => {
+      const id = setInterval(() => {
+        setOut(text.slice(0, i + 1));
+        i += 1;
+        if (i >= text.length) {
+          clearInterval(id);
+          setDone(true);
+        }
+      }, speed);
+    }, delayStart);
+
+    return () => clearTimeout(start);
+  }, [text, speed, delayStart]);
+
+  return (
+    <span style={{ position: "relative", whiteSpace: "pre-wrap" }}>
+      {out}
+      {showCursor && (
+        <span
+          aria-hidden
+          style={{
+            display: "inline-block",
+            width: "0.6ch",
+            height: "1.1em",
+            marginLeft: "2px",
+            transform: "translateY(2px)",
+            background: "currentColor",
+            opacity: done ? 0 : 1,
+            animation: "blink 1s steps(1) infinite"
+          }}
+        />
+      )}
+      {/* keyframes once per page render */}
+      <style>{`
+        @keyframes blink { 50% { opacity: 0; } }
+      `}</style>
+    </span>
+  );
+};
+
+/* ---------- Responsive Grid CSS ---------- */
+const ResponsiveGridCSS = () => (
+  <style id="responsive-grid-fix">{`
+    /* Responsive project grid */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 300px));
+      gap: 28px;
+      justify-content: center;  /* prevents giant stretching */
+      align-items: start;
+      width: 100%;
+    }
+
+    /* Project card base */
+    .project-card {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;           /* prevent overflow */
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: #fff;       /* Pearl default; override inline for other themes */
+      padding: 16px;
+      box-sizing: border-box;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    /* Dark theme override (optional): set this class only when currentTheme === 'ink' */
+    .project-card.ink {
+      background: #0f0f0f;
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    /* Rose (gradient) override (optional) */
+    .project-card.rose {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.22);
+      backdrop-filter: blur(6px);
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    }
+
+    /* Image wrapper keeps cards even and prevents collisions */
+    .project-card__media {
+      width: 100%;
+      aspect-ratio: 1 / 1;    /* perfect square */
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 14px;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .project-card.ink .project-card__media { border-color: rgba(255,255,255,0.12); }
+    .project-card.rose .project-card__media { border-color: rgba(255,255,255,0.18); }
+
+    .project-card__media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .project-card__title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+
+    .project-card__meta,
+    .project-card__desc {
+      font-size: 13px;
+      line-height: 1.45;
+      opacity: 0.8;
+    }
+
+    /* Wrap tags neatly on the same line(s) without overflow */
+    .project-card__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .project-card__tag {
+      font-size: 11px;
+      line-height: 1;
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid currentColor;
+      opacity: 0.8;
+      white-space: nowrap;
+    }
+
+    /* Small screens: allow narrower columns */
+    @media (max-width: 640px) {
+      .projects-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+      }
+    }
+
+  `}</style>
+);
+
+/* ---------- Notebook Layout (global background grid + margin) ---------- */
+const NotebookLayout = ({ children, theme }) => {
+  const themeBackgrounds = {
+    ink:   { background: "black",                                                grid: "rgba(255,255,255,0.10)", text: "white", accent: "#ff4d4d" },
+    pearl: { background: "white",                                                grid: "rgba(0,0,0,0.08)",       text: "black", accent: "#00bcd4" },
+    rose:  { background: "linear-gradient(135deg, #ff0000 0%, #ff0062 50%, #ff0000 100%)",
+             grid: "rgba(255,255,255,0.15)",                                     text: "white", accent: "#ff66cc" },
+  };
+
+  const config = themeBackgrounds[theme] || themeBackgrounds.ink;
+
+  return (
+    <div
+      className="use-custom-cursor"   // ← ADD THIS
+      style={{
+        minHeight: "100vh",
+        color: config.text,
+        fontFamily: '"Space Grotesk", sans-serif',
+        position: "relative",
+      }}
+    >
+      {/* BACKGROUND FILL (bottom layer) */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          background: config.background,
+          zIndex: -2,
+        }}
+      />
+
+      {/* GRID OVERLAY (always above the fill) */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          backgroundImage: `
+            linear-gradient(to right, ${config.grid} 1px, transparent 1px),
+            linear-gradient(to bottom, ${config.grid} 1px, transparent 1px)
+          `,
+          backgroundSize: "20px 20px, 20px 20px",
+          pointerEvents: "none",
+          zIndex: -1,
+        }}
+      />
+
+      {/* NOTEBOOK MARGIN LINE */}
+      {/*
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 60,
+          width: 2,
+          height: "100%",
+          background: config.accent,
+          opacity: 0.8,
+          zIndex: 0,
+        }}
+      />
+      */}
+
+      {/* Foreground content */}
+      <div style={{ position: "relative", zIndex: 2 }}>
+        <GuideDotCursor theme={theme} grid={20} />
+        {children}
+          </div>
+      </div>
+  );
+};
+
+/* ---------- About Page (uses timeline) ---------- */
+const TimelineStep = React.forwardRef(({ stage }, ref) => {
+  const { ref: inViewRef, inView } = useInView({ threshold: 0.35, triggerOnce: false });
+
+  // Merge the two refs so we can both measure and observe
+  const setRefs = (el) => {
+    if (ref) ref.current = el;
+    inViewRef(el);
+  };
+
+  return (
+    <div
+      ref={setRefs}
+      style={{
+        marginBottom: "200px",
+        opacity: inView ? 1 : 0.25,
+        transform: inView ? "translateY(0)" : "translateY(24px)",
+        transition: "transform 450ms ease, opacity 450ms ease",
+      }}
+    >
+      <h3 style={{ fontSize: 26, marginBottom: 8 }}>{stage.title}</h3>
+      <p style={{ fontSize: 18, opacity: 0.8 }}>{stage.description}</p>
+      <p style={{ fontSize: 16, marginTop: 10, fontStyle: "italic" }}>{stage.content}</p>
+    </div>
+  );
+});
+
+const TapedPhoto = ({
+  src,
+  alt,
+  orientation = "portrait", // "portrait" | "landscape" | "square"
+  rotate = 0,
+  accent = "#ff4d4d",
+  caption,
+}) => {
+  const dims =
+    orientation === "portrait"
+      ? { width: 240, aspectRatio: "3 / 4" }
+      : orientation === "landscape"
+      ? { width: 320, aspectRatio: "4 / 3" }
+      : { width: 260, aspectRatio: "1 / 1" };
+
+  return (
+    <figure
+      style={{
+        position: "relative",
+        margin: "20px",
+        transform: `rotate(${rotate}deg)`,
+        width: dims.width,
+        aspectRatio: dims.aspectRatio,
+      }}
+    >
+      {/* tape */}
+      <span
+        style={{
+          position: "absolute",
+          top: -12,
+          left: "50%",
+          transform: "translateX(-50%) rotate(-2deg)",
+          width: 70,
+          height: 16,
+          background: `${accent}80`,
+          opacity: 0.5,
+          borderRadius: 3,
+        }}
+      />
+      {/* photo only */}
+      <img
+        src={src}
+        alt={alt}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          display: "block",
+          borderRadius: 0,
+          boxShadow: "0 6px 14px rgba(0,0,0,0.25)",
+        }}
+      />
+      {caption && (
+        <figcaption
+          style={{
+            fontSize: 13,
+            marginTop: 6,
+            textAlign: "center",
+            opacity: 0.75,
+          }}
+        >
+          {caption}
+        </figcaption>
+      )}
+    </figure>
+  );
+};
+
+const AboutPage = ({ theme = "ink" }) => {
+  const careerStages = [
+    {
+      id: "high-school",
+      title: "High School",
+      kicker: "Math was my first love",
+      body: "I used to solve equations for fun and sketch whatever I saw around me—usually while scrolling Tumblr deep into the night.",
+      glyph: "tanh",
+    },
+    {
+      id: "undergrad",
+      title: "Undergrad",
+      kicker: "I studied art and technology",
+      body: "I explored creative tech projects that lived between mediums—coding installations, designing speculative tools, and studying how systems and people interact.",
+      glyph: "∫",
+    },
+    {
+      id: "grad",
+      title: "Grad School",
+      kicker: "Architecture & Data Science era (barely slept)",
+      body: "I pivoted to architecture to bring more math and physics into my creative work. That curiosity expanded into data science—and then transformers dropped, and suddenly I was prototyping everything from spatial tools to AI-powered workflows.",
+      glyph: "▥",
+    },
+    {
+      id: "work",
+      title: "Work",
+      kicker: "Working across disciplines",
+      body: "I've worked across disciplines—designing, analyzing, and building with teams at Google, JPMorgan Chase, The Bond Center, CUNY, and Flad.",
+      glyph: "⚡",
+    },
+    {
+      id: "sabbatical",
+      title: "Bereavement Sabbatical",
+      kicker: "Loss",
+      body: "A sudden cancer diagnosis and ultimately losing my mom shattered my world. I took some time to heal.",
+      glyph: "♥",
+    },
+    {
+      id: "work-now",
+      title: "Now",
+      kicker: "",
+      body: "I've leaned fully into what I do best—crafting intuitive design systems powered by ML. My mother's ambition, intelligence, and kindness continue to inspire my work.",
+      glyph: "{…}",
+    },
+  ];
+
+  const accent =
+    theme === "pearl" ? "#00bcd4" : theme === "rose" ? "#ff66cc" : "#ff4d4d";
+
+  const [activeIdx, setActiveIdx] = useState(0);
+  const sectionRefs = useRef([]);
+
+  useEffect(() => {
+    const opts = { rootMargin: "0px 0px -50% 0px", threshold: 0.2 };
+    const io = new IntersectionObserver((entries) => {
+      const visible = entries.find((e) => e.isIntersecting);
+      if (visible) setActiveIdx(Number(visible.target.dataset.index));
+    }, opts);
+    sectionRefs.current.forEach((el) => el && io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  const progress = ((activeIdx + 1) / careerStages.length) * 100;
+
+  return (
+    <section
+      style={{
+        paddingTop: "140px",
+        paddingBottom: "140px",
+        fontFamily: '"Space Grotesk", sans-serif',
+        width: "100vw",
+        position: "relative",
+        left: "50%",
+        right: "50%",
+        marginLeft: "-50vw",
+        marginRight: "-50vw",
+        boxSizing: "border-box",
+      }}
+    >
+      {/* intro */}
+      <div
+        style={{
+          marginBottom: "140px",
+          padding: "80px 6vw", // keep a bit of breathing room
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "40px",
+        }}
+      >
+        <div style={{ flex: "1 1 420px", maxWidth: 700, textAlign: "left" }}>
+          <h2 style={{ fontSize: 36, marginBottom: 12 }}>Hello</h2>
+          <p style={{ fontSize: 22, lineHeight: 1.75, opacity: 0.9 }}>
+            My name, Tanha (تنحى) — pronounced (taan-haa) — means "carving" in Arabic
+            and mirrors the tanh (hyperbolic tangent) function. That dual meaning
+            reflects how I work: structured yet intuitive, analytical yet human.
+          </p>
+        </div>
+        <div style={{ flex: "0 0 auto" }}>
+          <TapedPhoto
+            src={theme === "pearl" ? "/images/profile-dark.gif" : "/images/tanha.jpg"}
+            alt="Portrait"
+            orientation="portrait"
+            rotate={0}
+            accent={accent}
+          />
+        </div>
+      </div>
+
+      {/* timeline grid */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "300px 1fr",
+          gap: "60px",
+          alignItems: "start",
+          width: "100%",
+          padding: "0 6vw",
+          boxSizing: "border-box",
+        }}
+      >
+        {/* sidebar */}
+        <aside
+          style={{
+            position: "sticky",
+            top: "120px",
+            alignSelf: "start",
+          }}
+        >
+          <div style={{ position: "relative", paddingLeft: "20px" }}>
+            {/* base line */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: "10px",
+                width: "2px",
+                height: "100%",
+                background: "rgba(255,255,255,0.2)",
+              }}
+            />
+            {/* red scroll */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: "10px",
+                width: "2px",
+                height: `${progress}%`,
+                background: accent,
+                transition: "height 0.3s ease",
+              }}
+            />
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+              {careerStages.map((s, i) => (
+                <li
+                  key={s.id}
+                  onClick={() =>
+                    sectionRefs.current[i]?.scrollIntoView({ behavior: "smooth" })
+                  }
+                  style={{
+                    padding: "12px 0",
+                    cursor: "pointer",
+                    opacity: i === activeIdx ? 1 : 0.6,
+                    transition: "opacity 0.3s",
+                  }}
+                >
+                  <div style={{ fontSize: 16, fontWeight: 600 }}>{s.title}</div>
+                  <div style={{ fontSize: 13, opacity: 0.7 }}>{s.kicker}</div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+
+        {/* main content */}
+        <div>
+          {careerStages.map((s, i) => (
+            <article
+              key={s.id}
+              data-index={i}
+              ref={(el) => (sectionRefs.current[i] = el)}
+              style={{
+                marginBottom: "100px",
+                paddingBottom: "50px",
+                borderBottom: "1px solid rgba(255,255,255,0.1)",
+              }}
+            >
+              <h3 style={{ fontSize: 28, marginBottom: 8 }}>{s.title}</h3>
+              {s.kicker && (
+                <div style={{ fontSize: 16, opacity: 0.7, marginBottom: 10 }}>
+                  {s.kicker}
+                </div>
+              )}
+              <p style={{ fontSize: 20, lineHeight: 1.8, opacity: 0.9 }}>{s.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      {/* hobbies collage */}
+      <div
+        style={{
+          marginTop: "120px",
+          borderTop: "1px solid rgba(255,255,255,0.12)",
+          padding: "80px 6vw",
+          width: "100%",
+          boxSizing: "border-box",
+        }}
+      >
+        <p
+          style={{
+            fontSize: 20,
+            lineHeight: 1.7,
+            maxWidth: 760,
+            margin: "0 auto 70px",
+            opacity: 0.9,
+            textAlign: "center",
+          }}
+        >
+          Outside of work, I enjoy travel, design, photography, coffee, and collecting
+          small moments that make life beautiful.
+        </p>
+
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: "24px",
+            width: "100%",
+          }}
+        >
+          <TapedPhoto
+            src="/images/about/IMG_8660.JPG"
+            orientation="landscape"
+            rotate={0}
+            accent={accent}
+          />
+          <TapedPhoto
+            src="/images/about/coffeesteel.JPEG"
+            orientation="square"
+            rotate={0}
+            accent={accent}
+          />
+          <TapedPhoto
+            src="/images/about/IMG_0975.JPEG"
+            orientation="landscape"
+            rotate={0}
+            accent={accent}
+          />
+          <TapedPhoto
+            src="/images/about/IMG_1640.JPG"
+            orientation="portrait"
+            rotate={0}
+            accent={accent}
+          />
+          <TapedPhoto
+            src="/images/about/IMG_2222.JPG"
+            orientation="landscape"
+            rotate={0}
+            accent={accent}
+          />
+          <TapedPhoto
+            src="/images/about/IMG_2989.JPG"
+            orientation="portrait"
+            rotate={0}
+            accent={accent}
+          />
+          <TapedPhoto
+            src="/images/about/IMG_3223.JPG"
+            orientation="square"
+            rotate={0}
+            accent={accent}
+          />
+          <TapedPhoto
+            src="/images/about/IMG_3623.JPEG"
+            orientation="landscape"
+            rotate={0}
+            accent={accent}
+          />
+          <TapedPhoto
+            src="/images/about/IMG_4848.JPEG"
+            orientation="portrait"
+            rotate={0}
+            accent={accent}
+          />
+          <TapedPhoto
+            src="/images/about/IMG_4970.JPEG"
+            orientation="square"
+            rotate={0}
+            accent={accent}
+          />
+          <TapedPhoto
+            src="/images/about/IMG_5034.JPEG"
+            orientation="landscape"
+            rotate={0}
+            accent={accent}
+          />
+          <TapedPhoto
+            src="/images/about/1033B10E-A711-4AB7-96A1-02DC9925DD5D.JPEG"
+            orientation="portrait"
+            rotate={0}
+            accent={accent}
+          />
+          <TapedPhoto
+            src="/images/about/776A973B-1C0C-4623-A390-4F5469BA2454.JPG"
+            orientation="square"
+            rotate={0}
+            accent={accent}
+          />
+          <TapedPhoto
+            src="/images/about/8AF0AAAC-B8CB-4347-8DDE-D1504A0358BA.jpg"
+            orientation="landscape"
+            rotate={0}
+            accent={accent}
+          />
+          <TapedPhoto
+            src="/images/about/IDG_20250719_124959_569.JPEG"
+            orientation="portrait"
+            rotate={0}
+            accent={accent}
+          />
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ---------- Home Page ---------- */
+const HomePage = ({ theme }) => {
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  
+  const categories = [
+    { id: 'all', label: 'All' },
+    { id: 'product-design', label: 'Product Design' },
+    { id: 'ai-ml', label: 'AI/ML' },
+    { id: 'mobile-design', label: 'Mobile Design' },
+    { id: 'data-visualization', label: 'Data Viz' },
+    { id: 'writing', label: 'Writing/Research' },
+    { id: 'spatial-geospatial', label: 'Spatial' },
+    { id: 'human-computer-interaction', label: 'HCI' },
+    { id: 'data-analysis', label: 'Data Analysis' },
+  ];
+
+  const filteredProjects = selectedCategory === 'all' 
+    ? projects 
+    : projects.filter(project => project.category === selectedCategory);
+
+  return (
+    <section style={{ padding: "150px 40px 80px" }}>
+      <div className="profile-image-container" style={{ display: "flex", justifyContent: "center", marginBottom: "60px" }}>
+        <img 
+          src={theme === "pearl" ? "/images/profile-light.gif" : "/images/profile-dark.gif"}
+          alt="Tanha profile"
+          style={{
+            width: '500px',
+            height: '500px',
+            borderRadius: '50%',
+            objectFit: 'cover',
+            objectPosition: 'center center',
+            border: '0px solid currentColor',
+            display: 'block',
+            margin: '0 auto'
+          }}
+        />
+      </div>
+      <h1 style={{ fontSize: "48px", fontWeight: 700, marginBottom: "20px", textAlign: "right", color: "inherit" }}>
+        I'm a Product Designer and Data Scientist.
+      </h1>
+      <p style={{ fontSize: "30px", marginBottom: "40px", textAlign: "right", minHeight: 38 }}>
+        <Typewriter
+          text="I design from the inside out. I focus on turning AI-driven systems into intuitive tools."
+          speed={90}        // slower; tweak 70–120 as you like
+          startDelay={600}  // initial pause before typing
+          cursorChar="▎"    // try "|" or "▋" if you prefer
+        />
+      </p>
+      
+      {/* Projects Section */}
+      <div style={{ marginTop: "80px" }}>
+        <h2 style={{ fontSize: "32px", fontWeight: 600, marginBottom: "30px", color: "inherit" }}>
+          Projects
+        </h2>
+        
+        {/* Category filters */}
+        <div style={{ marginBottom: "40px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+            {categories.map(category => (
+              <button
+                key={category.id}
+                onClick={() => setSelectedCategory(category.id)}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: "20px",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  background: selectedCategory === category.id ? "rgba(255,255,255,0.1)" : "transparent",
+                  color: "inherit",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  transition: "all 0.3s ease",
+                }}
+              >
+                {category.label}
+              </button>
+            ))}
+          </div>
+          </div>
+          
+        {/* Projects grid */}
+        <div className="projects-grid">
+          {filteredProjects.map(project => {
+            const ProjectWrapper = project.externalLink ? 'a' : 'div';
+            const wrapperProps = project.externalLink ? {
+              href: project.externalLink,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              style: { textDecoration: 'none', color: 'inherit' }
+            } : {};
+            
+            return (
+              <ProjectWrapper
+                key={project.id}
+                {...wrapperProps}
+              >
+                <div
+                  className={`project-card ${theme === 'ink' ? 'ink' : theme === 'rose' ? 'rose' : ''}`}
+                  style={{ 
+                    color: 'inherit', 
+                    transform: "translateZ(0)",
+                    transition: "transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease",
+                    border: "1px solid rgba(255,255,255,0.10)",
+                    borderRadius: 12,
+                    padding: 16,
+                    background: theme === 'ink' ? '#0f0f0f' : theme === 'rose' ? 'rgba(255,255,255,0.06)' : '#fff',
+                    cursor: project.externalLink ? 'pointer' : 'default',
+                    position: 'relative'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = "translateY(-6px)";
+                    e.currentTarget.style.boxShadow = "0 12px 28px rgba(0,0,0,0.18)";
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                >
+                  <div className="project-card__media" style={{ position: 'relative' }}>
+                    <img
+                      src={project.imageData}
+                      alt={project.title}
+                    />
+                    {project.externalLink && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '12px',
+                        right: '12px',
+                        background: 'rgba(255,255,255,0.9)',
+                        color: '#000',
+                        width: '24px',
+                        height: '24px',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '12px',
+                        fontWeight: '600'
+                      }}>
+                        ↗
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="project-card__title">
+                      {project.title}
+                    </h3>
+                    
+                    {/* Company and Year metadata */}
+                    {(project.company || project.year) && (
+                      <div style={{ marginBottom: '8px' }}>
+                        <span style={{ 
+                          fontSize: '12px', 
+                          color: 'rgba(255,255,255,0.6)', 
+                          fontWeight: '500' 
+                        }}>
+                          {project.year}{project.year && project.company && ' • '}{project.company}
+                        </span>
+                      </div>
+                    )}
+                    
+                    <p className="project-card__meta">
+                      {project.type}
+                    </p>
+                    <p className="project-card__desc">
+                      {project.description}
+                    </p>
+                    
+                    {/* Tags */}
+                    {project.tags && project.tags.length > 0 && (
+                      <div style={{ 
+                        display: 'flex', 
+                        flexWrap: 'wrap', 
+                        gap: '4px', 
+                        marginTop: '12px' 
+                      }}>
+                        {project.tags.slice(0, 3).map((tag, index) => (
+                          <span 
+                            key={index} 
+                            style={{
+                              fontSize: '10px',
+                              background: 'rgba(255,255,255,0.1)',
+                              color: 'rgba(255,255,255,0.8)',
+                              padding: '2px 6px',
+                              borderRadius: '8px',
+                              border: '1px solid rgba(255,255,255,0.15)',
+                              fontWeight: '500'
+                            }}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                        {project.tags.length > 3 && (
+                          <span style={{
+                            fontSize: '10px',
+                            background: 'rgba(255,255,255,0.05)',
+                            color: 'rgba(255,255,255,0.6)',
+                            padding: '2px 6px',
+                            borderRadius: '8px',
+                            fontWeight: '500'
+                          }}>
+                            +{project.tags.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </ProjectWrapper>
+            );
+          })}
+      </div>
+    </div>
+  </section>
+);
+};
+
+/* ---------- Visual Page ---------- */
+const VisualPage = ({ theme }) => {
   const visualProjects = [
     {
-      id: 'follow-me-dania',
+      id: 'followme',
       title: 'Follow Me, Dania',
       type: 'album cover',
       description: 'Album cover design featuring bold typography and atmospheric visual elements.',
-      category: 'visual-design-branding',
-      className: 'art-project',
       imageData: '/images/visual/followme.png',
       externalLink: true
     },
     {
-      id: 'self',
+      id: 'mecollage',
       title: 'Self Portrait',
       type: 'art, graphic design',
       description: 'Abstract.',
-      category: 'art',
-      className: 'art-project',
       imageData: '/images/visual/mecollage.jpg'
     },
     {
-      id: 'hejaz-saudi',
+      id: 'hejaz',
       title: 'Hejaz, Kingdom of Saudi Arabia',
       type: 'branding, visual design, logo',
       description: 'Cultural branding project celebrating the heritage and identity of the Hejaz region.',
-      category: 'visual-design-branding',
-      className: 'branding-project',
       imageData: '/images/visual/hejaz.gif'
     },
     {
-      id: 'nyc-commissioner',
+      id: 'bldg',
       title: 'New York Commissioner Building',
       type: 'illustration, commission',
       description: 'Detailed architectural illustration capturing the historic character of NYC landmark.',
-      category: 'illustration',
-      className: 'illustration-project',
       imageData: '/images/visual/bldg.jpg'
     },
     {
@@ -877,1361 +1195,239 @@ const VisualPage = () => {
       title: 'Sheikhdallah Corp',
       type: 'graphic design, commission',
       description: 'Corporate identity and graphic design solutions for business branding needs.',
-      category: 'graphic-design',
-      className: 'graphic-project',
       imageData: '/images/visual/sheikhdallah_corp.jpg'
     },
     {
-      id: 'jism-body-series',
+      id: 'jism',
       title: 'Jism, جسم (Body)',
       type: 'illustration, anatomy series',
       description: 'Anatomical illustration series exploring the human form through artistic interpretation.',
-      category: 'illustration',
-      className: 'art-project',
       imageData: '/images/visual/jism.jpg'
     },
     {
-      id: 'arab-tech-collective',
+      id: 'atc',
       title: 'Arab Tech Collective',
       type: 'graphic design, logo, branding',
       description: 'Modern identity design for tech community bridging Arab culture and innovation.',
-      category: 'graphic-design',
-      className: 'branding-project',
       imageData: '/images/visual/atc.jpg'
     },
     {
-      id: 'year-2050-festival',
+      id: 'year2050',
       title: 'Year 2050, Film Festival',
       type: 'visual design, film poster, commission',
       description: 'Futuristic poster design commission capturing the essence of forward-thinking cinema.',
-      category: 'visual-design-branding',
-      className: 'poster-project',
       imageData: '/images/visual/year2050.png'
     }
   ];
 
-  return (
-    <section id="visual" className="projects">
-      <div className="container">
-        <div style={{ 
-          textAlign: 'center', 
-          marginBottom: '80px',
-          paddingTop: '250px'
-        }}>
-          <p style={{ 
-            fontSize: '24px', 
-            lineHeight: '1.4',
-            marginBottom: '20px',
-            color: 'inherit',
-            maxWidth: '600px',
-            margin: '0 auto 20px'
-          }}>
-            I work on all sorts of design: branding, illustration, event stationary + more.
-          </p>
+      return (
+    <section style={{ padding: "150px 40px 80px" }}>
+      <h1 style={{ fontSize: "40px", fontWeight: 700, marginBottom: "30px", color: "inherit" }}>
+        Visual Projects
+      </h1>
+      <p style={{ fontSize: "18px", marginBottom: "40px", opacity: 0.8, color: "inherit" }}>
+        A collection of branding, illustration, and creative explorations.
+      </p>
+      
+      {/* Visual projects grid */}
+      <div className="projects-grid">
+        {visualProjects.map(project => (
+          <div
+            key={project.id}
+            className={`project-card ${theme === 'ink' ? 'ink' : theme === 'rose' ? 'rose' : ''}`}
+                  style={{
+              color: 'inherit',
+              transform: "translateZ(0)",
+              transition: "transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease",
+              border: "1px solid rgba(255,255,255,0.10)",
+              borderRadius: 12,
+              padding: 16,
+              background: theme === 'ink' ? '#0f0f0f' : theme === 'rose' ? 'rgba(255,255,255,0.06)' : '#fff',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = "translateY(-6px)";
+              e.currentTarget.style.boxShadow = "0 12px 28px rgba(0,0,0,0.18)";
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          >
+            <div className="project-card__media">
+              <img
+                src={project.imageData}
+                alt={project.title}
+                />
+              </div>
+            <div>
+              <h3 className="project-card__title">
+                {project.title}
+              </h3>
+              <p className="project-card__meta">
+                {project.type}
+              </p>
+              <p className="project-card__desc">
+                {project.description}
+              </p>
+                  </div>
+                  </div>
+        ))}
+              </div>
+            </section>
+  );
+};
 
-          <p style={{ 
-            fontSize: '20px', 
-            lineHeight: '1.4',
-            color: 'inherit',
-            maxWidth: '600px',
-            margin: '0 auto'
-          }}>
-            <strong>Got an idea? <a 
-              href="mailto:tanharchitecture@gmail.com" 
-              style={{ 
-                color: 'inherit', 
-                textDecoration: 'underline',
-                textDecorationColor: 'currentColor',
-                textDecorationThickness: '2px',
-                textUnderlineOffset: '4px'
-              }}
-            >
-              Email me
-            </a> and let's make it happen!</strong>
-          </p>
-        </div>
-        
-        <div className="projects-grid">
-          {visualProjects.map(project => (
-            <ProjectCard key={project.id} project={project} theme={{}} />
-          ))}
-        </div>
+/* ---------- Contact Page ---------- */
+const ContactPage = ({ theme = "ink" }) => {
+  const linkColor = theme === "rose" ? "#ffffff" : "#ff4d4d";
+  
+  return (
+    <section style={{ padding: "150px 40px 80px", textAlign: "center" }}>
+      <h1 style={{ fontSize: "40px", fontWeight: 700, marginBottom: "20px" }}>
+        Get in Touch
+      </h1>
+      <p style={{ fontSize: "18px", marginBottom: "40px", opacity: 0.8 }}>
+        Always open to collaboration and conversation.
+      </p>
+      <div style={{ display: "flex", justifyContent: "center", gap: "40px" }}>
+        <a
+          href="mailto:tanharchitecture@gmail.com"
+          style={{ fontSize: "20px", textDecoration: "underline", color: linkColor }}
+        >
+          Email
+        </a>
+        <a
+          href="https://linkedin.com/in/tanhata"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ fontSize: "20px", textDecoration: "underline", color: linkColor }}
+        >
+          LinkedIn
+        </a>
       </div>
     </section>
   );
 };
 
-const ContactPage = () => (
-  <section className="contact-page">
-    <div className="container" style={{ paddingTop: '150px', paddingBottom: '100px' }}>
-      <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
-        <p style={{ fontSize: '20px', lineHeight: '1.6', color: 'inherit', opacity: '0.8', marginBottom: '20px' }}>
-          Always open to learning and collaboration — feel free to reach out and say hi! 
-        </p>
-        
-        <div style={{ 
-          display: 'flex', 
-          flexDirection: 'column',
-          gap: '40px',
-          alignItems: 'center',
-          marginBottom: '50px'
-        }}>
-          <div style={{ textAlign: 'center' }}>
-            <h3 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '10px', color: 'inherit' }}>
-            </h3>
-            <a href="mailto:tanharchitecture@gmail.com" style={{ 
-              fontSize: '28px', 
-              color: 'inherit', 
-              textDecoration: 'none',
-              borderBottom: '2px solid currentColor',
-              paddingBottom: '4px',
-              transition: 'all 0.3s ease'
-            }}>
-              email
-            </a>
-          </div>
-          
-          <div style={{ textAlign: 'center' }}>
-            <h3 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '10px', color: 'inherit' }}>
-            </h3>
-            <a href="https://linkedin.com/in/tanhata" target="_blank" rel="noopener noreferrer" style={{ 
-              fontSize: '28px', 
-              color: 'inherit', 
-              textDecoration: 'none',
-              borderBottom: '2px solid currentColor',
-              paddingBottom: '4px',
-              transition: 'all 0.3s ease'
-            }}>
-              linkedin
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-);
-
+/* ---------- Main Portfolio ---------- */
 const Portfolio = () => {
-  const [currentPage, setCurrentPage] = useState('home');
-  const [currentTheme, setCurrentTheme] = useState('dark');
-  const [checkedFilters, setCheckedFilters] = useState({
-    'product-design': true,
-    'ai-ml': true,
-    'data-visualization': true,
-    'writing':true,
-    'mobile-design': true,
-    'human-computer-interaction': true,
-    'data-analysis': true
-  });
+  const [currentTheme, setCurrentTheme] = useState("ink");
 
-  React.useEffect(() => {
-    window.currentPortfolio = { setCurrentPage };
-    return () => {
-      delete window.currentPortfolio;
-    };
-  }, [setCurrentPage]);
-
-  const projects = [
-  {
-      id: 'model-pulse',
-      title: 'Model Pulse',
-      type: 'web app',
-      description: 'Real-time monitoring and analytics dashboard for machine learning model performance.',
-      category: 'product-design',
-      className: 'web-project',
-      imageData: '/images/model-pulse.jpg',
-      externalLink: 'https://docs.google.com/presentation/d/1ePidVWFj8yHKuQ_lr5rFXV7a4K0Pexfv1Bt_5l6igmE/edit?usp=sharing',
-      company: 'Stealth Startup',
-      year: '2025',
-      tags: ['React', 'D3.js']
-    },
-    {
-      id: 'code gen tools for design',
-      title: 'Dissecting AI Design Capabilities',
-      type: 'writing',
-      description: ' Multi-Case Analysis of Code Generation Tools',
-      category: 'writing',
-      className: 'ml-writing',
-      imageData: '/images/designtest.png',
-      externalLink: 'https://open.substack.com/pub/talshe/p/dissecting-ai-design-capabilities?r=2iqmd4&utm_campaign=post&utm_medium=web',
-      company: 'Research',
-      year: '2025',
-      tags: ['AI/ML Research Papers']
-      },
-    {
-      id: 'mcp',
-      title: 'Model Communication Protocol',
-      type: 'product design',
-      description: 'Comprehensive framework for AI model interactions and communication protocols.',
-      category: 'product-design',
-      className: 'design-project',
-      imageData: '/images/mcp.gif',
-      company: 'Stealth Startup',
-      year: '2024',
-      tags: ['Figma']
-    },
-    {
-      id: 'geo-viz',
-      title: 'Geo Climate Data Visualization Tool',
-      type: 'product design',
-      description: 'An internal climate visualization tool that helps architects, planners, and sustainability teams understand climate data through interactive maps.',
-      category: 'product-design',
-      className: 'product-design',
-      imageData: '/images/main-interface.png',
-      externalLink: 'https://tanhata.github.io/geo-viz/',
-      year: '2021', 
-      tags: [ 'React', 'Python']
-    },
-    
-    {
-      id: 'art-critic',
-      title: 'Art Critic',
-      type: 'llm, machine learning',
-      description: 'Large language model trained to analyze and critique visual art with contextual understanding.',
-      category: 'ai-ml',
-      className: 'ml-project',
-      imageData: '/images/art-critic.gif',
-      externalLink: 'https://github.com/tanhata/ArtCrit_Blip/tree/main',
-      company: 'NDA',
-      year: '2022',
-      tags: ['LLM', 'Python']
-    },
-    {
-      id: 'intention-grounding',
-      title: 'From "Hand Me That Thing" to Trust: Intention Grounding',
-      type: 'writing',
-      description: 'Reflections on Visual Intention Grounding for Egocentric Assistants. ICCV 2025 — Sun, Xiao, Tse, Li, Akula, Yao',
-      category: 'writing',
-      className: 'ml-writing',
-      imageData: '/images/intentiongrounding.png',
-      externalLink: 'https://talshe.substack.com/p/from-hand-me-that-thing-to-trust?r=2iqmd4',
-      company: 'Research',
-      year: '2025',
-      tags: ['AI/ML Papers']
-    },
-    {
-      id: 'recursive-orbit',
-      title: 'Recursive Orbit',
-      type: 'data viz',
-      description: 'Interactive data visualization exploring recursive patterns in grief.',
-      category: 'data-visualization',
-      className: 'data-project',
-      imageData: '/images/recursive-orbit.gif',
-      externalLink: 'https://observablehq.com/@tanhas-canvas/recursive-orbit',
-      company: 'Personal Project',
-      year: '2024',
-      tags: ['Observable', 'Javascript']
-    },
-    {
-      id: 'green-spaces',
-      title: 'Green Spaces',
-      type: 'data analysis',
-      description: 'Interactive analysis of urban park accessibility and environmental impact across major cities.',
-      category: 'data-analysis',
-      className: 'data-project',
-      imageData: '/images/green_spaces.gif',
-      externalLink: 'https://tanhata.github.io/Green-Spaces-in-NYC/',
-      company: 'Bond Center for Urban Futures',
-      year: '2021',
-      tags: ['Python', 'React']
-    },
-    {
-      id: 'forma',
-      title: 'FORMA',
-      type: 'mobile design',
-      description: 'Mobile application design focused on form and user experience optimization.',
-      category: 'mobile-design',
-      className: 'mobile-project',
-      imageData: '/images/forma.jpg',
-      company: 'NDA',
-      year: '2024',
-      tags: ['Figma']
-    },
-    {
-      id: 'muse',
-      title: 'MUSE',
-      type: 'mobile design (iOS)',
-      description: 'iOS application design with focus on creative tools and user inspiration.',
-      category: 'mobile-design',
-      className: 'mobile-project',
-      imageData: '/images/muse.gif',
-      company: 'NDA',
-      year: '2022',
-      tags: ['Figma', 'AR/VR']
-    },
-    {
-      id: 'bitlot',
-      title: 'BitLot',
-      type: 'data analysis',
-      description: 'Comprehensive product analytics platform for data-driven decision making.',
-      category: 'data-analysis',
-      className: 'data-project',
-      imageData: '/images/bitlot.gif',
-      externalLink: 'https://drive.google.com/file/d/1xA02RVjg-bTAI-DFs1xzg0PV7-OURb8G/view?usp=sharing',
-      company: 'Bond Center for Urban Futures',
-      year: '2021',
-      tags: ['Python']
-    },   
-    {
-      id: 'heating-loads',
-      title: 'Heating Loads',
-      type: 'machine learning',
-      description: 'Predictive modeling for building heating load optimization and energy efficiency.',
-      category: 'ai-ml',
-      className: 'ml-project',
-      imageData: '/images/heating-loads.gif',
-      externalLink: 'https://colab.research.google.com/drive/1qw4iJjcNdQUgGYq_wglaRoQflFcMhDZr?authuser=3',
-      company: 'UC Berkeley',
-      year: '2022',
-      tags: ['Python']
-    },
-    {
-      id: 'living-computing',
-      title: 'Living Computing',
-      type: 'human computer interaction',
-      description: 'Exploration of adaptive interfaces that respond to human behavior and context.',
-      category: 'human-computer-interaction',
-      className: 'design-project',
-      imageData: '/images/living-computing.gif',
-      externalLink: 'https://www.youtube.com/watch?v=Geo17VbvWtU',
-      company: 'SSA',
-      year: '2021',
-      tags: ['Arduino', 'C++']
-    },
-  ];
-
-  const themes = {
-    dark: {
-      name: 'Ink',
-      background: '#000000',
-      text: '#ffffff',
-      accent: '#ffffff',
-      secondary: '#888',
-      border: '#333',
-      cardBg: '#1a1a1a',
-      gradient: 'none'
-    },
-    light: {
-      name: 'Pearl',
-      background: '#ffffff',
-      text: '#030202ff',
-      accent: '#000000',
-      secondary: '#666',
-      border: '#e0e0e0',
-      cardBg: '#f8f8f8',
-      gradient: 'none'
-    },
-    gradient: {
-      name: 'Rose',
-      background: 'linear-gradient(135deg, #ff0000ff 0%, #ff0062ff 50%, #ff0000ff 100%)',
-      text: '#ffffff',
-      accent: '#ffffff',
-      secondary: '#f0f0f0',
-      border: '#ffffff',
-      cardBg: 'rgba(255, 255, 255, 0.1)',
-      gradient: 'linear-gradient(45deg, #ff0000ff, #ff0062ff, #ff0000ff )'
-    }
-  };
-
-  const currentThemeConfig = themes[currentTheme];
-
-  const handleFilterChange = (filterId) => {
-    setCheckedFilters(prev => ({
-      ...prev,
-      [filterId]: !prev[filterId]
-    }));
-  };
-
-  const filteredProjects = projects.filter(project => {
-    return checkedFilters[project.category];
-  });
-
-  const isProjectPage = currentPage.startsWith('project-');
-  const currentProject = isProjectPage ? projects.find(p => p.id === currentPage.replace('project-', '')) : null;
-
-  const renderPage = () => {
-    if (isProjectPage && currentProject) {
-      return (
-        <ProjectDetailPage 
-          project={currentProject} 
-          onBack={() => setCurrentPage('home')}
-          theme={currentThemeConfig}
-        />
-      );
-    }
-
-    switch (currentPage) {
-      case 'about':
-        return <AboutPage />;
-      case 'visual':
-        return <VisualPage />;
-      case 'contact':
-        return <ContactPage />;
-      default:
-        return (
-          <>
-            <section className="hero">
-              <div className="container">
-              <div className="profile-image-container">
-                <img 
-                  src={currentTheme === 'light' ? '/images/profile-light.gif' : '/images/profile-dark.gif'}
-                  alt="Tanha profile"
-                  style={{
-                    width: '500px',
-                    height: '500px',
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    objectPosition: 'center center',
-                    border: '0px solid currentColor',
-                    display: 'block',
-                    margin: '0 auto'
-                  }}
-                />
-              </div>
-                  
-                <h1 className="hero-title">I'm a Product Designer and Data Scientist.</h1>
-                <p className="hero-subtitle"></p>
-                <p className="hero-description">
-                I design from the inside out. I focus on turning AI driven systems into intuitive tools.
-                </p>
-                
-                <div className="divider"></div>
-              </div>
-            </section>
-
-            <section id="work" className="projects">
-              <div className="container">
-                <h2 style={{ 
-                  fontSize: '48px', 
-                  fontWeight: '700', 
-                  marginBottom: '10px',
-                  color: currentThemeConfig.text 
-                }}>
-                  Selected Work
-                </h2>
-                 
-                <div className="filters">
-                  {[
-                    { id: 'product-design', label: 'Product Design' },
-                    { id: 'ai-ml', label: 'AI/ML' },
-                    { id: 'data-visualization', label: 'Data Visualization' },
-                    { id: 'data-analysis', label: 'Data Analysis' },
-                    { id: 'writing', label: 'Writing/Research'},
-                    { id: 'mobile-design', label: 'Mobile Design' },
-                    { id: 'spatial-geospatial', label: 'Spatial/Geospatial' },
-                    { id: 'human-computer-interaction', label: 'Human Computer Interaction' }
-                  ].map(filter => (
-                    <label key={filter.id} className="filter-item">
-                      <input
-                        type="checkbox"
-                        checked={checkedFilters[filter.id]}
-                        onChange={() => handleFilterChange(filter.id)}
-                      />
-                      <span>{filter.label}</span>
-                    </label>
-                  ))}
-                </div>
-                
-                <div className="projects-grid">
-                  {filteredProjects.map(project => (
-                    <ProjectCard key={project.id} project={project} theme={currentThemeConfig} />
-                  ))}
-                </div>
-              </div>
-            </section>
-          </>
-        );
-    }
+  const themeNames = {
+    ink: "Ink",
+    pearl: "Pearl", 
+    rose: "Rose",
   };
 
   return (
     <Router>
-    <div style={{ 
-      fontFamily: '"Inter", sans-serif',
-      background: currentThemeConfig.background,
-      color: currentThemeConfig.text,
-      lineHeight: '1.6',
-      margin: 0,
-      padding: 0,
-      minHeight: '100vh',
-      transition: 'all 0.3s ease'
-    }}>
-      <style>{`
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
-
-        html, body {
-          overflow-x: hidden;
-          width: 100%;
-          max-width: 100%;
-        }
-
-        .container {
-          max-width: 100%;
-          margin: 0 auto;
-          padding: 0 40px;
-        }
-
-        header {
-          position: fixed;
-          top: 0;
-          width: 100%;
-          background: ${currentThemeConfig.background.includes('gradient') ? 'rgba(0, 0, 0, 0.8)' : currentThemeConfig.background === '#ffffff' ? 'rgba(255, 255, 255, 0.95)' : 'rgba(10, 10, 10, 0.95)'};
-          backdrop-filter: blur(10px);
-          z-index: 1000;
-          padding: 20px 0;
-        }
-
-        nav {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0 40px;
-        }
-
-        .theme-switcher {
-          display: flex;
-          gap: 10px;
-          align-items: center;
-        }
-
-        .theme-button {
-          padding: 8px 12px;
-          border: 2px solid ${currentThemeConfig.border};
-          background: transparent;
-          color: ${currentThemeConfig.text};
-          border-radius: 6px;
-          cursor: pointer;
-          font-size: 12px;
-          font-weight: 500;
-          transition: all 0.3s ease;
-          font-family: inherit;
-        }
-
-        .theme-button:hover, .theme-button.active {
-          background: ${currentThemeConfig.accent};
-          color: ${currentThemeConfig.background === '#ffffff' ? '#000' : currentThemeConfig.background.includes('gradient') ? '#000' : '#fff'};
-        }
-
-        .nav-links {
-          display: flex;
-          gap: 40px;
-          list-style: none;
-        }
-
-        .nav-links a, .greeting-nav {
-          color: ${currentThemeConfig.text};
-          text-decoration: none;
-          font-weight: 500;
-          font-size: 14px;
-          transition: all 0.3s ease;
-          cursor: pointer;
-          position: relative;
-        }
-
-        .nav-links a:hover, .greeting-nav:hover {
-          color: ${currentThemeConfig.accent};
-        }
-
-        .nav-links a:hover::after, .greeting-nav:hover::after {
-          content: '';
-          position: absolute;
-          bottom: -5px;
-          left: 0;
-          right: 0;
-          height: 2px;
-          background: ${currentThemeConfig.gradient !== 'none' ? currentThemeConfig.gradient : currentThemeConfig.accent};
-        }
-
-        .hero {
-          padding: 150px 0 100px;
-          position: relative;
-          text-align: center;
-        }
-
-        .profile-image-container {
-          display: flex;
-          justify-content: center;
-          margin-bottom: 60px;
-        }
-
-        .hero-title {
-          font-size: 48px;
-          font-weight: 700;
-          margin-bottom: 15px;
-          line-height: 1.1;
-          text-align: right;
-          color: ${currentThemeConfig.text};
-        }
-
-        .hero-subtitle {
-          font-size: 30px;
-          font-weight: 400;
-          margin-bottom: 30px;
-          opacity: 0.9;
-          text-align: right;
-          color: ${currentThemeConfig.secondary};
-        }
-
-        .hero-description {
-          font-size: 30px;
-          font-weight: 400;
-          margin-bottom: 60px;
-          text-align: right;
-          color: ${currentThemeConfig.text};
-        }
-
-        .divider {
-          width: 100%;
-          height: 2px;
-          background: ${currentThemeConfig.gradient !== 'none' ? currentThemeConfig.gradient : currentThemeConfig.border};
-          margin: 0px 0;
-          border-radius: 2px;
-        }
-
-        .projects {
-          padding: 5px 0 100px;
-        }
-
-        .filters {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0;
-          margin-bottom: 60px;
-          max-width: none;
-          margin-left: 0;
-          margin-right: 0;
-          padding: 0;
-          justify-content: flex-start;
-        }
-
-        .filter-item {
-          display: inline-flex;
-          align-items: center;
-          cursor: pointer;
-          font-size: 40px;
-          color: ${currentThemeConfig.text};
-          user-select: none;
-          transition: all 0.3s ease;
-          font-weight: 400;
-          padding: 0;
-          border-radius: 0;
-          margin: 0 30px 30px 0;
-          background: transparent;
-          border: none;
-          position: relative;
-        }
-
-        .filter-item input[type="checkbox"] {
-          appearance: none;
-          width: 36px;
-          height: 36px;
-          border: 3px solid ${currentThemeConfig.text};
-          margin-right: 16px;
-          position: relative;
-          transition: all 0.3s ease;
-          background: transparent;
-          border-radius: 0;
-          cursor: pointer;
-        }
-
-        .filter-item input[type="checkbox"]:checked {
-          background: ${currentThemeConfig.text};
-          border-color: ${currentThemeConfig.text};
-        }
-
-        .filter-item input[type="checkbox"]:checked::after {
-          content: '';
-          position: absolute;
-          left: 6px;
-          top: 2px;
-          width: 12px;
-          height: 20px;
-          border: solid ${currentThemeConfig.background === '#ffffff' ? '#fff' : currentThemeConfig.background.includes('gradient') ? '#000' : currentThemeConfig.background};
-          border-width: 0 4px 4px 0;
-          transform: rotate(45deg);
-        }
-
-        .filter-item span {
-          transition: color 0.3s ease;
-          font-size: 40px;
-        }
-
-        /* NEW: Company and Year Filter Styles */
-        .filter-subtitle {
-          font-size: 16px;
-          font-weight: 600;
-          margin-bottom: 15px;
-          color: ${currentThemeConfig.text};
-          margin-top: 30px;
-        }
-
-        .company-tags, .year-tags {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-          margin-bottom: 20px;
-        }
-
-        .company-tag, .year-tag {
-          padding: 6px 12px;
-          border: 2px solid ${currentThemeConfig.border};
-          background: transparent;
-          color: ${currentThemeConfig.text};
-          border-radius: 20px;
-          cursor: pointer;
-          font-size: 12px;
-          font-weight: 500;
-          transition: all 0.3s ease;
-          font-family: inherit;
-        }
-
-        .company-tag:hover, .year-tag:hover,
-        .company-tag.active, .year-tag.active {
-          background: ${currentThemeConfig.accent};
-          color: ${currentThemeConfig.background === '#ffffff' ? '#000' : '#fff'};
-          border-color: ${currentThemeConfig.accent};
-        }
-
-        .projects-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 40px;
-          width: 100%;
-        }
-
-        .project {
-          display: block;
-          text-decoration: none;
-          color: inherit;
-          transition: all 0.3s ease;
-          border-radius: 12px;
-          overflow: hidden;
-          position: relative;
-          padding: 0 20px 20px 20px;
-          cursor: pointer;
-        }
-
-        .project:hover {
-          transform: translateY(-10px) scale(1.02);
-        }
-
-        .project-image {
-          width: 100%;
-          padding-bottom: 100%;
-          background: ${currentThemeConfig.cardBg};
-          border: 2px solid ${currentThemeConfig.border};
-          border-radius: 12px;
-          margin-bottom: 20px;
-          overflow: hidden;
-          position: relative;
-          transition: all 0.3s ease;
-        }
-
-        .project-image img {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          object-position: center center;
-          border-radius: 8px;
-        }
-
-        .external-link-indicator {
-          position: absolute;
-          top: 12px;
-          right: 12px;
-          background: ${currentThemeConfig.text};
-          color: ${currentThemeConfig.background === '#ffffff' ? '#fff' : currentThemeConfig.background.includes('gradient') ? '#000' : currentThemeConfig.background};
-          width: 28px;
-          height: 28px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 14px;
-          font-weight: 600;
-          opacity: 0.9;
-        }
-        
-        .project:hover .project-image {
-          border-color: ${currentThemeConfig.accent};
-        }
-
-        /* NEW: Project Metadata Styles */
-        .project-meta {
-          margin-bottom: 12px;
-        }
-
-        .project-year-company {
-          font-size: 11px;
-          color: ${currentThemeConfig.secondary};
-          font-weight: 500;
-          line-height: 1.3;
-        }
-
-        .project-tags {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 4px;
-          margin-top: 12px;
-        }
-
-        .project-tag {
-          font-size: 9px;
-          background: ${currentThemeConfig.text}10;
-          color: ${currentThemeConfig.text};
-          padding: 2px 5px;
-          border-radius: 8px;
-          border: 1px solid ${currentThemeConfig.text}15;
-          font-weight: 500;
-          letter-spacing: 0.2px;
-        }
-
-        .project-tag-more {
-          font-size: 9px;
-          background: ${currentThemeConfig.secondary}20;
-          color: ${currentThemeConfig.secondary};
-          padding: 2px 5px;
-          border-radius: 8px;
-          font-weight: 500;
-        }
-
-        /* Enhanced hover effects for metadata */
-        .project:hover .project-year {
-          background: ${currentThemeConfig.accent}25;
-          transform: scale(1.02);
-        }
-
-        .project:hover .project-tag {
-          background: ${currentThemeConfig.text}15;
-          border-color: ${currentThemeConfig.text}25;
-        }
-
-        .project-title {
-          font-size: 22px;
-          font-weight: 600;
-          margin-bottom: 8px;
-          color: ${currentThemeConfig.text};
-          transition: color 0.3s ease;
-        }
-
-        .project:hover .project-title {
-          color: ${currentThemeConfig.accent};
-        }
-
-        .project-type {
-          font-size: 14px;
-          color: ${currentThemeConfig.secondary};
-          margin-bottom: 12px;
-          transition: color 0.3s ease;
-        }
-
-        .project-description {
-          font-size: 16px;
-          color: ${currentThemeConfig.secondary};
-          line-height: 1.5;
-          transition: color 0.3s ease;
-        }
-
-        .project-detail {
-          padding: 150px 0 100px;
-          max-width: 1000px;
-          margin: 0 auto;
-          padding-left: 40px;
-          padding-right: 40px;
-        }
-
-        .project-detail-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 40px;
-        }
-
-        .back-button {
-          background: transparent;
-          border: 2px solid ${currentThemeConfig.text};
-          color: ${currentThemeConfig.text};
-          padding: 12px 24px;
-          border-radius: 8px;
-          cursor: pointer;
-          font-size: 16px;
-          font-weight: 500;
-          transition: all 0.3s ease;
-          font-family: inherit;
-        }
-
-        .back-button:hover {
-          background: ${currentThemeConfig.text};
-          color: ${currentThemeConfig.background === '#ffffff' ? '#fff' : currentThemeConfig.background.includes('gradient') ? '#000' : currentThemeConfig.background};
-        }
-
-        .project-detail-title {
-          font-size: 64px;
-          font-weight: 700;
-          margin-bottom: 20px;
-          color: ${currentThemeConfig.text};
-          line-height: 1.1;
-        }
-
-        .project-detail-subtitle {
-          font-size: 24px;
-          color: ${currentThemeConfig.secondary};
-          margin-bottom: 60px;
-        }
-
-        .project-hero-simple {
-          text-align: left;
-          margin-bottom: 60px;
-          padding-bottom: 40px;
-          border-bottom: 1px solid ${currentThemeConfig.border};
-        }
-
-        .project-meta-simple {
-          margin-top: 30px;
-          font-size: 16px;
-          line-height: 1.6;
-        }
-
-        .project-meta-simple p {
-          margin: 8px 0;
-          color: ${currentThemeConfig.text};
-          opacity: 0.9;
-        }
-
-        .project-content-simple {
-          max-width: none;
-          line-height: 1.7;
-        }
-
-        .content-paragraph {
-          font-size: 18px;
-          margin-bottom: 20px;
-          color: ${currentThemeConfig.text};
-          line-height: 1.7;
-        }
-
-        .content-heading {
-          font-size: 28px;
-          font-weight: 700;
-          margin: 60px 0 30px 0;
-          color: ${currentThemeConfig.text};
-          line-height: 1.2;
-        }
-
-        .content-image {
-          margin: 40px 0;
-          border-radius: 12px;
-          overflow: hidden;
-          border: 1px solid ${currentThemeConfig.border};
-        }
-
-        .content-image img {
-          width: 100%;
-          height: auto;
-          display: block;
-        }
-
-        .content-image-pair {
-          margin: 40px 0;
-        }
-
-        .side-by-side-images {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 20px;
-          border-radius: 12px;
-          overflow: hidden;
-        }
-
-        .side-by-side-images img {
-          width: 100%;
-          height: auto;
-          display: block;
-          border-radius: 8px;
-          border: 1px solid ${currentThemeConfig.border};
-        }
-
-        @media (max-width: 768px) {
-          .container, nav, .project-detail {
-            padding: 0 15px !important;
-            max-width: 100%;
-          }
-          
-          header nav {
-            flex-direction: column !important;
-            align-items: center !important;
-            padding: 15px !important;
-          }
-          
-          .nav-links {
-            flex-direction: row !important;
-            flex-wrap: wrap !important;
-            justify-content: center !important;
-            gap: 15px !important;
-          }
-          
-          .nav-links a, .greeting-nav {
-            font-size: 12px !important;
-          }
-          
-          /* Tighter spacing between nav and work section */
-          .hero {
-            padding: 220px 0 30px !important;
-          }
-          
-          /* AboutPage needs more padding to overcome inline styles */
-          .about-page {
-            padding-top: 250px !important;
-            padding-bottom: 200px !important;
-            min-height: 100vh !important;
-          }
-          
-          .contact-page .container {
-            padding-top: 350px !important;
-          }
-          
-          .project-detail {
-            padding: 180px 0 100px !important;
-            padding-left: 15px !important;
-            padding-right: 15px !important;
-          }
-          
-          .hero-title {
-            font-size: 32px !important;
-            text-align: center;
-            line-height: 1.2;
-          }
-          
-          .hero-description {
-            font-size: 20px !important;
-            text-align: center;
-            padding: 0 10px;
-          }
-          
-          .hero-subtitle {
-            font-size: 18px !important;
-            text-align: center;
-          }
-          
-          .profile-image-container img {
-            width: 250px !important;
-            height: 250px !important;
-          }
-          
-          .filters {
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 40px;
-          }
-          
-          .filter-item {
-            font-size: 18px !important;
-            margin: 0 0 15px 0 !important;
-            width: 100%;
-          }
-          
-          .filter-item input[type="checkbox"] {
-            width: 20px !important;
-            height: 20px !important;
-            margin-right: 12px;
-            border-width: 2px !important;
-          }
-          
-          .filter-item input[type="checkbox"]:checked::after {
-            left: 3px !important;
-            top: 1px !important;
-            width: 6px !important;
-            height: 10px !important;
-            border-width: 0 2px 2px 0 !important;
-          }
-          
-          .filter-item span {
-            font-size: 18px !important;
-          }
-
-          /* Mobile styles for new metadata */
-          .project-meta-row {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 3px;
-          }
-
-          .project-company {
-            max-width: 100%;
-            text-align: left;
-            font-size: 10px;
-          }
-
-          .project-year {
-            font-size: 11px;
-            padding: 3px 6px;
-          }
-
-          .project-tags {
-            gap: 3px;
-            margin-top: 8px;
-          }
-
-          .project-tag {
-            font-size: 8px;
-            padding: 1px 4px;
-          }
-
-          .company-tags, .year-tags {
-            gap: 6px;
-          }
-
-          .company-tag, .year-tag {
-            padding: 4px 8px;
-            font-size: 11px;
-          }
-          
-          .projects-grid {
-            grid-template-columns: 1fr !important;
-            gap: 30px;
-          }
-          
-          .project-detail-title {
-            font-size: 28px !important;
-            line-height: 1.2;
-          }
-          
-          .project-detail-subtitle {
-            font-size: 18px !important;
-          }
-          
-          .content-heading {
-            font-size: 22px !important;
-            margin: 40px 0 20px 0;
-          }
-          
-          .content-paragraph {
-            font-size: 16px !important;
-          }
-          
-          .theme-switcher {
-            flex-wrap: wrap;
-            gap: 8px;
-          }
-          
-          .theme-button {
-            padding: 6px 10px;
-            font-size: 11px;
-          }
-
-          .side-by-side-images {
-            grid-template-columns: 1fr;
-            gap: 15px;
-          }
-          
-          .about-page div[style*="gridTemplateColumns"] {
-            grid-template-columns: repeat(3, 1fr) !important;
-            gap: 10px !important;
-            width: 95vw !important;
-          }
-          
-          .film-photo {
-            transform: scale(0.7) !important;
-          }
-          
-          .about-page p {
-            font-size: 14px !important;
-          }
-          
-          .about-page div[style*="paddingLeft: 40px"] {
-            padding-left: 20px !important;
-          }
-        }
-
-        @media (max-width: 480px) {
-          /* Tighter spacing for small phones */
-          .hero {
-            padding: 240px 0 20px !important;
-          }
-          
-          /* AboutPage needs even more padding on small screens */
-          .about-page {
-            padding-top: 280px !important;
-            padding-bottom: 200px !important;
-          }
-          
-          .contact-page .container {
-            padding-top: 280px !important;
-          }
-          
-          .project-detail {
-            padding: 200px 0 100px !important;
-            padding-left: 15px !important;
-            padding-right: 15px !important;
-          }
-          
-          .hero-title {
-            font-size: 28px !important;
-          }
-          
-          .hero-description {
-            font-size: 18px !important;
-          }
-          
-          .nav-links a, .greeting-nav {
-            font-size: 14px !important;
-          }
-          
-          .profile-image-container img {
-            width: 200px !important;
-            height: 200px !important;
-          }
-
-          .project-detail-title {
-            font-size: 24px !important;
-          }
-          
-          .about-page div[style*="gridTemplateColumns"] {
-            grid-template-columns: repeat(2, 1fr) !important;
-            gap: 5px !important;
-          }
-          
-          .film-photo {
-            transform: scale(0.5) !important;
-          }
-          
-          nav {
-            flex-direction: column !important;
-            gap: 10px !important;
-          }
-          
-          .nav-links {
-            flex-direction: column !important;
-            gap: 15px !important;
-            text-align: center !important;
-          }
-        }
-      `}</style>
-      <header>
-        <nav>
-          <div className="theme-switcher">
-            {Object.entries(themes).map(([key, theme]) => (
+      <ResponsiveGridCSS />
+      <NotebookLayout theme={currentTheme}>
+        <header
+          style={{
+            padding: "20px 40px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            position: "sticky",
+            top: 0,
+            zIndex: 10,
+            borderBottom: "1px solid rgba(255,255,255,0.2)",
+
+            // Theme background logic
+            background:
+              currentTheme === "ink"
+                ? "#000000"
+                : currentTheme === "pearl"
+                ? "#ffffff"
+                : "linear-gradient(135deg, #ff0044 0%, #ff0066 50%, #ff0044 100%)",
+            color:
+              currentTheme === "ink"
+                ? "#ffffff"
+                : currentTheme === "pearl"
+                ? "#000000"
+                : "#ffffff",
+
+            boxShadow:
+              currentTheme === "pearl"
+                ? "0 2px 10px rgba(0,0,0,0.05)"
+                : "0 2px 10px rgba(0,0,0,0.3)",
+          }}
+        >
+          {/* Navigation */}
+          <nav style={{ display: "flex", gap: "30px" }}>
+            <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>
+              Home
+            </Link>
+            <Link
+              to="/about"
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              About
+            </Link>
+            <Link
+              to="/visual"
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              Visual
+            </Link>
+            <Link
+              to="/contact"
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              Contact
+            </Link>
+          </nav>
+
+          {/* Theme toggle buttons */}
+          <div>
+            {Object.entries(themeNames).map(([key, label]) => (
               <button
                 key={key}
-                className={`theme-button ${currentTheme === key ? 'active' : ''}`}
                 onClick={() => setCurrentTheme(key)}
+                style={{
+                  marginLeft: "10px",
+                  padding: "6px 10px",
+                  background:
+                    currentTheme === key
+                      ? "rgba(255,255,255,0.15)"
+                      : "transparent",
+                  border:
+                    currentTheme === "pearl"
+                      ? "1px solid rgba(0,0,0,0.2)"
+                      : "1px solid rgba(255,255,255,0.2)",
+                  borderRadius: "6px",
+                  color: "inherit",
+                  cursor: "pointer",
+                  fontSize: "12px",
+                  transition: "all 0.25s ease",
+                }}
               >
-                {theme.name}
+                {label}
               </button>
             ))}
           </div>
-            <ul className="nav-links">
-              <li><Link to="/" className="greeting-nav">hello سَلَام</Link></li>
-              <li><Link to="/about">about</Link></li>
-              <li><Link to="/visual">visual</Link></li>
-              <li><Link to="/contact">contact</Link></li>
-            </ul>
-        </nav>
       </header>
       <Routes>
-        <Route path="/" element={
-          <>
-            <section className="hero">
-              <div className="container">
-                <div className="profile-image-container">
-                  <img 
-                    src={currentTheme === 'light' ? '/images/profile-light.gif' : '/images/profile-dark.gif'}
-                    alt="Tanha profile"
-                    style={{
-                      width: '500px',
-                      height: '500px',
-                      borderRadius: '50%',
-                      objectFit: 'cover',
-                      objectPosition: 'center center',
-                      border: '0px solid currentColor',
-                      display: 'block',
-                      margin: '0 auto'
-                    }}
-                  />
-                </div>
-                    
-                <h1 className="hero-title">I'm a Product Designer and Data Scientist.</h1>
-                <p className="hero-subtitle"></p>
-                <p className="hero-description">
-                I design from the inside out. I focus on turning AI driven systems into intuitive tools.
-                </p>
-                
-                <div className="divider"></div>
-              </div>
-            </section>
-
-            <section id="work" className="projects">
-              <div className="container">
-                <h2 style={{ 
-                  fontSize: '48px', 
-                  fontWeight: '700', 
-                  marginBottom: '10px',
-                  color: currentThemeConfig.text 
-                }}>
-                  Work
-                </h2>
-                
-                <div className="filters">
-                  {[
-                    { id: 'product-design', label: 'Product Design' },
-                    { id: 'ai-ml', label: 'AI/ML' },
-                    { id: 'data-visualization', label: 'Data Visualization' },
-                    { id: 'data-analysis', label: 'Data Analysis' },
-                    { id: 'writing', label: 'Writing/Research'},
-                    { id: 'mobile-design', label: 'Mobile Design' },
-                    { id: 'human-computer-interaction', label: 'Human Computer Interaction' }
-                  ].map(filter => (
-                    <label key={filter.id} className="filter-item">
-                      <input
-                        type="checkbox"
-                        checked={checkedFilters[filter.id]}
-                        onChange={() => handleFilterChange(filter.id)}
-                      />
-                      <span>{filter.label}</span>
-                    </label>
-                  ))}
-                </div>
-                
-                <div className="projects-grid">
-                  {filteredProjects.map(project => (
-                    <ProjectCard key={project.id} project={project} theme={currentThemeConfig} />
-                  ))}
-                </div>
-              </div>
-            </section>
-          </>
-        } />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/visual" element={<VisualPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/project/:id" element={<ProjectDetailPage />} />
+          <Route path="/" element={<HomePage theme={currentTheme} />} />
+          <Route path="/about" element={<AboutPage theme={currentTheme} />} />
+          <Route path="/visual" element={<VisualPage theme={currentTheme} />} />
+        <Route path="/contact" element={<ContactPage theme={currentTheme} />} />
       </Routes>
-
-      <footer style={{
-        padding: '40px 0',
-        textAlign: 'center',
-        borderTop: `1px solid ${currentThemeConfig.border}`,
-        marginTop: '60px'
-      }}>
-        <div className="container">
-          <p style={{
-            fontSize: '14px',
-            color: currentThemeConfig.secondary,
-            margin: '0'
-          }}>
+        <footer
+          style={{
+            padding: "40px",
+            borderTop: "1px solid rgba(255,255,255,0.2)",
+            textAlign: "center",
+            marginTop: "80px",
+            opacity: 0.7,
+          }}
+        >
             © Tanha Alsheikhdallah 2025
-          </p>
-        </div>
       </footer>
-    </div>
+      </NotebookLayout>
     </Router> 
   );
 };
+
 export default Portfolio; 
