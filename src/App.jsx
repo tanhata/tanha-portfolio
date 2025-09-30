@@ -153,7 +153,7 @@ const MathCursor = ({ theme = "ink" }) => {
     });
   }, []);
 
-  return (
+    return (
     <>
       <style>{`
         @media (hover: hover) {
@@ -201,7 +201,7 @@ const GuideDotCursor = ({ theme = "ink", grid = 20 }) => {
     return () => window.removeEventListener("mousemove", onMove);
   }, [grid]);
 
-  return (
+    return (
     <>
       {/* only show on pointer/hover devices */}
       <style>{`
@@ -349,7 +349,14 @@ const ResponsiveGridCSS = () => (
       gap: 28px;
       justify-content: center;  /* prevents giant stretching */
       align-items: start;
-      width: 100%;
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      padding: 0 40px;
+      box-sizing: border-box;
     }
 
     /* Project card base */
@@ -439,6 +446,64 @@ const ResponsiveGridCSS = () => (
       .projects-grid {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 20px;
+      }
+    }
+
+    /* Timeline mobile responsiveness */
+    @media (max-width: 768px) {
+      .about-page {
+        padding-top: 80px !important;
+        padding-bottom: 80px !important;
+      }
+      
+      .about-page .timeline-grid {
+        display: block !important;
+        padding: 0 20px !important;
+        gap: 0 !important;
+      }
+      
+      .about-page .timeline-sidebar {
+        display: none !important;
+      }
+      
+      .about-page .timeline-content {
+        width: 100% !important;
+      }
+      
+      .about-page .timeline-content article {
+        margin-bottom: 60px !important;
+        padding-bottom: 30px !important;
+        border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+      }
+      
+      .about-page .timeline-content article:last-child {
+        border-bottom: none !important;
+      }
+      
+      .about-page .timeline-content h3 {
+        font-size: 24px !important;
+        margin-bottom: 12px !important;
+        display: flex !important;
+        align-items: center !important;
+      }
+      
+      .about-page .timeline-content p {
+        font-size: 16px !important;
+        line-height: 1.6 !important;
+        margin-bottom: 15px !important;
+      }
+      
+      .about-page .timeline-content .glyph {
+        font-size: 20px !important;
+        margin-right: 12px !important;
+      }
+      
+      .about-page .timeline-content .kicker {
+        font-size: 14px !important;
+        opacity: 0.7 !important;
+        margin-bottom: 8px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
       }
     }
 
@@ -677,6 +742,7 @@ const AboutPage = ({ theme = "ink" }) => {
 
   return (
     <section
+      className="about-page"
       style={{
         paddingTop: "140px",
         paddingBottom: "140px",
@@ -723,6 +789,7 @@ const AboutPage = ({ theme = "ink" }) => {
 
       {/* timeline grid */}
       <div
+        className="timeline-grid"
         style={{
           display: "grid",
           gridTemplateColumns: "300px 1fr",
@@ -735,6 +802,7 @@ const AboutPage = ({ theme = "ink" }) => {
       >
         {/* sidebar */}
         <aside
+          className="timeline-sidebar"
           style={{
             position: "sticky",
             top: "120px",
@@ -788,13 +856,13 @@ const AboutPage = ({ theme = "ink" }) => {
         </aside>
 
         {/* main content */}
-        <div>
+        <div className="timeline-content">
           {careerStages.map((s, i) => (
             <article
               key={s.id}
               data-index={i}
               ref={(el) => (sectionRefs.current[i] = el)}
-              style={{
+                style={{
                 marginBottom: "100px",
                 paddingBottom: "50px",
                 borderBottom: "1px solid rgba(255,255,255,0.1)",
@@ -804,13 +872,13 @@ const AboutPage = ({ theme = "ink" }) => {
               {s.kicker && (
                 <div style={{ fontSize: 16, opacity: 0.7, marginBottom: 10 }}>
                   {s.kicker}
-                </div>
+              </div>
               )}
               <p style={{ fontSize: 20, lineHeight: 1.8, opacity: 0.9 }}>{s.body}</p>
             </article>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
       {/* hobbies collage */}
       <div
@@ -849,8 +917,8 @@ const AboutPage = ({ theme = "ink" }) => {
             src="/images/about/IMG_8660.JPG"
             orientation="landscape"
             rotate={0}
-            accent={accent}
-          />
+              accent={accent}
+            />
           <TapedPhoto
             src="/images/about/coffeesteel.JPEG"
             orientation="square"
@@ -1152,10 +1220,10 @@ const HomePage = ({ theme }) => {
               </ProjectWrapper>
             );
           })}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
 };
 
 /* ---------- Visual Page ---------- */
@@ -1220,7 +1288,7 @@ const VisualPage = ({ theme }) => {
     }
   ];
 
-      return (
+  return (
     <section style={{ padding: "150px 40px 80px" }}>
       <h1 style={{ fontSize: "40px", fontWeight: 700, marginBottom: "30px", color: "inherit" }}>
         Visual Projects
@@ -1235,8 +1303,8 @@ const VisualPage = ({ theme }) => {
           <div
             key={project.id}
             className={`project-card ${theme === 'ink' ? 'ink' : theme === 'rose' ? 'rose' : ''}`}
-                  style={{
-              color: 'inherit',
+              style={{ 
+                color: 'inherit', 
               transform: "translateZ(0)",
               transition: "transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease",
               border: "1px solid rgba(255,255,255,0.10)",
@@ -1268,12 +1336,12 @@ const VisualPage = ({ theme }) => {
               </p>
               <p className="project-card__desc">
                 {project.description}
-              </p>
+          </p>
+        </div>
                   </div>
-                  </div>
-        ))}
-              </div>
-            </section>
+          ))}
+      </div>
+    </section>
   );
 };
 
@@ -1304,9 +1372,9 @@ const ContactPage = ({ theme = "ink" }) => {
         >
           LinkedIn
         </a>
-      </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 };
 
 /* ---------- Main Portfolio ---------- */
@@ -1319,12 +1387,12 @@ const Portfolio = () => {
     rose: "Rose",
   };
 
-  return (
+      return (
     <Router>
       <ResponsiveGridCSS />
       <NotebookLayout theme={currentTheme}>
         <header
-          style={{
+                  style={{
             padding: "20px 40px",
             display: "flex",
             justifyContent: "space-between",
@@ -1415,7 +1483,7 @@ const Portfolio = () => {
         <Route path="/contact" element={<ContactPage theme={currentTheme} />} />
       </Routes>
         <footer
-          style={{
+                    style={{
             padding: "40px",
             borderTop: "1px solid rgba(255,255,255,0.2)",
             textAlign: "center",

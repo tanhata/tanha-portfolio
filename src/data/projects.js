@@ -163,5 +163,17 @@ export const projects = [
     company: 'SSA',
     year: '2021',
     tags: ['Arduino', 'C++']
+  },
+  {
+    id: 'gravity-game',
+    title: 'Gravity Game',
+    type: 'game',
+    description: 'Physics based game',
+    category: 'human-computer-interaction',
+    className: 'design-project',
+    imageData: '/images/gravitygame.gif',
+    company: 'Personal Project',
+    year: '2020',
+    tags: ['HCI']
   }
 ];
