@@ -346,23 +346,32 @@ const ResponsiveGridCSS = () => (
     .projects-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 300px));
-      gap: 28px;
-      justify-content: center;  /* prevents giant stretching */
+      gap: 32px;
+      justify-content: center;
       align-items: start;
+
+      /* FULL BLEED: remove all container padding and centering */
       width: 100vw;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+
+      /* ensure grid spans entire viewport */
       position: relative;
       left: 50%;
       right: 50%;
       margin-left: -50vw;
       margin-right: -50vw;
-      padding: 0 40px;
-      box-sizing: border-box;
     }
 
     /* Project card base */
     .project-card {
       display: flex;
       flex-direction: column;
+      justify-content: space-between;  /* ensures spacing stays consistent */
+      height: 100%;                    /* equal card height */
+      min-height: 440px;
+      max-height: 520px;
       min-width: 0;           /* prevent overflow */
       border-radius: 12px;
       border: 1px solid rgba(0,0,0,0.08);
@@ -642,8 +651,8 @@ const TapedPhoto = ({
           transform: "translateX(-50%) rotate(-2deg)",
           width: 70,
           height: 16,
-          background: `${accent}80`,
-          opacity: 0.5,
+          background: "#d4a574",
+          opacity: 0.8,
           borderRadius: 3,
         }}
       />
@@ -768,8 +777,17 @@ const AboutPage = ({ theme = "ink" }) => {
           gap: "40px",
         }}
       >
-        <div style={{ flex: "1 1 420px", maxWidth: 700, textAlign: "left" }}>
-          <h2 style={{ fontSize: 36, marginBottom: 12 }}>Hello</h2>
+        <div style={{ flex: "1 1 420px", maxWidth: 700, textAlign: "center" }}>
+          <img 
+            src="/images/myname.gif" 
+            alt="Tanha" 
+            style={{ 
+              height: "180px", 
+              width: "auto", 
+              marginBottom: "12px",
+              objectFit: "contain"
+            }} 
+          />
           <p style={{ fontSize: 22, lineHeight: 1.75, opacity: 0.9 }}>
             My name, Tanha (تنحى) — pronounced (taan-haa) — means "carving" in Arabic
             and mirrors the tanh (hyperbolic tangent) function. That dual meaning
@@ -778,7 +796,7 @@ const AboutPage = ({ theme = "ink" }) => {
         </div>
         <div style={{ flex: "0 0 auto" }}>
           <TapedPhoto
-            src={theme === "pearl" ? "/images/profile-dark.gif" : "/images/tanha.jpg"}
+            src={theme === "pearl" ? "/images/tanha.jpg" : "/images/tanha.jpg"}
             alt="Portrait"
             orientation="portrait"
             rotate={0}
@@ -1013,6 +1031,28 @@ const AboutPage = ({ theme = "ink" }) => {
 const HomePage = ({ theme }) => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   
+  // Update local time
+  useEffect(() => {
+    const el = document.getElementById("local-time");
+    if (!el) return;
+
+    const updateTime = () => {
+      const now = new Date();
+      const options = {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+        timeZone: "America/New_York",
+      };
+      el.textContent = now.toLocaleTimeString([], options);
+    };
+
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+  
   const categories = [
     { id: 'all', label: 'All' },
     { id: 'product-design', label: 'Product Design' },
@@ -1059,10 +1099,24 @@ const HomePage = ({ theme }) => {
         />
       </p>
       
+      {/* Local time + coordinates */}
+      <div
+        style={{
+          textAlign: "right",
+          fontSize: "14px",
+          opacity: 0.7,
+          marginTop: "-20px",
+          marginBottom: "60px",
+          fontFamily: '"Space Grotesk", monospace',
+        }}
+      >
+        <span id="local-time"></span> • 40.7128°N, 74.0060°W
+      </div>
+      
       {/* Projects Section */}
       <div style={{ marginTop: "80px" }}>
         <h2 style={{ fontSize: "32px", fontWeight: 600, marginBottom: "30px", color: "inherit" }}>
-          Projects
+          Selected Work
         </h2>
         
         {/* Category filters */}
@@ -1090,7 +1144,14 @@ const HomePage = ({ theme }) => {
           </div>
           
         {/* Projects grid */}
-        <div className="projects-grid">
+        <div className="projects-grid" style={{ 
+          width: "100vw", 
+          position: "relative", 
+          left: "50%", 
+          right: "50%", 
+          marginLeft: "-50vw", 
+          marginRight: "-50vw"
+        }}>
           {filteredProjects.map(project => {
             const ProjectWrapper = project.externalLink ? 'a' : 'div';
             const wrapperProps = project.externalLink ? {
@@ -1111,7 +1172,7 @@ const HomePage = ({ theme }) => {
                     color: 'inherit', 
                     transform: "translateZ(0)",
                     transition: "transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease",
-                    border: "1px solid rgba(255,255,255,0.10)",
+                    border: "0.75px solid currentColor",
                     borderRadius: 12,
                     padding: 16,
                     background: theme === 'ink' ? '#0f0f0f' : theme === 'rose' ? 'rgba(255,255,255,0.06)' : '#fff',
