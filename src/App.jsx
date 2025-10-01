@@ -1368,7 +1368,7 @@ const VisualPage = ({ theme }) => {
                 color: 'inherit', 
               transform: "translateZ(0)",
               transition: "transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease",
-              border: "1px solid rgba(255,255,255,0.10)",
+              border: "0.75px solid currentColor",
               borderRadius: 12,
               padding: 16,
               background: theme === 'ink' ? '#0f0f0f' : theme === 'rose' ? 'rgba(255,255,255,0.06)' : '#fff',
