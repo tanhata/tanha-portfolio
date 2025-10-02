@@ -620,11 +620,14 @@ const TimelineStep = React.forwardRef(({ stage }, ref) => {
 const TapedPhoto = ({
   src,
   alt,
-  orientation = "portrait", // "portrait" | "landscape" | "square"
+  orientation = "portrait",
   rotate = 0,
   accent = "#ff4d4d",
-  caption,
+  caption = "",
+  backNote = "📓",
 }) => {
+  const [flipped, setFlipped] = React.useState(false);
+
   const dims =
     orientation === "portrait"
       ? { width: 240, aspectRatio: "3 / 4" }
@@ -634,15 +637,17 @@ const TapedPhoto = ({
 
   return (
     <figure
+      onClick={() => setFlipped(!flipped)}
       style={{
-        position: "relative",
-        margin: "20px",
-        transform: `rotate(${rotate}deg)`,
+        perspective: "1000px",
+        cursor: "pointer",
         width: dims.width,
         aspectRatio: dims.aspectRatio,
+        margin: "20px",
+        transform: `rotate(${rotate}deg)`,
       }}
     >
-      {/* tape */}
+      {/* tape strip */}
       <span
         style={{
           position: "absolute",
@@ -653,27 +658,73 @@ const TapedPhoto = ({
           height: 16,
           background: "#d4a574",
           opacity: 0.8,
-          borderRadius: 3,
+          borderRadius: 0,
+          zIndex: 2,
         }}
       />
-      {/* photo only */}
-      <img
-        src={src}
-        alt={alt}
+
+      {/* flipping card */}
+      <div
         style={{
+          position: "relative",
           width: "100%",
           height: "100%",
-          objectFit: "cover",
-          display: "block",
-          borderRadius: 0,
-          boxShadow: "0 6px 14px rgba(0,0,0,0.25)",
+          transformStyle: "preserve-3d",
+          transition: "transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1)",
+          transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
         }}
-      />
+      >
+        {/* front image */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backfaceVisibility: "hidden",
+            borderRadius: "0px",
+            overflow: "hidden",
+            boxShadow: "0 10px 25px rgba(0,0,0,0.25)",
+          }}
+        >
+          <img
+            src={src}
+            alt={alt}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
+        </div>
+
+        {/* back side */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "rgba(255,255,255,0.9)",
+            color: "#333",
+            borderRadius: "0px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontFamily: '"Space Grotesk", monospace',
+            fontSize: "16px",
+            fontWeight: 500,
+            backfaceVisibility: "hidden",
+            transform: "rotateY(180deg)",
+            boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
+          }}
+        >
+          {backNote}
+        </div>
+      </div>
+
       {caption && (
         <figcaption
           style={{
             fontSize: 13,
-            marginTop: 6,
+            marginTop: 8,
             textAlign: "center",
             opacity: 0.75,
           }}
@@ -918,108 +969,25 @@ const AboutPage = ({ theme = "ink" }) => {
             textAlign: "center",
           }}
         >
-          Outside of work, I enjoy travel, design, photography, coffee, and collecting
-          small moments that make life beautiful.
+          Outside of work, I really enjoy travel, photography and drinking coffee. I'm currently experimenting with brew temperature and grind size.
         </p>
 
         <div
           style={{
             display: "flex",
-            flexWrap: "wrap",
             justifyContent: "center",
-            gap: "24px",
             width: "100%",
           }}
         >
-          <TapedPhoto
-            src="/images/about/IMG_8660.JPG"
-            orientation="landscape"
-            rotate={0}
-              accent={accent}
-            />
-          <TapedPhoto
-            src="/images/about/coffeesteel.JPEG"
-            orientation="square"
-            rotate={0}
-            accent={accent}
-          />
-          <TapedPhoto
-            src="/images/about/IMG_0975.JPEG"
-            orientation="landscape"
-            rotate={0}
-            accent={accent}
-          />
-          <TapedPhoto
-            src="/images/about/IMG_1640.JPG"
-            orientation="portrait"
-            rotate={0}
-            accent={accent}
-          />
-          <TapedPhoto
-            src="/images/about/IMG_2222.JPG"
-            orientation="landscape"
-            rotate={0}
-            accent={accent}
-          />
-          <TapedPhoto
-            src="/images/about/IMG_2989.JPG"
-            orientation="portrait"
-            rotate={0}
-            accent={accent}
-          />
-          <TapedPhoto
-            src="/images/about/IMG_3223.JPG"
-            orientation="square"
-            rotate={0}
-            accent={accent}
-          />
-          <TapedPhoto
-            src="/images/about/IMG_3623.JPEG"
-            orientation="landscape"
-            rotate={0}
-            accent={accent}
-          />
-          <TapedPhoto
-            src="/images/about/IMG_4848.JPEG"
-            orientation="portrait"
-            rotate={0}
-            accent={accent}
-          />
-          <TapedPhoto
-            src="/images/about/IMG_4970.JPEG"
-            orientation="square"
-            rotate={0}
-            accent={accent}
-          />
-          <TapedPhoto
-            src="/images/about/IMG_5034.JPEG"
-            orientation="landscape"
-            rotate={0}
-            accent={accent}
-          />
-          <TapedPhoto
-            src="/images/about/1033B10E-A711-4AB7-96A1-02DC9925DD5D.JPEG"
-            orientation="portrait"
-            rotate={0}
-            accent={accent}
-          />
-          <TapedPhoto
-            src="/images/about/776A973B-1C0C-4623-A390-4F5469BA2454.JPG"
-            orientation="square"
-            rotate={0}
-            accent={accent}
-          />
-          <TapedPhoto
-            src="/images/about/8AF0AAAC-B8CB-4347-8DDE-D1504A0358BA.jpg"
-            orientation="landscape"
-            rotate={0}
-            accent={accent}
-          />
-          <TapedPhoto
-            src="/images/about/IDG_20250719_124959_569.JPEG"
-            orientation="portrait"
-            rotate={0}
-            accent={accent}
+          <img
+            src="/images/about_scrap.gif"
+            alt="About scrapbook"
+            style={{
+              maxWidth: "100%",
+              height: "auto",
+              borderRadius: "8px",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+            }}
           />
         </div>
       </div>
@@ -1060,7 +1028,6 @@ const HomePage = ({ theme }) => {
     { id: 'mobile-design', label: 'Mobile Design' },
     { id: 'data-visualization', label: 'Data Viz' },
     { id: 'writing', label: 'Writing/Research' },
-    { id: 'spatial-geospatial', label: 'Spatial' },
     { id: 'human-computer-interaction', label: 'HCI' },
     { id: 'data-analysis', label: 'Data Analysis' },
   ];
