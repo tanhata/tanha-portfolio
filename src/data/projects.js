@@ -33,7 +33,7 @@ export const projects = [
     category: 'product-design',
     className: 'design-project',
     imageData: '/images/mcp.gif',
-    company: '🔒',
+    company: 'Confidential',
     year: '2024',
     tags: ['Figma']
   },
@@ -58,7 +58,7 @@ export const projects = [
     className: 'ml-project',
     imageData: '/images/art-critic.gif',
     externalLink: 'https://github.com/tanhata/ArtCrit_Blip/tree/main',
-    company: '🔒',
+    company: 'Confidential',
     year: '2022',
     tags: ['LLM', 'Python']
   },
@@ -109,7 +109,7 @@ export const projects = [
     category: 'mobile-design',
     className: 'mobile-project',
     imageData: '/images/forma.jpg',
-    company: '🔒',
+    company: 'Confidential',
     year: '2024',
     tags: ['Figma']
   },
@@ -121,7 +121,7 @@ export const projects = [
     category: 'mobile-design',
     className: 'mobile-project',
     imageData: '/images/muse.gif',
-    company: '🔒',
+    company: 'Confidential',
     year: '2022',
     tags: ['Figma', 'AR/VR']
   },
@@ -172,6 +172,7 @@ export const projects = [
     category: 'human-computer-interaction',
     className: 'design-project',
     imageData: '/images/gravitygame.gif',
+    externalLink: 'https://tanhata.github.io/gravitygame/',
     company: 'Personal Project',
     year: '2020',
     tags: ['HCI']

@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef, Fragment } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
+import { motion, AnimatePresence } from "framer-motion";
+import { Typewriter as SimpleTypewriter } from 'react-simple-typewriter';
 import { projects } from './data/projects.js';
 
 /* ---------- Custom Cursor Component ---------- */
@@ -275,7 +277,7 @@ const Typewriter = ({
       <span aria-label={text}>
         {text.slice(0, i)}
         <span className="tw-caret">{cursorChar}</span>
-            </span>
+      </span>
     </>
   );
 };
@@ -342,7 +344,8 @@ const TypewriterText = ({
 /* ---------- Responsive Grid CSS ---------- */
 const ResponsiveGridCSS = () => (
   <style id="responsive-grid-fix">{`
-    /* Responsive project grid */
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+      /* Responsive project grid */
     .projects-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 300px));
@@ -516,8 +519,786 @@ const ResponsiveGridCSS = () => (
       }
     }
 
+    /* Project Detail Page Styles */
+    .project-detail {
+      padding: 120px 40px 80px;
+      max-width: 1000px;
+      margin: 0 auto;
+      font-family: "Space Grotesk", sans-serif !important;
+    }
+
+    /* Force Space Grotesk font on all project detail elements */
+    .project-detail * {
+      font-family: "Space Grotesk", sans-serif !important;
+    }
+
+    .project-detail h1,
+    .project-detail h2,
+    .project-detail h3,
+    .project-detail h4,
+    .project-detail h5,
+    .project-detail h6,
+    .project-detail p,
+    .project-detail span,
+    .project-detail div {
+      font-family: "Space Grotesk", sans-serif !important;
+    }
+
+    /* Additional specificity to override any other CSS */
+    body .project-detail,
+    html .project-detail,
+    #root .project-detail {
+      font-family: "Space Grotesk", sans-serif !important;
+    }
+
+    body .project-detail *,
+    html .project-detail *,
+    #root .project-detail * {
+      font-family: "Space Grotesk", sans-serif !important;
+    }
+
+    .project-detail-header {
+      margin-bottom: 40px;
+    }
+
+    .back-button {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: inherit;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-family: '"Space Grotesk", sans-serif' !important;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.5);
+    }
+
+    .project-hero-simple {
+      margin-bottom: 60px;
+      text-align: center;
+      font-family: '"Space Grotesk", sans-serif' !important;
+    }
+
+    .project-detail-title {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .project-detail-subtitle {
+      font-size: 20px;
+      opacity: 0.8;
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+
+    .project-meta-simple {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    .project-meta-simple p {
+      margin: 8px 0;
+    }
+
+    .project-content-simple {
+      line-height: 1.7;
+      font-family: '"Space Grotesk", sans-serif' !important;
+    }
+
+    .content-heading {
+      font-size: 28px;
+      font-weight: 600;
+      margin: 60px 0 24px 0;
+      color: inherit;
+      font-family: '"Space Grotesk", sans-serif' !important;
+    }
+
+    .content-paragraph {
+      font-size: 18px;
+      margin-bottom: 24px;
+      opacity: 0.9;
+      font-family: '"Space Grotesk", sans-serif' !important;
+    }
+
+    .content-image {
+      margin: 40px 0;
+      text-align: center;
+    }
+
+    .content-image img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    .content-image-pair {
+      margin: 40px 0;
+    }
+
+    .side-by-side-images {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 40px 0;
+    }
+
+    .side-by-side-images img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    /* Project Card Styles */
+    .project {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      min-height: 440px;
+      max-height: 520px;
+      min-width: 0;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: #fff;
+      padding: 16px;
+      box-sizing: border-box;
+      transition: transform .25s ease, box-shadow .25s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Theme-specific project card styles */
+    .project.ink {
+      background: #0f0f0f;
+      border-color: rgba(255,255,255,0.12);
+      color: white;
+    }
+
+    .project.rose {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.22);
+      backdrop-filter: blur(6px);
+      color: white;
+    }
+
+    .project.pearl {
+      background: #fff;
+      border-color: rgba(0,0,0,0.08);
+      color: black;
+    }
+
+    .project:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    }
+
+    .project-image {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 14px;
+      border: 1px solid rgba(0,0,0,0.06);
+      position: relative;
+    }
+
+    .project.ink .project-image { 
+      border-color: rgba(255,255,255,0.12); 
+    }
+
+    .project.rose .project-image { 
+      border-color: rgba(255,255,255,0.18); 
+    }
+
+    .project-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .external-link-indicator {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255,255,255,0.9);
+      color: #000;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .project-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+
+    .project-meta {
+      margin-bottom: 8px;
+    }
+
+    .project-year-company {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .project.ink .project-year-company {
+      color: rgba(255,255,255,0.6);
+    }
+
+    .project.rose .project-year-company {
+      color: rgba(255,255,255,0.6);
+    }
+
+    .project.pearl .project-year-company {
+      color: rgba(0,0,0,0.6);
+    }
+
+    .project-type {
+      font-size: 13px;
+      line-height: 1.45;
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
+
+    .project-description {
+      font-size: 13px;
+      line-height: 1.45;
+      opacity: 0.8;
+      margin-bottom: 12px;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .project-tag {
+      font-size: 11px;
+      line-height: 1;
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid currentColor;
+      opacity: 0.8;
+      white-space: nowrap;
+    }
+
+    .project-tag-more {
+      font-size: 11px;
+      line-height: 1;
+      padding: 6px 8px;
+      border-radius: 999px;
+      opacity: 0.6;
+      white-space: nowrap;
+    }
+
+    .project.ink .project-tag-more {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .project.rose .project-tag-more {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .project.pearl .project-tag-more {
+      background: rgba(0,0,0,0.1);
+    }
+
+    /* Mobile responsiveness for project detail */
+    @media (max-width: 768px) {
+      .project-detail {
+        padding: 100px 20px 60px;
+      }
+      
+      .project-detail-title {
+        font-size: 36px;
+      }
+      
+      .project-detail-subtitle {
+        font-size: 18px;
+      }
+      
+      .content-heading {
+        font-size: 24px;
+        margin: 40px 0 16px 0;
+      }
+      
+      .content-paragraph {
+        font-size: 16px;
+        margin-bottom: 20px;
+      }
+      
+      .side-by-side-images {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+    }
+
   `}</style>
 );
+
+/* ---------- Project Card Component ---------- */
+const ProjectCard = ({ project, theme }) => {
+  // Check if it's a project with detail page content defined
+  const hasDetailPage = ['mcp', 'forma', 'muse'].includes(project.id);
+  
+  if (project.externalLink) {
+    return (
+      <a 
+        href={project.externalLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`project ${project.className} ${theme}`}
+        data-category={project.category}
+      >
+        <div className="project-image">
+          <img src={project.imageData} alt={project.title} />
+        </div>
+
+        {/* ADD THIS NEW METADATA SECTION */}
+        <h3 className="project-title">{project.title}</h3>
+
+        {/* THEN year/company metadata */}
+        {(project.year || project.company) && (
+          <div className="project-meta">
+            <span className="project-year-company">
+              {project.year}{project.year && project.company && ' • '}{project.company}
+            </span>
+          </div>
+        )}
+        <div className="project-type">{project.type}</div>
+        <p className="project-description">{project.description}</p>
+
+        {/* ADD THIS NEW TAGS SECTION */}
+        {project.tags && project.tags.length > 0 && (
+          <div className="project-tags">
+            {project.tags.slice(0, 3).map((tag, index) => (
+              <span key={index} className="project-tag">{tag}</span>
+            ))}
+            {project.tags.length > 3 && (
+              <span className="project-tag-more">+{project.tags.length - 3}</span>
+            )}
+          </div>
+        )}
+      </a>
+    );
+  }
+  /* If it doesn't have a detail page, render as non-clickable */
+  if (!hasDetailPage) {
+    return (
+      <div
+        className={`project ${project.className} ${theme}`}
+        data-category={project.category}
+        style={{ cursor: 'default' }}
+      >
+        <div className="project-image">
+          <img
+            src={project.imageData}
+            alt={project.title}
+          />
+        </div>
+        <h3 className="project-title">{project.title}</h3>
+        
+        {/* ADD THIS METADATA */}
+        {(project.year || project.company) && (
+          <div className="project-meta">
+            <span className="project-year-company">
+              {project.year}{project.year && project.company && ' • '}{project.company}
+            </span>
+          </div>
+        )}
+        
+        <div className="project-type">{project.type}</div>
+        <p className="project-description">{project.description}</p>
+        
+        {/* ADD TAGS */}
+        {project.tags && project.tags.length > 0 && (
+          <div className="project-tags">
+            {project.tags.slice(0, 3).map((tag, index) => (
+              <span key={index} className="project-tag">{tag}</span>
+            ))}
+            {project.tags.length > 3 && (
+              <span className="project-tag-more">+{project.tags.length - 3}</span>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+  return (
+    <Link
+      to={`/project/${project.id}`}
+      className={`project ${project.className} ${theme}`}
+      data-category={project.category}
+    >
+      <div className="project-image">
+        <img
+          src={project.imageData}
+          alt={project.title}
+        />
+      </div>
+      <h3 className="project-title">{project.title}</h3>
+      
+      {/* ADD THIS METADATA */}
+      {(project.year || project.company) && (
+        <div className="project-meta">
+          <span className="project-year-company">
+            {project.year}{project.year && project.company && ' • '}{project.company}
+          </span>
+        </div>
+      )}
+      
+      <div className="project-type">{project.type}</div>
+      <p className="project-description">{project.description}</p>
+      
+      {/* ADD TAGS */}
+      {project.tags && project.tags.length > 0 && (
+        <div className="project-tags">
+          {project.tags.slice(0, 3).map((tag, index) => (
+            <span key={index} className="project-tag">{tag}</span>
+          ))}
+          {project.tags.length > 3 && (
+            <span className="project-tag-more">+{project.tags.length - 3}</span>
+          )}
+        </div>
+      )}
+    </Link>
+    );
+};
+
+/* ---------- Project Detail Page Component ---------- */
+const ProjectDetailPage = ({ theme }) => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  
+  if (!id) return null;
+
+  // Project-specific content based on ID
+  const getProjectContent = (projectId) => {
+    const contentMap = {
+      'mcp': {
+        title: "MCP Interface",
+        subtitle: "Interface for Multi-Agent Interaction",
+        role: "Lead Product Designer",
+        team: "Founding Machine Learning Developers, Product Manager, Frontend Engineers",
+        content: [
+          "Model Communication Protocol (MCP) is a framework for orchestrating multiple language models as coordinated agents—each with a defined role, scoped context, and turn in the reasoning chain. It shifts prompting from monolithic to modular: models summarize, critique, and rewrite each other's outputs in sequence, forming a structured dialogue.",
+          "",
+          "While MCP introduces a powerful mental model, current workflows are often fragmented—spread across notebooks, orchestration libraries, and opaque API calls.",
+          "",
+          "This project visualizes MCP from an interface perspective—making agent interactions transparent, inspectable, and user-directed. Users assign roles, define execution order, and trace how ideas evolve across model handoffs. Designed through both a product and engineering lens, the system supports reproducibility, orchestration, and step-level debugging.",
+          "",
+          "## Unblocking the Workflow",
+          "",
+          "MCPs involve multiple moving parts — developers define specs, PMs scope features, engineers implement, and designers shape behavior. But without a shared interface, the flow breaks. Specs live across Notion, Slack, and code. This tool restructures that journey: model behavior is visualized, editable, and versioned — so every role stays in sync.",
+          "",
+          "## Designing for Dialogue",
+          "",
+          "Agents can be confusing-- make model-to-model collaboration legible. I leaned on conversation as a UI structure — each agent speaks, critiques, or rewrites. Users assign roles like Summarizer, Critic, or Rewriter to selected models. The interface supports multi-step task orchestration through simple dropdowns and a guided prompt builder.",
+          "",
+          "## Conversation Playback",
+          "",
+          "Outputs are presented as threaded messages, reflecting the sequence and evolution of ideas. The interface supports user feedback mid-dialogue, offering opportunities to intervene, redirect, or co-create.",
+          "",
+          "## Agent & Model Onboarding",
+          "",
+          "Educational overlays help non-technical users understand how agent roles function, and how models differ in tone, reliability, and application.",
+          "",
+          "## Session History & Sharing",
+          "",
+          "A lightweight session dashboard where past conversations can be reviewed, duplicated, or exported. Each session displays a timestamp, the assigned models and roles, and a preview of the final output. Users can sort by agent, task type, or date to surface relevant collaborations.",
+          "",
+          "## Developer Console: Multi-Agent Config & Execution",
+          "",
+          "This screen bridges interface design with the realities of modern LLMOps. It allows developers to structure multi-agent chains by assigning roles (e.g., Summarizer, Critic) to specific models, with full control over system prompts, temperature, and token limits. Configs are output as JSON payloads — not as an afterthought, but as a first-class asset for versioning and API execution.",
+          "",
+          "Each agent's response is logged with its inputs, latency, and token usage visible — because understanding model behavior at the step level is essential when chaining reasoning tasks across systems. Every interaction is replayable and forkable, supporting fast iteration and fine-grained debugging.",
+          "",
+          "The API panel integrates directly with live endpoints and code exports, supporting transition from prototype to production. By exposing telemetry (rate limits, response times, token consumption) alongside structured configuration, this interface doesn't just make LLM workflows usable — it makes them observable and maintainable.",
+          "",
+          "## User Journey & Flow",
+          "",
+          "The user experience maps a clear path from concept to execution. Users begin by defining their multi-agent task, selecting models and assigning roles, then watch as agents collaborate in real-time. The interface provides intervention points throughout—allowing users to redirect conversations, adjust parameters, or fork successful patterns into new workflows.",
+          "",
+          "## Making Model Communication Legible",
+          "",
+          "Building this interface began as an exploration of how multiple AI agents could collaborate more transparently—but it quickly evolved into a deeper question of how humans, too, might better understand, debug, and direct these interactions. What emerged is a system that treats multi-agent workflows not as code-first automations, but as legible, structured conversations.",
+          "",
+          "Through role assignment, sequential reasoning, and step-level traceability, this tool reframes prompting as orchestration—making LLM behavior both observable and controllable.",
+          "",
+          "## Reflection & Future Directions",
+          "",
+          "While this prototype focuses on visualizing core MCP flows, there's exciting room for future exploration:",
+          "",
+          "• Inter-agent memory systems (e.g., letting agents remember and reference prior states)",
+          "• Non-linear agent logic (e.g., conditionals, feedback loops, and voting)",
+          "• Live debugging + annotation layers for teams reviewing AI behavior",
+          "• LLMOps integrations like exporting traces to LangSmith, OpenPipe, or Hugging Face Spaces",
+          "• More expressive agent identities including tone preferences, formatting styles, or instructional personas",
+          "",
+          "Above all, this project reflects a belief that as models become more collaborative, so too must our tools—giving people a way to reason about AI reasoning."
+        ],
+        images: ['/images/projects/mcp/mcp-1.png','/images/projects/mcp/Setup.png', '/images/projects/mcp/Conversation.png', '/images/projects/mcp/Understanding Agents.png', '/images/projects/mcp/History.png', '/images/projects/mcp/Dev.png', '/images/projects/mcp/journey.png', '/images/projects/mcp/Model Guide.png']
+      },
+
+      'forma': {
+        title: "Forma Platform",
+        subtitle: "TEXT-SVG-IMAGE GENERATION ITERATION PLATFORM",
+        role: "Sr. Product Designer",
+        team: "Machine Learning Engineer, Founding Frontend Developer",
+        content: [
+          "This image-generating platform reimagines how users engage with generative art by merging intuitive creation tools with a transparent ecosystem for attribution, discovery, and iteration.",
+          "While generative tools often obscure the labor behind machine-made art, this platform foregrounds the time, iteration, and inspiration behind each piece.",
+          "",
+          "## WELCOME",
+          "",
+          "The welcome flow is intentionally minimal - a three-screen sequence consisting of a logo splash, followed by sign-up or sign-in. In a product that leverages complex machine learning systems and layered image iteration, the introduction is deliberately pared back.",
+          "",
+          "## DISCOVER", 
+          "",
+          "A scrollable feed surfaces trending and curated generative works. Clicking into any image reveals its creation journey - including iterations, total time, prompt history, and credited inspiration. Featured artists are showcased with bio blurbs and linked works.",
+          "",
+          "## CREATE + ITERATE",
+          "",
+          "Users generate images using a smart fill-in-the-blank prompt system, with controls for style, influence, and vibe. Outputs are editable as SVGs with a Figma-like toolbar, making it easy to tweak, remix, and iterate. Time and edit history are tracked to reflect effort.",
+          "",
+          "## ARTISTIC LINEAGE", 
+          "",
+          "This platform doesn't erase the origin of visual inspiration. It actively surfaces the artists, styles, and practices that shape generative works. Every image carries a thread back to its non-AI source.",
+          "",
+          "Original artists are credited throughout. Their profiles feature original works, a tab of inspired creations, and short bios with imagery - reinforcing transparency and showing their influence across the platform.",
+          "",
+          "## USER PROFILE",
+          "",
+          "Each user has a profile with tabs for created, liked, saved, and reposted work. The UI encourages identity-building and creative exploration, while tracking iteration timelines to celebrate the craft of generative art.",
+          "",
+          "## MACHINE LEARNING FOUNDATIONS",
+          "",
+          "The creative engine is powered by a few key ML-driven features that enhance control and transparency throughout the generation pipeline:",
+          "",
+          "## Prompt Temperature",
+          "",
+          "Controls allow users to modulate the randomness and creative looseness of their image generations, from structured to wildly abstract.",
+          "",
+          "## SVG-Based Output & Iteration Tracking",
+          "",
+          "Each visual is editable post-generation. Users can fine-tune details, mask out elements, and re-generate parts, creating a clear history of iterative effort.",
+          "",
+          "## Artist Influence Matching",
+          "",
+          "Leverages similarity search across training embeddings to surface likely inspirations behind generated works. These matched artists are credited, and users can explore their original pieces - spotlighting the real creatives behind the data.",
+        ],
+        images: [
+          '/images/projects/forma/forma2.png', 
+          '/images/projects/forma/forma3.png',
+          '/images/projects/forma/forma4.png',
+          '/images/projects/forma/forma6.png',
+          '/images/projects/forma/forma7.png',
+        ]
+      },
+      'muse': {
+        title: "Museum Experience",
+        subtitle: "Reimagining the Museum Experience: Smart Navigation & AR Exploration Confidential Client 8XX579",
+        role: "Sr. Product Designer",
+        team: "Frontend Developer, Product Manager, Software Engineer (FS), iOS Mobile Engineer, MLE: AR/VR ",
+        content: [
+          "## Reimagining the Museum Experience",
+          "Most museum apps are functional but flat. They provide basic maps and lists, but don't account for the way people actually move through and experience space. This project reimagined the museum guide — not as a static app, but as a context-aware spatial experience layered with exploration, orientation, and storytelling.",
+          "## Mapping the Existing User Journey",
+          "The existing flow revealed long stretches without context, requiring users to exit the app or retrace steps. It became clear that content needed to be tightly integrated with spatial navigation — not siloed in menus.",
+          "",
+          "Analyzing visitor behavior uncovered two core insights: Over 40% of visit time was spent trying to find locations. Most users abandoned the app after the first map interaction. These findings guided the structural redesign — the experience needed to adapt to physical movement and reduce friction in discovery.",
+          "## Designing the Flow", 
+          "The redesigned system flows naturally from 2D map → 3D environment → object-level stories. This progression lets users zoom in and out as they explore, surfacing relevant content without overwhelming the interface. Wireframes were built to test structure, hierarchy, and movement. The goal was to make exploration feel intuitive — like you're walking through the space, not clicking through an app.",
+          "",
+          "## A Layered Experience",
+          "To solve this, the app was built around three core components, layered seamlessly into the navigation: A live 2D wayfinding map that centers the visitor in real time and helps them navigate. A 3D spatial experience that previews exhibit zones, rooms, and transitions between spaces. A Featured Works section, embedded within the map and galleries, where users can explore individual objects, stories, and artist details",
+          "This structure lets visitors zoom in and out naturally — from building → exhibit → object — without losing their place or context.", 
+          "## 2D Map Navigation",
+          "A clean, zoomable map helps users orient themselves within the museum. Visitors can tap to preview galleries, view current location, and follow visual wayfinding cues designed to mirror real-world signage.",
+          "",
+          "## 3D Spatial Experience",
+          "The 3D mode offers a layered, immersive view of the museum layout. Users can explore floors and rooms in spatial context, making the app feel like an extension of the physical space.",
+          "",
+          "## Featured Exhibits & Object Detail",
+          "A curated section surfaces key works and exhibitions. Each object opens into an editorial-style layout, offering rich descriptions, artist context, and optional AR previews for selected pieces.",
+          "## System Architecture Overview",
+          "Data Collection: User interactions (clicks, dwell time, exhibit views), indoor location (BLE beacons or WiFi triangulation), time of visit",
+          "Processing Pipeline", 
+          "Event data is streamed and cleaned using Python + BigQuery, then passed to a lightweight content recommendation engine (collaborative filtering + content-based hybrid model)",
+          "## Model Outputs",
+          "Personalized exhibit recommendations shown in the Featured tab: Dynamic reorder of UI cards based on predicted interest score. Traffic heatmaps sent to a curator-facing dashboard (Metabase prototype). Feedback loop: User behavior is re-ingested to fine-tune recommendations over time. Privacy: All data collection is anonymized and opt-in, with local storage fallback for one-time guest users",
+          "## Tooling",
+          "Python (data pipeline), BigQuery (storage & queries), Scikit-learn (prototype ML models), Metabase (dashboard), Figma (UX/UI)"
+        ],
+        images: [
+          '/images/projects/muse/muse2.png',
+          '/images/projects/muse/muse3.png',
+          '/images/projects/muse/muse4.png',
+          '/images/projects/muse/muse5.png',
+          '/images/projects/muse/muse6.png',
+          '/images/projects/muse/muse7.png',
+          '/images/projects/muse/muse10.png',
+          '/images/projects/muse/muse13.png',
+        ]
+      }
+    };
+
+    return contentMap[projectId] || contentMap['default'];
+  };
+
+  const content = getProjectContent(id);
+
+  // Define specific image mappings for each project
+  const getImageForHeading = (heading, projectId, images) => {
+    const mappings = {
+      'muse': {
+        "Reimagining the Museum Experience": 0,
+        "Mapping the Existing User Journey": 1,
+        "Designing the Flow": 2,
+        "A Layered Experience": 3,
+        "2D Map Navigation": 4,
+        "3D Spatial Experience": 5,
+        "Featured Exhibits & Object Detail": 6,
+        "System Architecture Overview": 7,
+        "Model Outputs": 8,
+        "Tooling": 9
+      },
+      'mcp': {
+        "Unblocking the Workflow": 0,
+        "Designing for Dialogue": 1,
+        "Conversation Playback": 2,
+        "Agent & Model Onboarding": 3,
+        "Session History & Sharing": 4,
+        "Developer Console: Multi-Agent Config & Execution": 5,
+        "User Journey & Flow": 6,
+        "Making Model Communication Legible": 7,
+        "Reflection & Future Directions": 8
+      },
+      'forma': {
+        "WELCOME": 0,
+        "DISCOVER": 1,
+        "CREATE + ITERATE": 2,
+        "ARTISTIC LINEAGE": 3,
+        "USER PROFILE": 4,
+        "MACHINE LEARNING FOUNDATIONS": 5
+      }
+    };
+    
+    const projectMapping = mappings[projectId];
+    if (projectMapping && projectMapping[heading] !== undefined) {
+      return images[projectMapping[heading]];
+    }
+    return null;
+  };
+
+  const renderContent = () => {
+    const elements = [];
+
+    content.content.forEach((text, index) => {
+      if (text === "") {
+        elements.push(<br key={`br-${index}`} />);
+      } else if (text.startsWith("## ")) {
+        const headingText = text.replace("## ", "");
+        
+        elements.push(
+          <h2 key={`h2-${index}`} className="content-heading">
+            {headingText}
+          </h2>
+        );
+        
+        // Get the specific image for this heading
+        const imageData = getImageForHeading(headingText, id, content.images);
+        
+        if (imageData) {
+          if (typeof imageData === 'string' && imageData.includes('|')) {
+            const [leftImg, rightImg] = imageData.split('|');
+            elements.push(
+              <div key={`img-${index}`} className="content-image-pair">
+                <div className="side-by-side-images">
+                  <img src={leftImg} alt={`${content.title} - ${headingText} (1)`} />
+                  <img src={rightImg} alt={`${content.title} - ${headingText} (2)`} />
+                </div>
+              </div>
+            );
+          } else {
+            elements.push(
+              <div key={`img-${index}`} className="content-image">
+                <img src={imageData} alt={`${content.title} - ${headingText}`} />
+              </div>
+            );
+          }
+        }
+      } else {
+        elements.push(
+          <p key={`p-${index}`} className="content-paragraph">
+            {text}
+          </p>
+        );
+      }
+    });
+
+    return elements;
+  };
+
+  return (
+    <Fragment>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+        .project-detail, .project-detail * {
+          font-family: "Space Grotesk", sans-serif !important;
+        }
+      `}</style>
+      <div className="project-detail" style={{ fontFamily: "Space Grotesk, sans-serif !important" }}>
+        <div className="project-detail-header">
+        <button onClick={() => navigate('/')} className="back-button">
+          ← Back to Work
+        </button>
+      </div>
+
+      <div className="project-hero-simple" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+        <h1 className="project-detail-title">{content.title}</h1>
+        {content.subtitle && (
+          <p className="project-detail-subtitle">{content.subtitle}</p>
+        )}
+        
+        {content.role && (
+          <div className="project-meta-simple">
+            <p><strong>Role:</strong> {content.role}</p>
+            {content.team && <p><strong>Team:</strong> {content.team}</p>}
+          </div>
+        )}
+      </div>
+
+      <div className="project-content-simple" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+        {renderContent()}
+      </div>
+
+      <div className="project-navigation">
+      </div>
+    </div>
+    </Fragment>
+  );
+};
 
 /* ---------- Notebook Layout (global background grid + margin) ---------- */
 const NotebookLayout = ({ children, theme }) => {
@@ -995,6 +1776,53 @@ const AboutPage = ({ theme = "ink" }) => {
   );
 };
 
+/* ---------- Rotating Titles Component ---------- */
+const RotatingTitles = ({ theme }) => {
+  return (
+    <h1
+      style={{
+        fontSize: "48px",
+        fontWeight: 700,
+        marginBottom: "20px",
+        textAlign: "right",
+        color: "inherit",
+        fontFamily: '"Space Grotesk", sans-serif',
+      }}
+    >
+      I'm a{" "}
+      <span
+        style={{
+          display: "inline-block",
+          minWidth: "280px", // keeps layout stable for longest word
+          textAlign: "left",
+          whiteSpace: "nowrap",
+        }}
+      >
+        <span
+          style={{
+            color:
+              theme === "ink"
+                ? "#ff4d4d"
+                : theme === "pearl"
+                ? "#00bcd4"
+                : "#ff66cc",
+          }}
+        >
+          <SimpleTypewriter
+            words={["Designer", "Data Scientist", "Creative Technologist"]}
+            loop={true}
+            cursor
+            cursorStyle="▎"
+            typeSpeed={90}
+            deleteSpeed={60}
+            delaySpeed={1000} // pause before switching
+          />
+        </span>
+      </span>
+    </h1>
+  );
+};
+
 /* ---------- Home Page ---------- */
 const HomePage = ({ theme }) => {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -1054,9 +1882,7 @@ const HomePage = ({ theme }) => {
           }}
         />
       </div>
-      <h1 style={{ fontSize: "48px", fontWeight: 700, marginBottom: "20px", textAlign: "right", color: "inherit" }}>
-        I'm a Product Designer and Data Scientist.
-      </h1>
+      <RotatingTitles theme={theme} />
       <p style={{ fontSize: "30px", marginBottom: "40px", textAlign: "right", minHeight: 38 }}>
         <Typewriter
           text="I design from the inside out. I focus on turning AI-driven systems into intuitive tools."
@@ -1119,135 +1945,9 @@ const HomePage = ({ theme }) => {
           marginLeft: "-50vw", 
           marginRight: "-50vw"
         }}>
-          {filteredProjects.map(project => {
-            const ProjectWrapper = project.externalLink ? 'a' : 'div';
-            const wrapperProps = project.externalLink ? {
-              href: project.externalLink,
-              target: "_blank",
-              rel: "noopener noreferrer",
-              style: { textDecoration: 'none', color: 'inherit' }
-            } : {};
-            
-            return (
-              <ProjectWrapper
-                key={project.id}
-                {...wrapperProps}
-              >
-                <div
-                  className={`project-card ${theme === 'ink' ? 'ink' : theme === 'rose' ? 'rose' : ''}`}
-                  style={{ 
-                    color: 'inherit', 
-                    transform: "translateZ(0)",
-                    transition: "transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease",
-                    border: "0.75px solid currentColor",
-                    borderRadius: 12,
-                    padding: 16,
-                    background: theme === 'ink' ? '#0f0f0f' : theme === 'rose' ? 'rgba(255,255,255,0.06)' : '#fff',
-                    cursor: project.externalLink ? 'pointer' : 'default',
-                    position: 'relative'
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.transform = "translateY(-6px)";
-                    e.currentTarget.style.boxShadow = "0 12px 28px rgba(0,0,0,0.18)";
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
-                >
-                  <div className="project-card__media" style={{ position: 'relative' }}>
-                    <img
-                      src={project.imageData}
-                      alt={project.title}
-                    />
-                    {project.externalLink && (
-                      <div style={{
-                        position: 'absolute',
-                        top: '12px',
-                        right: '12px',
-                        background: 'rgba(255,255,255,0.9)',
-                        color: '#000',
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '12px',
-                        fontWeight: '600'
-                      }}>
-                        ↗
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="project-card__title">
-                      {project.title}
-                    </h3>
-                    
-                    {/* Company and Year metadata */}
-                    {(project.company || project.year) && (
-                      <div style={{ marginBottom: '8px' }}>
-                        <span style={{ 
-                          fontSize: '12px', 
-                          color: 'rgba(255,255,255,0.6)', 
-                          fontWeight: '500' 
-                        }}>
-                          {project.year}{project.year && project.company && ' • '}{project.company}
-                        </span>
-                      </div>
-                    )}
-                    
-                    <p className="project-card__meta">
-                      {project.type}
-                    </p>
-                    <p className="project-card__desc">
-                      {project.description}
-                    </p>
-                    
-                    {/* Tags */}
-                    {project.tags && project.tags.length > 0 && (
-                      <div style={{ 
-                        display: 'flex', 
-                        flexWrap: 'wrap', 
-                        gap: '4px', 
-                        marginTop: '12px' 
-                      }}>
-                        {project.tags.slice(0, 3).map((tag, index) => (
-                          <span 
-                            key={index} 
-                            style={{
-                              fontSize: '10px',
-                              background: 'rgba(255,255,255,0.1)',
-                              color: 'rgba(255,255,255,0.8)',
-                              padding: '2px 6px',
-                              borderRadius: '8px',
-                              border: '1px solid rgba(255,255,255,0.15)',
-                              fontWeight: '500'
-                            }}
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                        {project.tags.length > 3 && (
-                          <span style={{
-                            fontSize: '10px',
-                            background: 'rgba(255,255,255,0.05)',
-                            color: 'rgba(255,255,255,0.6)',
-                            padding: '2px 6px',
-                            borderRadius: '8px',
-                            fontWeight: '500'
-                          }}>
-                            +{project.tags.length - 3}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </ProjectWrapper>
-            );
-          })}
+          {filteredProjects.map(project => (
+            <ProjectCard key={project.id} project={project} theme={theme} />
+          ))}
         </div>
       </div>
     </section>
@@ -1508,7 +2208,8 @@ const Portfolio = () => {
           <Route path="/" element={<HomePage theme={currentTheme} />} />
           <Route path="/about" element={<AboutPage theme={currentTheme} />} />
           <Route path="/visual" element={<VisualPage theme={currentTheme} />} />
-        <Route path="/contact" element={<ContactPage theme={currentTheme} />} />
+          <Route path="/contact" element={<ContactPage theme={currentTheme} />} />
+          <Route path="/project/:id" element={<ProjectDetailPage theme={currentTheme} />} />
       </Routes>
         <footer
                     style={{
