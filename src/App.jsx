@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef, Fragment } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
-import { motion, AnimatePresence } from "framer-motion";
-import { Typewriter as SimpleTypewriter } from 'react-simple-typewriter';
 import { projects } from './data/projects.js';
 
 /* ---------- Custom Cursor Component ---------- */
@@ -1776,53 +1774,6 @@ const AboutPage = ({ theme = "ink" }) => {
   );
 };
 
-/* ---------- Rotating Titles Component ---------- */
-const RotatingTitles = ({ theme }) => {
-  return (
-    <h1
-      style={{
-        fontSize: "48px",
-        fontWeight: 700,
-        marginBottom: "20px",
-        textAlign: "right",
-        color: "inherit",
-        fontFamily: '"Space Grotesk", sans-serif',
-      }}
-    >
-      I'm a{" "}
-      <span
-        style={{
-          display: "inline-block",
-          minWidth: "280px", // keeps layout stable for longest word
-          textAlign: "left",
-          whiteSpace: "nowrap",
-        }}
-      >
-        <span
-          style={{
-            color:
-              theme === "ink"
-                ? "#ff4d4d"
-                : theme === "pearl"
-                ? "#00bcd4"
-                : "#ff66cc",
-          }}
-        >
-          <SimpleTypewriter
-            words={["Designer", "Data Scientist", "Creative Technologist"]}
-            loop={true}
-            cursor
-            cursorStyle="▎"
-            typeSpeed={90}
-            deleteSpeed={60}
-            delaySpeed={1000} // pause before switching
-          />
-        </span>
-      </span>
-    </h1>
-  );
-};
-
 /* ---------- Home Page ---------- */
 const HomePage = ({ theme }) => {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -1882,7 +1833,9 @@ const HomePage = ({ theme }) => {
           }}
         />
       </div>
-      <RotatingTitles theme={theme} />
+      <h1 style={{ fontSize: "48px", fontWeight: 700, marginBottom: "20px", textAlign: "right", color: "inherit" }}>
+        I'm a Product Designer and Data Scientist.
+      </h1>
       <p style={{ fontSize: "30px", marginBottom: "40px", textAlign: "right", minHeight: 38 }}>
         <Typewriter
           text="I design from the inside out. I focus on turning AI-driven systems into intuitive tools."

@@ -13,6 +13,19 @@ export const projects = [
     tags: ['React', 'D3.js']
   },
   {
+    id: 'data-viz-tool',
+    title: 'Plotmind',
+    type: 'product design',
+    description: 'No code data visualization tool',
+    category: 'product-design',
+    className: 'product-design',
+    imageData: '/images/plotmind.png',
+    externalLink: 'https://tanhata.github.io/plotmind',
+    company: 'Freelance',
+    year: '2025',
+    tags: ['Framer', 'React', 'Python']
+  },
+  {
     id: 'code-gen-tools',
     title: 'Dissecting AI Design Capabilities',
     type: 'writing',
@@ -33,7 +46,7 @@ export const projects = [
     category: 'product-design',
     className: 'design-project',
     imageData: '/images/mcp.gif',
-    company: 'Confidential',
+    company: 'Freelance',
     year: '2024',
     tags: ['Figma']
   },
@@ -48,19 +61,6 @@ export const projects = [
     externalLink: 'https://tanhata.github.io/geo-viz/',
     year: '2021',
     tags: ['React', 'Python']
-  },
-  {
-    id: 'art-critic',
-    title: 'Art Critic',
-    type: 'llm, machine learning',
-    description: 'Large language model trained to analyze and critique visual art with contextual understanding.',
-    category: 'ai-ml',
-    className: 'ml-project',
-    imageData: '/images/art-critic.gif',
-    externalLink: 'https://github.com/tanhata/ArtCrit_Blip/tree/main',
-    company: 'Confidential',
-    year: '2022',
-    tags: ['LLM', 'Python']
   },
   {
     id: 'intention-grounding',
@@ -90,16 +90,16 @@ export const projects = [
   },
   {
     id: 'green-spaces',
-    title: 'Green Spaces',
+    title: 'The Green Divide',
     type: 'data analysis',
-    description: 'Interactive analysis of urban park accessibility and environmental impact across major cities.',
+    description: 'Interactive analysis of urban park accessibility and environmental impact across New York City.',
     category: 'data-analysis',
     className: 'data-project',
     imageData: '/images/green_spaces.gif',
-    externalLink: 'https://tanhata.github.io/Green-Spaces-in-NYC/',
+    externalLink: '/green_divide_story.html',
     company: 'Bond Center for Urban Futures',
     year: '2021',
-    tags: ['Python', 'React']
+    tags: ['Python']
   },
   {
     id: 'forma',
@@ -109,7 +109,7 @@ export const projects = [
     category: 'mobile-design',
     className: 'mobile-project',
     imageData: '/images/forma.jpg',
-    company: 'Confidential',
+    company: 'Freelance',
     year: '2024',
     tags: ['Figma']
   },
@@ -121,7 +121,7 @@ export const projects = [
     category: 'mobile-design',
     className: 'mobile-project',
     imageData: '/images/muse.gif',
-    company: 'Confidential',
+    company: 'Freelance',
     year: '2022',
     tags: ['Figma', 'AR/VR']
   },
