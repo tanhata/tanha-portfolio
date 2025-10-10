@@ -1834,7 +1834,7 @@ const HomePage = ({ theme }) => {
         />
       </div>
       <h1 style={{ fontSize: "48px", fontWeight: 700, marginBottom: "20px", textAlign: "right", color: "inherit" }}>
-        I'm a Product Designer and Data Scientist.
+        I'm a Designer with a background in Data Science.
       </h1>
       <p style={{ fontSize: "30px", marginBottom: "40px", textAlign: "right", minHeight: 38 }}>
         <Typewriter
