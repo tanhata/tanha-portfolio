@@ -8,9 +8,8 @@ export const projects = [
     className: 'web-project',
     imageData: '/images/model-pulse.jpg',
     externalLink: 'https://docs.google.com/presentation/d/1ePidVWFj8yHKuQ_lr5rFXV7a4K0Pexfv1Bt_5l6igmE/edit?usp=sharing',
-    company: 'Stealth Startup',
     year: '2025',
-    tags: ['React', 'D3.js']
+    tags: ['React', 'D3.js','Product Design']
   },
   {
     id: 'data-viz-tool',
@@ -22,7 +21,7 @@ export const projects = [
     imageData: '/images/plotmind.png',
     externalLink: 'https://tanhata.github.io/plotmind',
     year: '2025',
-    tags: ['Framer', 'React', 'Python']
+    tags: ['Framer', 'React', 'Python','Product Design']
   },
   {
     id: 'code-gen-tools',
@@ -46,19 +45,19 @@ export const projects = [
     className: 'design-project',
     imageData: '/images/mcp.gif',
     year: '2024',
-    tags: ['Figma']
+    tags: ['Figma',  'Product Design']
   },
   {
     id: 'Tangent',
     title: 'Tangent',
     type: 'product design',
-    description: 'AI-Native Math Companion for Parametric Design',
+    description: 'Real-time parametric geometry generator with natural language input, live 3D visualization, and professional export formats (OBJ, STL, Grasshopper) for computational design workflows.',
     category: 'product-design',
     className: 'product-design',
     imageData: '/images/main-interface.png',
     externalLink: 'https://docs.google.com/presentation/d/e/2PACX-1vRjNEWLMh6TRxoEeeHaeL_ePIp357aN6xCbF96EgSPOmyIOAjsyWw7KoLbwnlk5QlhleyfO8OZxrGbA/pub?start=false&loop=true&delayms=3000',
     year: '2024',
-    tags: ['Figma', 'Python']
+    tags: ['Figma', 'Python','Product Design']
   },
   {
     id: 'recursive-orbit',
@@ -71,7 +70,7 @@ export const projects = [
     externalLink: 'https://observablehq.com/@tanhas-canvas/recursive-orbit',
     company: 'Personal Project',
     year: '2024',
-    tags: ['Observable', 'Javascript']
+    tags: ['Observable', 'Javascript', 'Data Analysis']
   },
   {
     id: 'green-spaces',
@@ -83,7 +82,7 @@ export const projects = [
     imageData: '/images/green_spaces.gif',
     externalLink: '/green_divide_story.html',
     year: '2021',
-    tags: ['Python']
+    tags: ['Python', 'Data Analysis']
   },
   {
     id: 'muse',
@@ -94,7 +93,7 @@ export const projects = [
     className: 'mobile-project',
     imageData: '/images/muse.gif',
     year: '2022',
-    tags: ['Figma', 'AR/VR']
+    tags: ['Figma', 'AR/VR','Product Design']
   },
   {
     id: 'bitlot',
@@ -106,7 +105,7 @@ export const projects = [
     imageData: '/images/bitlot.gif',
     externalLink: 'https://drive.google.com/file/d/1tAwTFKHjWch9u-SEe0oKMHvTClIR3FT8/view?usp=sharing',
     year: '2021',
-    tags: ['Python']
+    tags: ['Python', 'Data Analysis']
   },
   {
     id: 'heating-loads',
@@ -119,7 +118,7 @@ export const projects = [
     externalLink: 'https://drive.google.com/file/d/1FHQsm3s1dJWWMKKBy-QRjClEO3rS2OZ8/view?usp=sharing',
     company: 'UC Berkeley',
     year: '2022',
-    tags: ['Python']
+    tags: ['Python', 'AI/ML', 'Data Analysis']
   },
   {
     id: 'living-computing',
@@ -132,7 +131,7 @@ export const projects = [
     externalLink: 'https://www.youtube.com/watch?v=Geo17VbvWtU',
     company: 'SSA',
     year: '2021',
-    tags: ['Arduino', 'C++']
+    tags: ['Arduino', 'C++', 'HCI']
   },
   {
     id: 'gravity-game',
