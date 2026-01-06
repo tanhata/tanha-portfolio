@@ -49,16 +49,16 @@ export const projects = [
     tags: ['Figma']
   },
   {
-    id: 'geo-viz',
-    title: 'Geo Climate Data Visualization Tool',
+    id: 'Tangent',
+    title: 'Tangent',
     type: 'product design',
-    description: 'Spatial Analytics Dashboard for Urban Sustainability',
+    description: 'AI-Native Math Companion for Parametric Design',
     category: 'product-design',
     className: 'product-design',
     imageData: '/images/main-interface.png',
-    externalLink: 'https://tanhata.github.io/geo-viz/',
-    year: '2021',
-    tags: ['React', 'Python']
+    externalLink: 'https://docs.google.com/presentation/d/e/2PACX-1vRjNEWLMh6TRxoEeeHaeL_ePIp357aN6xCbF96EgSPOmyIOAjsyWw7KoLbwnlk5QlhleyfO8OZxrGbA/pub?start=false&loop=true&delayms=3000',
+    year: '2024',
+    tags: ['Figma', 'Python']
   },
   {
     id: 'recursive-orbit',
