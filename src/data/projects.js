@@ -19,7 +19,7 @@ export const projects = [
     category: 'product-design',
     className: 'product-design',
     imageData: '/images/plotmind.png',
-    externalLink: 'https://tanhata.github.io/plotmind',
+    externalLink: 'https://tanhata.github.io/plotmind-case-study/',
     year: '2025',
     tags: ['Framer', 'React', 'Python','Product Design']
   },
