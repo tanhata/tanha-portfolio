@@ -7,7 +7,7 @@ export const projects = [
     category: 'product-design',
     className: 'web-project',
     imageData: '/images/model-pulse.jpg',
-    externalLink: 'https://docs.google.com/presentation/d/1ePidVWFj8yHKuQ_lr5rFXV7a4K0Pexfv1Bt_5l6igmE/edit?usp=sharing',
+    externalLink: 'https://tanhata.github.io/modelpulse-case-study/',
     year: '2025',
     tags: ['React', 'D3.js','Product Design']
   },

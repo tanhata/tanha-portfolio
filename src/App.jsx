@@ -707,6 +707,7 @@ const ResponsiveGridCSS = () => (
       margin-bottom: 14px;
       border: 1px solid rgba(0,0,0,0.06);
       position: relative;
+      flex-shrink: 0; 
     }
 
     .project.ink .project-image { 
