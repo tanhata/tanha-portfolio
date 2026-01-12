@@ -2,8 +2,7 @@ export const projects = [
   {
     id: 'model-pulse',
     title: 'ModelPulse: AI Performance Platform',
-    type: 'web app',
-    description: 'Enterprise observability interface that helps ML and ops teams detect drift, monitor accuracy, and manage model compliance in production',
+    description: 'Enterprise observability interface, helping ML teams detect drift, monitor accuracy, and manage model compliance in production',
     category: 'product-design',
     className: 'web-project',
     imageData: '/images/model-pulse.jpg',
@@ -14,19 +13,17 @@ export const projects = [
   {
     id: 'data-viz-tool',
     title: 'Plotmind: No-Code Data Intelligence Builder',
-    type: 'product design',
-    description: 'collaborative, low-code environment for creating and sharing advanced data visualizations inside enterprise analytics pipelines.',
+    description: 'Collaborative, low-code environment for creating and sharing advanced data visualizations inside enterprise analytics pipelines.',
     category: 'product-design',
     className: 'product-design',
     imageData: '/images/plotmind.png',
     externalLink: 'https://tanhata.github.io/plotmind-case-study/',
     year: '2025',
-    tags: ['Framer', 'React', 'Python','Product Design']
+    tags: ['Framer', 'Python','Product Design']
   },
   {
     id: 'code-gen-tools',
     title: 'Evaluating AI Design Tools: Code Generation Workflows',
-    type: 'writing',
     description: 'Research analysis on how design teams leverage LLM-driven code assistants to accelerate front-end prototyping and reduce iteration time.',
     category: 'writing',
     className: 'ml-writing',
@@ -38,19 +35,18 @@ export const projects = [
   },
   {
     id: 'mcp',
-    title: 'AgentOS: Multi-Agent Collaboration',
-    type: 'product design',
+    title: 'Multi-Agent Collaboration',
     description: 'Defined interaction patterns and conversation UIs that enable distributed AI agents to coordinate, debate, and refine outputs for enterprise workflows.',
     category: 'product-design',
     className: 'design-project',
-    imageData: '/images/mcp.gif',
+    imageData: '/images/mcp.png',
+    externalLink: 'https://tanhata.github.io/mcp-case-study/',
     year: '2024',
     tags: ['Figma',  'Product Design']
   },
   {
     id: 'Tangent',
     title: 'Tangent',
-    type: 'product design',
     description: 'Real-time parametric geometry generator with natural language input, live 3D visualization, and professional export formats (OBJ, STL, Grasshopper) for computational design workflows.',
     category: 'product-design',
     className: 'product-design',
@@ -62,7 +58,6 @@ export const projects = [
   {
     id: 'recursive-orbit',
     title: 'Recursive Orbit',
-    type: 'data viz',
     description: 'Interactive visualization project exploring grief and memory patterns via generative data representations.',
     category: 'data-visualization',
     className: 'data-project',
@@ -75,7 +70,6 @@ export const projects = [
   {
     id: 'green-spaces',
     title: 'The Green Divide',
-    type: 'data analysis',
     description: 'Data-driven analysis tool mapping disparities in park access and environmental quality across NYC neighborhoods.',
     category: 'data-analysis',
     className: 'data-project',
@@ -87,18 +81,16 @@ export const projects = [
   {
     id: 'muse',
     title: 'MUSE',
-    type: 'mobile design (iOS)',
     description: 'AR/VR-inspired app combining inspiration curation with spatial interfaces for digital creators.',
     category: 'mobile-design',
     className: 'mobile-project',
     imageData: '/images/muse.gif',
     year: '2022',
-    tags: ['Figma', 'AR/VR','Product Design']
+    tags: ['Figma', 'AR/VR','Mobile Design']
   },
   {
     id: 'bitlot',
     title: 'BitLot',
-    type: 'data analysis',
     description: 'Comprehensive product analytics platform for data-driven decision making.',
     category: 'data-analysis',
     className: 'data-project',
@@ -110,7 +102,6 @@ export const projects = [
   {
     id: 'heating-loads',
     title: 'Predictive Energy Optimization Model',
-    type: 'machine learning',
     description: 'Predictive modeling for building heating load optimization and energy efficiency.',
     category: 'ai-ml',
     className: 'ml-project',
@@ -123,7 +114,6 @@ export const projects = [
   {
     id: 'living-computing',
     title: 'Living Computing',
-    type: 'human computer interaction',
     description: 'Exploration of adaptive interfaces that respond to human behavior and context.',
     category: 'human-computer-interaction',
     className: 'design-project',
@@ -136,7 +126,6 @@ export const projects = [
   {
     id: 'gravity-game',
     title: 'Gravity Game',
-    type: 'game',
     description: 'Physics based game',
     category: 'human-computer-interaction',
     className: 'design-project',

@@ -372,7 +372,7 @@ const ResponsiveGridCSS = () => (
       justify-content: space-between;  /* ensures spacing stays consistent */
       height: 100%;                    /* equal card height */
       min-height: 440px;
-      max-height: 520px;
+      max-height: 620px;
       min-width: 0;           /* prevent overflow */
       border-radius: 12px;
       border: 1px solid rgba(0,0,0,0.08);
@@ -385,7 +385,7 @@ const ResponsiveGridCSS = () => (
     /* Dark theme override (optional): set this class only when currentTheme === 'ink' */
     .project-card.ink {
       background: #0f0f0f;
-      border-color: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.75);
     }
 
     /* Rose (gradient) override (optional) */
@@ -662,7 +662,7 @@ const ResponsiveGridCSS = () => (
       justify-content: space-between;
       height: 100%;
       min-height: 440px;
-      max-height: 520px;
+      max-height: 620px;
       min-width: 0;
       border-radius: 12px;
       border: 1px solid rgba(0,0,0,0.08);
@@ -702,6 +702,7 @@ const ResponsiveGridCSS = () => (
     .project-image {
       width: 100%;
       aspect-ratio: 1 / 1;
+      flex-shrink: 0;
       border-radius: 10px;
       overflow: hidden;
       margin-bottom: 14px;
