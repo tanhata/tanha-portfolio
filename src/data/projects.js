@@ -96,7 +96,7 @@ export const projects = [
     category: 'mobile-design',
     className: 'mobile-project',
     imageData: '/images/aura.png',
-    externalLink: 'tanhata.github.io/aura-case-study/',
+    externalLink: 'https://tanhata.github.io/aura-case-study/',
     year: '2022',
     tags: [ 'AR/VR','Mobile Design']
   },
