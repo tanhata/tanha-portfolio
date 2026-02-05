@@ -90,14 +90,15 @@ export const projects = [
     tags: ['Python', 'Data Analysis']
   },
   {
-    id: 'muse',
-    title: 'MUSE',
-    description: 'AR/VR-inspired app combining inspiration curation with spatial interfaces for digital creators.',
+    id: 'aura',
+    title: 'AURA',
+    description: 'AR museum guide enabling spatial storytelling through layered artwork narratives.',
     category: 'mobile-design',
     className: 'mobile-project',
-    imageData: '/images/muse.gif',
+    imageData: '/images/aura.png',
+    externalLink: 'tanhata.github.io/aura-case-study/',
     year: '2022',
-    tags: ['Figma', 'AR/VR','Mobile Design']
+    tags: [ 'AR/VR','Mobile Design']
   },
   {
     id: 'bitlot',
