@@ -73,10 +73,10 @@ export const projects = [
     category: 'data-visualization',
     className: 'data-project',
     imageData: '/images/recursive-orbit.gif',
-    externalLink: 'https://observablehq.com/@tanhas-canvas/recursive-orbit',
+    externalLink: 'hhttps://tanhata.github.io/recursive-orbit/',
     company: 'Personal Project',
     year: '2024',
-    tags: ['Observable', 'Javascript', 'Data Analysis']
+    tags: ['Javascript', 'Data Analysis']
   },
   {
     id: 'green-spaces',
