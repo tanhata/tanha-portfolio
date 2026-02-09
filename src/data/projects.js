@@ -73,7 +73,7 @@ export const projects = [
     category: 'data-visualization',
     className: 'data-project',
     imageData: '/images/recursive-orbit.gif',
-    externalLink: 'hhttps://tanhata.github.io/recursive-orbit/',
+    externalLink: 'https://tanhata.github.io/recursive-orbit/',
     company: 'Personal Project',
     year: '2024',
     tags: ['Javascript', 'Data Analysis']
