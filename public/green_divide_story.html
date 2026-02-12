@@ -29,9 +29,12 @@
         .hero-bg div{border-radius:1px;animation:pulse 5s ease-in-out infinite alternate}
         @keyframes pulse{0%{opacity:.15}100%{opacity:1}}
         .hero-inner{position:relative;z-index:1}
-        .hero-ey{font-family:var(--mn);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--w3);margin-bottom:28px;opacity:0;animation:fin .5s .3s forwards}
-        .hero h1{font-family:var(--hd);font-size:clamp(48px,9vw,100px);font-weight:400;line-height:.9;margin-bottom:24px;opacity:0;animation:fup .7s .4s forwards}
-        .hero-sub{font-size:16px;font-weight:300;color:var(--w5);max-width:400px;line-height:1.75;opacity:0;animation:fin .7s .7s forwards}
+        .hero-ey{font-family:var(--mn);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--w3);margin-bottom:28px;opacity:0;animation:fin .5s .3s forwards;position:relative;z-index:1}
+        .hero h1{font-family:var(--hd);font-size:clamp(52px,10vw,110px);font-weight:400;line-height:.85;margin-bottom:28px;opacity:0;animation:fup .7s .4s forwards;position:relative;z-index:1}
+        .hero h1 .the{display:block;font-family:var(--mn);font-size:clamp(11px,1.5vw,14px);letter-spacing:8px;text-transform:uppercase;color:var(--w3);font-weight:300;margin-bottom:14px;-webkit-text-fill-color:var(--w3)}
+        .hero h1 .green{background:linear-gradient(135deg,#4ade80,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .hero h1 .pct{font-family:var(--mn);font-size:.45em;color:var(--g);-webkit-text-fill-color:var(--g);vertical-align:super;margin-left:4px;opacity:.5}
+        .hero-sub{font-size:16px;font-weight:300;color:var(--w5);max-width:420px;line-height:1.75;opacity:0;animation:fin .7s .7s forwards;position:relative;z-index:1}
         @keyframes fin{to{opacity:1}}
         @keyframes fup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 
@@ -118,7 +121,7 @@
     <div class="hero-bg" id="heroBg"></div>
     <div class="hero-inner">
         <div class="hero-ey">New York City · 2019–2023</div>
-        <h1>The Green Divide</h1>
+        <h1><span class="the">The</span><span class="green">Green</span> Divide<span class="pct">%</span></h1>
         <p class="hero-sub">How park investment, quality, and health outcomes split along borough lines.</p>
     </div>
 </section>
