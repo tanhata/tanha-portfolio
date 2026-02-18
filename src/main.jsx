@@ -1,8 +1,8 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import Portfolio from './App.jsx'
+import React from "react"
+import ReactDOM from "react-dom/client"
+import Portfolio from "./App.jsx"
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Portfolio />
   </React.StrictMode>,

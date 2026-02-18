@@ -1,2184 +1,1175 @@
-import React, { useState, useEffect, useRef, Fragment } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom';
-import { useInView } from 'react-intersection-observer';
-import { projects } from './data/projects.js';
+import { useState, useEffect, useRef, useCallback } from "react";
 
-/* ---------- Custom Cursor Component ---------- */
-const CustomCursor = ({ theme = "ink" }) => {
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  const [hovering, setHovering] = useState(false);
-  const [t, setT] = useState(0);
-  const ref = useRef();
+/* ═══════════════════════════════════════════════════════════════════
+   DATA
+   ═══════════════════════════════════════════════════════════════════ */
+const CAT = {
+  "product-design":            { label:"Product Design", color:"#dc3545" },
+  "ai-ml":                     { label:"AI / ML",        color:"#f59e0b" },
+  "data-visualization":        { label:"Data Viz",       color:"#a78bfa" },
+  "data-analysis":             { label:"Data Analysis",  color:"#60a5fa" },
+  "mobile-design":             { label:"Mobile",         color:"#34d399" },
+  "writing":                   { label:"Research",       color:"#fb7185" },
+  "human-computer-interaction":{ label:"HCI",            color:"#38bdf8" },
+};
+const gc = id => CAT[id] || CAT["product-design"];
 
-  const accent = theme === "pearl" ? "#00bcd4" : theme === "rose" ? "#ff66cc" : "#ff4d4d";
+const PROJECTS = [
+  { id:"lattice",       title:"Lattice",                  sub:"Next Gen Experiment Tracking", desc:"ML experiment tracker connecting experiments, papers, and evaluations.",              cat:"product-design", img:"/images/lattice.png",         link:"https://tanhata.github.io/lattice-case-study/",    year:"2026", tags:["Product Design"],                featured:true },
+  { id:"model-pulse",   title:"ModelPulse",               sub:"AI Performance Platform",      desc:"Enterprise observability — detect drift, monitor accuracy, manage compliance.",       cat:"product-design", img:"/images/model-pulse.jpg",     link:"https://tanhata.github.io/modelpulse-case-study/", year:"2025", tags:["React","D3.js","Product Design"], featured:true },
+  { id:"plotmind",      title:"Plotmind",                  sub:"No-Code Data Intelligence",    desc:"Low-code environment for advanced data visualizations in enterprise pipelines.",     cat:"product-design", img:"/images/plotmind.png",        link:"https://tanhata.github.io/plotmind-case-study/",   year:"2025", tags:["Framer","Python","Product Design"], featured:true },
+  { id:"code-gen",      title:"AI Design Tools",           sub:"Code Gen Research",            desc:"How design teams leverage LLM-driven code assistants for front-end prototyping.",     cat:"writing",        img:"/images/codereview.png",      link:"https://open.substack.com/pub/talshe/p/dissecting-ai-design-capabilities", year:"2025", tags:["Research"] },
+  { id:"mcp",           title:"Multi-Agent Collaboration", sub:"MCP Interface",                desc:"Conversation UIs enabling distributed AI agents to coordinate and refine outputs.",   cat:"product-design", img:"/images/mcp.gif",            link:"https://tanhata.github.io/mcp-case-study/",        year:"2024", tags:["Figma","Product Design"],        featured:true },
+  { id:"tangent",       title:"Tangent",                   sub:"Parametric Geometry",          desc:"Real-time parametric geometry with natural language input and live 3D.",             cat:"product-design", img:"/images/tangent.png",  link:"https://docs.google.com/presentation/d/e/2PACX-1vRjNEWLMh6TRxoEeeHaeL_ePIp357aN6xCbF96EgSPOmyIOAjsyWw7KoLbwnlk5QlhleyfO8OZxrGbA/pub", year:"2024", tags:["Figma","Python"] },
+  { id:"recursive-orbit",title:"Recursive Orbit",         sub:"Grief & Memory",               desc:"Interactive visualization exploring grief via generative data.",                     cat:"data-visualization", img:"/images/recursive-orbit.gif", link:"https://tanhata.github.io/recursive-orbit/",   year:"2024", tags:["Javascript"] },
+  { id:"aura",          title:"AURA",                      sub:"AR Museum Guide",              desc:"AR museum guide — spatial storytelling through layered narratives.",                 cat:"mobile-design",  img:"/images/aura.png",           link:"https://tanhata.github.io/aura-case-study/",       year:"2022", tags:["AR/VR","Mobile"], featured:true },
+  { id:"green-spaces",  title:"The Green Divide",          sub:"NYC Park Access",              desc:"Mapping disparities in park access across NYC neighborhoods.",                      cat:"data-analysis",  img:"/images/green_spaces.gif",   link:"/green_divide_story.html",                         year:"2021", tags:["Python"] },
+  { id:"bitlot",        title:"BitLot",                    sub:"Product Analytics",            desc:"Product analytics platform for data-driven decisions.",                            cat:"data-analysis",  img:"/images/bitlot.gif",         link:"https://drive.google.com/file/d/1tAwTFKHjWch9u-SEe0oKMHvTClIR3FT8/view", year:"2021", tags:["Python"] },
+  { id:"heating",       title:"Energy Optimization",       sub:"Predictive ML",                desc:"Building heating load optimization and energy efficiency.",                        cat:"ai-ml",          img:"/images/heating-loads.gif",   link:"https://drive.google.com/file/d/1FHQsm3s1dJWWMKKBy-QRjClEO3rS2OZ8/view", year:"2022", tags:["Python","AI/ML"] },
+  { id:"living",        title:"Living Computing",          sub:"Adaptive Interfaces",          desc:"Interfaces that respond to human behavior and context.",                           cat:"human-computer-interaction", img:"/images/living-computing.gif", link:"https://www.youtube.com/watch?v=Geo17VbvWtU", year:"2021", tags:["Arduino","C++"] },
+  { id:"gravity",       title:"Gravity Game",              sub:"Physics Simulation",           desc:"Physics-based interactive game.",                                                 cat:"human-computer-interaction", img:"/images/gravitygame.png", link:"https://tanhata.github.io/gravitygame/",       year:"2020", tags:["HCI"] },
+];
+const FEATURED = PROJECTS.filter(p => p.featured);
+const DATA_PROJECTS = PROJECTS.filter(p => ["data-analysis","ai-ml","data-visualization","writing"].includes(p.cat) && !p.featured);
+
+const CAREER = [
+  { id:"high-school", title:"High School",           kicker:"Math was my first love",                         body:"I used to solve equations for fun and sketch whatever I saw around me — usually while scrolling Tumblr deep into the night." },
+  { id:"undergrad",   title:"Undergrad",              kicker:"I studied art and technology",                   body:"I explored creative tech projects that lived between mediums — coding installations, designing speculative tools, and studying how systems and people interact." },
+  { id:"grad",        title:"Grad School",            kicker:"Architecture & Data Science era (barely slept)", body:"I pivoted to architecture to bring more math and physics into my creative work. That curiosity expanded into data science — and then transformers dropped, and suddenly I was prototyping everything from spatial tools to AI-powered workflows." },
+  { id:"work",        title:"Work",                   kicker:"Working across disciplines",                    body:"I've worked across disciplines — designing, analyzing, and building with teams at Google, JPMorgan Chase, The Bond Center, CUNY, and Flad." },
+  { id:"sabbatical",  title:"Bereavement Sabbatical", kicker:"Loss",                                          body:"A sudden cancer diagnosis and ultimately losing my mom shattered my world. I took some time to heal." },
+  { id:"now",         title:"Now",                    kicker:"",                                              body:"I've leaned fully into what I do best — crafting intuitive design systems powered by ML. My mother's ambition, intelligence, and kindness continue to inspire my work." },
+];
+
+const VISUALS = [
+  { id:"followme",     title:"Follow Me, Dania",              type:"album cover",     img:"/images/visual/followme.png", ratio:"1/1" },
+  { id:"mecollage",    title:"Self Portrait",                  type:"illustration, handdrawn", img:"/images/visual/mecollage.jpg" },
+  { id:"hejaz",        title:"Hejaz, Kingdom of Saudi Arabia", type:"branding",        img:"/images/visual/hejaz.gif", ratio:"1/1" },
+  { id:"bldg",         title:"NYC Commissioner Building",      type:"illustration",    img:"/images/visual/bldg.jpg" },
+  { id:"sheikhdallah", title:"Sheikhdallah Corp",              type:"graphic design",  img:"/images/visual/sheikhdallah_corp.jpg" },
+  { id:"jism",         title:"Jism, \u062c\u0633\u0645 (Body)",type:"illustration, handdrawn", img:"/images/visual/jism.jpg" },
+  { id:"atc",          title:"Arab Tech Collective",           type:"branding",        img:"/images/visual/atc.jpg" },
+  { id:"year2050",     title:"Year 2050, Film Festival",       type:"poster",          img:"/images/visual/year2050.png" },
+];
+
+/* ═══════════════════════════════════════════════════════════════════
+   INTENT
+   ═══════════════════════════════════════════════════════════════════ */
+const PROJECT_RESPONSES = {
+  lattice:          { text:"Lattice — next-gen ML experiment tracker. Teams lose track of how experiments connect to papers and prior work. I designed the full end-to-end experience.", link:"https://tanhata.github.io/lattice-case-study/" },
+  "model-pulse":    { text:"ModelPulse — enterprise observability for ML in production. Drift detection, accuracy monitoring, compliance. Built the data viz layer with React + D3.js.", link:"https://tanhata.github.io/modelpulse-case-study/" },
+  plotmind:         { text:"Plotmind — low-code data intelligence. Enterprise teams build advanced visualizations without writing code. I designed the visual pipeline builder.", link:"https://tanhata.github.io/plotmind-case-study/" },
+  mcp:              { text:"MCP — multi-agent AI collaboration. Multiple language models coordinate and refine each other's outputs. I designed conversation playback and the developer console.", link:"https://tanhata.github.io/mcp-case-study/" },
+  tangent:          { text:"Tangent — parametric geometry with natural language. Describe a shape in words, watch it build in real-time." },
+  "recursive-orbit":{ text:"Recursive Orbit — grief through generative data. Orbits decay, patterns shift. Built in pure JavaScript. The most emotionally honest piece I've made." },
+  aura:             { text:"AURA — AR museum guide. Spatial storytelling through layered narratives. I designed the navigation, AR overlays, and content architecture." },
+};
+const PROJECT_CHIPS = ["Tell me about Lattice","What's ModelPulse?","Explore MCP","What's Plotmind?"];
+
+function matchIntent(q) {
+  const s = q.toLowerCase();
+  if (/lattice/i.test(s)) return "p:lattice";
+  if (/model\s?pulse/i.test(s)) return "p:model-pulse";
+  if (/plotmind/i.test(s)) return "p:plotmind";
+  if (/mcp|multi.?agent/i.test(s)) return "p:mcp";
+  if (/tangent/i.test(s)) return "p:tangent";
+  if (/recursive|orbit/i.test(s)) return "p:recursive-orbit";
+  if (/aura|museum/i.test(s)) return "p:aura";
+  if (/all.?project|everything|archive|13/i.test(s)) return "all";
+  if (/project|work|portfolio|show|featured/i.test(s)) return "projects";
+  if (/about|who|background|story/i.test(s)) return "about";
+  if (/skill|stack|tool|process|approach/i.test(s)) return "skills";
+  if (/contact|email|reach|hire|linkedin/i.test(s)) return "contact";
+  if (/visual|art|illustration/i.test(s)) return "visual";
+  return "fallback";
+}
+function getResponse(intent) {
+  if (intent.startsWith("p:")) { const pr = PROJECT_RESPONSES[intent.slice(2)]; if (pr) return { text:pr.text, link:pr.link }; }
+  const m = {
+    projects:{ text:"Here are four featured projects.", tiles:true },
+    all:     { text:"All 13 projects live on the Work page.", nav:"work" },
+    about:   { text:"Art & technology \u2192 architecture & data science \u2192 all-in on AI product design. Shipped at Google, JPMorgan Chase, CUNY.", nav:"about" },
+    skills:  { text:"Product Design \u00b7 AI/ML Design \u00b7 Data Viz \u00b7 Prototyping \u00b7 Design Systems \u00b7 Research. Figma, Python, React, D3, BigQuery." },
+    contact: { text:"\u2709\ufe0f tanharchitecture@gmail.com \u00b7 linkedin.com/in/tanhata" },
+    visual:  { text:"Branding, illustration, and graphic design.", nav:"visual" },
+    fallback:{ text:"I can tell you about specific projects, my design approach, background, or how to connect." },
+  };
+  return m[intent] || m.fallback;
+}
+function getChips(intent) {
+  if (intent.startsWith("p:")) return [...PROJECT_CHIPS.filter(c => !c.toLowerCase().includes(intent.slice(2).replace("-","").slice(0,5))).slice(0,3), "Your background?"];
+  return PROJECT_CHIPS;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SHARED
+   ═══════════════════════════════════════════════════════════════════ */
+const Img = ({ src, alt, style, fb }) => { const [f,setF]=useState(false); if(f||!src) return <div style={{...style,background:fb||"#111"}} />; return <img src={src} alt={alt||""} style={style} onError={()=>setF(true)} />; };
+
+const Reveal = ({ children, delay = 0, y = 30, mode = "fade" }) => {
+  const ref = useRef(null); const [v,setV]=useState(false);
+  useEffect(() => { const el=ref.current; if(!el) return; const io=new IntersectionObserver(([e])=>{if(e.isIntersecting){setV(true);io.unobserve(el);}},{threshold:.1}); io.observe(el); return()=>io.disconnect(); },[]);
+  if (mode === "wipe") return <div ref={ref} style={{ clipPath:v?"inset(0 0% 0 0)":"inset(0 100% 0 0)", transition:`clip-path 1s cubic-bezier(.4,0,.2,1) ${delay}ms` }}>{children}</div>;
+  if (mode === "clipUp") return <div ref={ref} style={{ clipPath:v?"inset(0 0 0% 0)":"inset(0 0 100% 0)", transition:`clip-path .8s cubic-bezier(.4,0,.2,1) ${delay}ms` }}>{children}</div>;
+  return <div ref={ref} style={{ opacity:v?1:0, transform:v?"translateY(0)":`translateY(${y}px)`, transition:`opacity .9s cubic-bezier(.4,0,.2,1) ${delay}ms, transform .9s cubic-bezier(.4,0,.2,1) ${delay}ms` }}>{children}</div>;
+};
+
+const Nav = ({ page, go, dark, setDark, t }) => {
+  const links = [{id:"home",label:"Home"},{id:"about",label:"About"},{id:"work",label:"Work"},{id:"visual",label:"Visual"}];
+  return (
+    <nav style={{ position:"fixed",top:0,left:0,right:0,zIndex:100,display:"flex",justifyContent:"space-between",alignItems:"center",padding:"16px 32px",background:t.navBg,backdropFilter:"blur(24px)",borderBottom:`1px solid ${t.rule}`,transition:"background .5s, border .5s" }}>
+      {/* theme toggle */}
+      <button onClick={()=>setDark(!dark)} style={{ width:36,height:36,borderRadius:99,background:t.card,border:`1px solid ${t.cardBorder}`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",transition:"all .3s" }} aria-label="Toggle theme">
+        {dark
+          ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={t.fg} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={t.fg} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        }
+      </button>
+      <div style={{ display:"flex",gap:6 }}>{links.map(l => <button key={l.id} onClick={()=>go(l.id)} style={{ background:page===l.id?t.accentSoft:"transparent",border:page===l.id?`1px solid ${t.accentBorder}`:"1px solid transparent",borderRadius:8,padding:"7px 16px",color:page===l.id?t.fg:t.fgMuted,fontSize:13,fontWeight:500,cursor:"pointer",fontFamily:"inherit",transition:"all .25s" }}>{l.label}</button>)}</div>
+    </nav>
+  );
+};
+
+const GlassTile = ({ p, delay = 0, dark = true }) => {
+  const [h,setH]=useState(false); const [ok,setOk]=useState(true); const cat=gc(p.cat);
+  const bg = dark ? "rgba(255,255,255,.025)" : "rgba(0,0,0,.02)";
+  const border = dark ? "rgba(255,255,255,.06)" : "rgba(0,0,0,.06)";
+  const sub = dark ? "rgba(255,255,255,.35)" : "rgba(0,0,0,.4)";
+  const desc = dark ? "rgba(255,255,255,.5)" : "rgba(0,0,0,.5)";
+  return (
+    <a href={p.link} target="_blank" rel="noopener noreferrer" onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)}
+      style={{ position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",textDecoration:"none",color:dark?"#fff":"#1a1a1a",cursor:"pointer",borderRadius:14,background:bg,backdropFilter:"blur(12px)",border:h?`1px solid ${cat.color}50`:`1px solid ${border}`,boxShadow:h?`0 8px 32px ${cat.color}12`:"none",transition:"all .35s",transform:h?"translateY(-3px)":"translateY(0)",animation:`fadeUp .7s cubic-bezier(.4,0,.2,1) ${delay}ms both` }}>
+      <div style={{ position:"relative",width:"100%",aspectRatio:"4/3",overflow:"hidden",borderRadius:"13px 13px 0 0" }}>
+        {ok&&p.img&&<img src={p.img} alt={p.title} onError={()=>setOk(false)} style={{ width:"100%",height:"100%",objectFit:"cover",transition:"transform .5s",transform:h?"scale(1.05)":"scale(1)" }} />}
+        {(!ok||!p.img)&&<div style={{ width:"100%",height:"100%",background:`linear-gradient(135deg,${cat.color}15,${cat.color}30)` }} />}
+        <div style={{ position:"absolute",inset:0,background:"linear-gradient(0deg,rgba(0,0,0,.5) 0%,transparent 60%)" }} />
+        <span style={{ position:"absolute",top:10,left:10,fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(0,0,0,.7)",border:`1px solid ${cat.color}35`,color:cat.color,fontWeight:600,letterSpacing:.5 }}>{cat.label}</span>
+      </div>
+      <div style={{ padding:"14px 16px 16px",flex:1 }}>
+        <h3 style={{ fontSize:16,fontWeight:700,marginBottom:3 }}>{p.title}</h3>
+        <div style={{ fontSize:11.5,color:sub,fontWeight:500 }}>{p.sub}</div>
+      </div>
+    </a>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   MESH
+   ═══════════════════════════════════════════════════════════════════ */
+const MeshBG = ({ dark, mx = 0.5, my = 0.5 }) => {
+  const px = mx * 30 - 15;
+  const py = my * 30 - 15;
+  return (
+    <div style={{ position:"fixed",inset:0,zIndex:0,overflow:"hidden",background:dark?"#000":"#f5f2eb",transition:"background .5s" }}>
+      <div style={{ position:"absolute",inset:"-50%",background:dark
+        ?`radial-gradient(ellipse 80% 60% at 15% 25%, hsla(220,10%,8%,.5) 0%, transparent 70%),radial-gradient(ellipse 60% 80% at 85% 75%, hsla(240,10%,7%,.35) 0%, transparent 70%),radial-gradient(ellipse 40% 40% at 55% 15%, rgba(255,255,255,.015) 0%, transparent 60%)`
+        :`radial-gradient(ellipse 80% 60% at 15% 25%, hsla(40,30%,85%,.15) 0%, transparent 70%),radial-gradient(ellipse 60% 80% at 85% 75%, hsla(30,20%,82%,.12) 0%, transparent 70%),radial-gradient(ellipse 40% 40% at 55% 15%, rgba(180,160,130,.04) 0%, transparent 60%)`,
+        animation:"meshDrift 25s ease-in-out infinite",transition:"background 1s" }} />
+      {/* cursor-reactive orbs */}
+      <div style={{ position:"absolute",width:500,height:500,borderRadius:"50%",top:"5%",left:"-8%",background:`radial-gradient(circle,${dark?"rgba(255,255,255,.02)":"rgba(180,160,130,.03)"} 0%,transparent 70%)`,filter:"blur(80px)",transform:`translate(${px*.8}px,${py*.6}px)`,transition:"transform .3s ease-out" }} />
+      <div style={{ position:"absolute",width:350,height:350,borderRadius:"50%",bottom:"10%",right:"-5%",background:`radial-gradient(circle,${dark?"rgba(255,255,255,.015)":"rgba(160,145,120,.03)"} 0%,transparent 70%)`,filter:"blur(60px)",transform:`translate(${-px*.5}px,${-py*.4}px)`,transition:"transform .3s ease-out" }} />
+      <div style={{ position:"absolute",width:250,height:250,borderRadius:"50%",top:"35%",left:"55%",background:`radial-gradient(circle,${dark?"rgba(255,255,255,.015)":"rgba(170,155,130,.025)"} 0%,transparent 70%)`,filter:"blur(50px)",transform:`translate(${px*.6}px,${-py*.7}px)`,transition:"transform .3s ease-out" }} />
+      {/* grain */}
+      <div style={{ position:"absolute",inset:0,opacity:dark?.035:.02,backgroundImage:`url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,backgroundSize:"200px" }} />
+      {/* dotted grid — shifts with cursor */}
+      <div style={{ position:"absolute",inset:0,backgroundImage:`radial-gradient(circle, ${dark?"rgba(255,255,255,.12)":"rgba(0,0,0,.09)"} 1px, transparent 1px)`,backgroundSize:"30px 30px",transform:`translate(${px*.15}px,${py*.15}px)`,transition:"transform .4s ease-out" }} />
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   DRAGGABLE CANVAS
+   ═══════════════════════════════════════════════════════════════════ */
+const DraggableCanvas = ({ items, dark, t }) => {
+  const cols = Math.min(3, Math.ceil(items.length / 2));
+  const cardW = 260;
+  const cardH = 310;
+  const gap = 16;
+  const canvasW = cols * cardW + (cols - 1) * gap;
+  const canvasH = Math.ceil(items.length / cols) * (cardH + gap);
+
+  const initPos = () => items.map((_, i) => ({
+    x: (i % cols) * (cardW + gap),
+    y: Math.floor(i / cols) * (cardH + gap),
+  }));
+
+  const [positions, setPositions] = useState(initPos);
+  const [dragging, setDragging] = useState(null);
+  const [dragStart, setDragStart] = useState({ mx:0, my:0, ox:0, oy:0 });
+  const [zStack, setZStack] = useState(items.map((_,i) => i));
+  const [moved, setMoved] = useState(false);
+  const [hintVis, setHintVis] = useState(true);
+  const containerRef = useRef(null);
+
+  useEffect(() => { if (dragging !== null) setHintVis(false); }, [dragging]);
+
+  const onDown = (e, idx) => {
+    e.preventDefault();
+    const cx = e.touches ? e.touches[0].clientX : e.clientX;
+    const cy = e.touches ? e.touches[0].clientY : e.clientY;
+    setDragging(idx);
+    setMoved(false);
+    setDragStart({ mx:cx, my:cy, ox:positions[idx].x, oy:positions[idx].y });
+    setZStack(prev => { const n=[...prev]; n[idx]=Math.max(...prev)+1; return n; });
+  };
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      setPos({ x: e.clientX, y: e.clientY });
+    if (dragging === null) return;
+    const onMove = e => {
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      const cy = e.touches ? e.touches[0].clientY : e.clientY;
+      const dx = cx - dragStart.mx;
+      const dy = cy - dragStart.my;
+      if (Math.abs(dx)>3||Math.abs(dy)>3) setMoved(true);
+      setPositions(prev => prev.map((p,i) => i===dragging ? { x:dragStart.ox+dx, y:dragStart.oy+dy } : p));
     };
-
-    const handleMouseEnter = () => setHovering(true);
-    const handleMouseLeave = () => setHovering(false);
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseenter", handleMouseEnter);
-    document.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseenter", handleMouseEnter);
-      document.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
-
-  useEffect(() => {
-    const animate = () => {
-      setT((prev) => prev + 0.02);
-      requestAnimationFrame(animate);
-    };
-    animate();
-  }, []);
+    const onUp = () => setDragging(null);
+    window.addEventListener("mousemove",onMove,{passive:true});
+    window.addEventListener("mouseup",onUp);
+    window.addEventListener("touchmove",onMove,{passive:true});
+    window.addEventListener("touchend",onUp);
+    return () => { window.removeEventListener("mousemove",onMove); window.removeEventListener("mouseup",onUp); window.removeEventListener("touchmove",onMove); window.removeEventListener("touchend",onUp); };
+  }, [dragging, dragStart]);
 
   return (
-    <svg
-      ref={ref}
-      width="80"
-      height="80"
-      viewBox="-40 -40 80 80"
+    <div ref={containerRef} style={{ position:"relative",width:canvasW,height:canvasH+20 }}>
+      {hintVis && (
+        <div style={{ position:"absolute",top:-32,right:0,display:"flex",alignItems:"center",gap:6,fontSize:11,fontFamily:"var(--mono)",color:t.fgMuted,animation:"fadeUp .6s ease 1.5s both" }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 9 22 12 19 15"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
+          drag to explore
+        </div>
+      )}
+      {items.map((p,i) => (
+        <DragItem key={p.id} p={p} i={i} dark={dark} dragging={dragging} positions={positions} zStack={zStack} moved={moved} onDown={onDown} />
+      ))}
+    </div>
+  );
+};
+
+const DragItem = ({ p, i, dark, dragging, positions, zStack, moved, onDown }) => {
+  const [ok,setOk] = useState(true);
+  const [flipped,setFlipped] = useState(false);
+  const [hovered,setHovered] = useState(false);
+  const c = gc(p.cat);
+  const isDrag = dragging === i;
+  const pos = positions[i];
+  const bg = dark?"rgba(255,255,255,.025)":"rgba(0,0,0,.02)";
+  const bdr = dark?"rgba(255,255,255,.06)":"rgba(0,0,0,.06)";
+  const sub = dark?"rgba(255,255,255,.35)":"rgba(0,0,0,.4)";
+  const txt = dark?"rgba(255,255,255,.6)":"rgba(0,0,0,.55)";
+  const fg = dark?"#fff":"#1a1a1a";
+
+  // flip on hover after a short delay, unflip on leave
+  const hoverTimer = useRef(null);
+  const handleEnter = () => {
+    setHovered(true);
+    hoverTimer.current = setTimeout(() => setFlipped(true), 300);
+  };
+  const handleLeave = () => {
+    setHovered(false);
+    clearTimeout(hoverTimer.current);
+    setFlipped(false);
+  };
+
+  return (
+    <div
+      onMouseDown={e=>{ if(!flipped) onDown(e,i); }}
+      onTouchStart={e=>{ if(!flipped) onDown(e,i); }}
+      onClick={() => { if(!moved && !flipped) window.open(p.link,"_blank"); }}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
       style={{
-        position: "fixed",
-        left: pos.x - 40,
-        top: pos.y - 40,
-        pointerEvents: "none",
-        zIndex: 9999,
-        mixBlendMode: "difference",
-      }}
-    >
-      {/* central dot — larger + brighter */}
-      <circle
-        r="2.8"
-        fill={hovering ? accent : "#ffffff"}
-        opacity={hovering ? 1 : 0.9}
-      />
+        position:"absolute", left:pos.x, top:pos.y, width:260, height:310,
+        zIndex: flipped ? 999 : hovered ? 998 : zStack[i],
+        cursor:flipped?"default":isDrag?"grabbing":"grab",
+        transition:isDrag?"none":"left .35s cubic-bezier(.4,0,.2,1), top .35s cubic-bezier(.4,0,.2,1), box-shadow .5s ease",
+        boxShadow:isDrag?`0 24px 60px rgba(0,0,0,.4)`:(flipped||hovered)?`0 12px 40px rgba(0,0,0,.2)`:"none",
+        perspective:600, userSelect:"none",
+      }}>
+      <div style={{
+        width:"100%", height:"100%", position:"relative",
+        transformStyle:"preserve-3d",
+        willChange:"transform",
+        transition:"transform .9s cubic-bezier(.25,.1,.25,1)",
+        transform:flipped?"scale(1.03) rotateY(180deg)":isDrag?"scale(1.05)":"scale(1)",
+      }}>
+        {/* ── FRONT ── */}
+        <div style={{ position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",borderRadius:14,overflow:"hidden" }}>
+          <div style={{ background:dark?"rgba(20,20,20,.95)":"rgba(255,255,255,.95)",border:`1px solid ${isDrag?c.color+"50":bdr}`,borderRadius:14,overflow:"hidden",color:fg,height:"100%",display:"flex",flexDirection:"column" }}>
+            <div style={{ position:"relative",width:"100%",flex:1,overflow:"hidden",borderRadius:"13px 13px 0 0",minHeight:0 }}>
+              {ok&&p.img&&<img src={p.img} alt={p.title} onError={()=>setOk(false)} style={{ width:"100%",height:"100%",objectFit:"cover" }} draggable={false} />}
+              {(!ok||!p.img)&&<div style={{ width:"100%",height:"100%",background:`linear-gradient(135deg,${c.color}15,${c.color}30)` }} />}
+              <div style={{ position:"absolute",inset:0,background:"linear-gradient(0deg,rgba(0,0,0,.5) 0%,transparent 60%)" }} />
+              <span style={{ position:"absolute",top:10,left:10,fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(0,0,0,.7)",border:`1px solid ${c.color}35`,color:c.color,fontWeight:600,letterSpacing:.5 }}>{c.label}</span>
+              <a href={p.link} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{ position:"absolute",top:10,right:10,width:28,height:28,borderRadius:"50%",background:"rgba(0,0,0,.7)",border:`1px solid ${dark?"rgba(255,255,255,.15)":"rgba(0,0,0,.1)"}`,display:"flex",alignItems:"center",justifyContent:"center",textDecoration:"none",pointerEvents:"auto",transition:"all .25s" }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </a>
+            </div>
+            <div style={{ padding:"12px 16px 14px",flexShrink:0 }}>
+              <h3 style={{ fontSize:14,fontWeight:700,marginBottom:2,lineHeight:1.3 }}>{p.title}</h3>
+              <div style={{ fontSize:11,color:sub,fontWeight:500 }}>{p.sub}</div>
+            </div>
+          </div>
+        </div>
+        {/* ── BACK ── */}
+        <div style={{ position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",transform:"rotateY(180deg)",borderRadius:14,overflow:"hidden" }}>
+          <div style={{ background:dark?`linear-gradient(145deg, ${c.color}22, rgba(10,10,10,.97))`:`linear-gradient(145deg, ${c.color}15, rgba(255,255,255,.97))`,border:`1.5px solid ${c.color}40`,borderRadius:14,color:fg,height:"100%",display:"flex",flexDirection:"column",padding:"24px 20px",pointerEvents:"none",position:"relative" }}>
+            <div style={{ position:"absolute",top:12,right:12,width:20,height:20,borderTop:`2px solid ${c.color}40`,borderRight:`2px solid ${c.color}40`,borderRadius:"0 4px 0 0" }} />
+            <div style={{ position:"absolute",bottom:12,left:12,width:20,height:20,borderBottom:`2px solid ${c.color}40`,borderLeft:`2px solid ${c.color}40`,borderRadius:"0 0 0 4px" }} />
+            <div style={{ width:32,height:3,borderRadius:2,background:c.color,marginBottom:16 }} />
+            <h3 style={{ fontSize:20,fontWeight:800,marginBottom:4,letterSpacing:"-.02em" }}>{p.title}</h3>
+            <div style={{ fontSize:11,color:c.color,fontWeight:600,marginBottom:14,fontFamily:"var(--mono)" }}>{p.sub}</div>
+            <p style={{ fontSize:12.5,lineHeight:1.65,color:txt,flex:1 }}>{p.desc}</p>
+            {p.tags && <div style={{ display:"flex",flexWrap:"wrap",gap:5,marginTop:14,marginBottom:14 }}>{p.tags.map(tag => <span key={tag} style={{ fontSize:9,padding:"3px 8px",borderRadius:99,background:`${c.color}15`,border:`1px solid ${c.color}30`,color:c.color,fontWeight:600 }}>{tag}</span>)}</div>}
+            <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:"auto" }}>
+              <span style={{ fontSize:10,fontFamily:"var(--mono)",color:sub }}>{p.year}</span>
+              <a href={p.link} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{ fontSize:11,color:c.color,textDecoration:"none",fontWeight:700,pointerEvents:"auto",display:"flex",alignItems:"center",gap:4 }}>
+                View project <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-      {/* thicker crosshair lines */}
-      <line
-        x1="-8"
-        y1="0"
-        x2="8"
-        y2="0"
-        stroke="#ffffff"
-        strokeOpacity="0.4"
-        strokeWidth="1.2"
-      />
-      <line
-        x1="0"
-        y1="-8"
-        x2="0"
-        y2="8"
-        stroke="#ffffff"
-        strokeOpacity="0.4"
-        strokeWidth="1.2"
-      />
+/* ═══════════════════════════════════════════════════════════════════
+   SIGNATURE TYPE — typed out like a handwritten note
+   ═══════════════════════════════════════════════════════════════════ */
+const SignatureFlip = ({ t, size = "18px" }) => {
+  const eng = "hi, i'm tanha";
+  const [count, setCount] = useState(0);
+  const [doneTyping, setDoneTyping] = useState(false);
+  const [showArabic, setShowArabic] = useState(false);
+  const [started, setStarted] = useState(false);
+  const ref = useRef(null);
 
-      {/* Lissajous orbit — larger radius + thicker points */}
-      {Array.from({ length: 8 }).map((_, i) => {
-        const a = (i / 8) * Math.PI * 2;
-        const x = (hovering ? 20 : 14) * Math.sin((hovering ? 1.8 : 1.2) * (t + a));
-        const y = (hovering ? 20 : 14) * Math.sin((hovering ? 2.4 : 1.6) * (t + a + Math.PI / 4));
-        return (
-          <circle
-            key={i}
-            cx={x}
-            cy={y}
-            r={hovering ? 2.5 : 1.8}
-            fill={hovering ? accent : "#ffffff"}
-            opacity={hovering ? 1 : 0.85}
-          />
-        );
-      })}
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStarted(true); io.unobserve(el); } }, { threshold:.1 });
+    io.observe(el); return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!started || count >= eng.length) {
+      if (started && count >= eng.length && !doneTyping) {
+        const id = setTimeout(() => setDoneTyping(true), 600);
+        return () => clearTimeout(id);
+      }
+      return;
+    }
+    const timeout = setTimeout(() => setCount(c => c + 1), count === 0 ? 800 : 65 + Math.random() * 45);
+    return () => clearTimeout(timeout);
+  }, [started, count, doneTyping]);
+
+  useEffect(() => {
+    if (!doneTyping) return;
+    const id = setInterval(() => setShowArabic(s => !s), 3000);
+    return () => clearInterval(id);
+  }, [doneTyping]);
+
+  const baseStyle = { fontSize:size,fontWeight:900,letterSpacing:"-.05em",lineHeight:1 };
+
+  return (
+    <div ref={ref} style={{ height:"2em",perspective:400,overflow:"visible",...baseStyle }}>
+      {!doneTyping ? (
+        <div style={{ display:"flex",alignItems:"center",height:"100%" }}>
+          <span style={{ ...baseStyle,fontFamily:"'DM Sans',sans-serif",color:t.fg }}>
+            {eng.slice(0, count)}
+          </span>
+          {started && count < eng.length && (
+            <span style={{ display:"inline-block",width:3,height:"0.8em",background:t.accent,marginLeft:2,animation:"blink 1s step-end infinite" }} />
+          )}
+        </div>
+      ) : (
+        <div style={{
+          position:"relative",transformStyle:"preserve-3d",
+          transition:"transform .8s cubic-bezier(.4,0,.2,1)",
+          transform:showArabic?"rotateX(180deg)":"rotateX(0deg)",
+          height:"100%",
+        }}>
+          <div style={{ backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",height:"100%",display:"flex",alignItems:"center" }}>
+            <span style={{ ...baseStyle,fontFamily:"'DM Sans',sans-serif",color:t.fg,whiteSpace:"nowrap" }}>hi, i'm tanha</span>
+          </div>
+          <div style={{ position:"absolute",top:0,left:0,width:"100%",height:"100%",display:"flex",alignItems:"center",backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",transform:"rotateX(180deg)" }}>
+            <span style={{ ...baseStyle,fontFamily:"'Aref Ruqaa',serif",color:t.fg,direction:"rtl",whiteSpace:"nowrap",display:"block",textAlign:"left" }}>{"\u0645\u0631\u062d\u0628\u0627\u064b\u060c \u0623\u0646\u0627 \u062a\u0646\u062d\u0649 "}</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   TANH CURVE — animated signature stroke
+   ═══════════════════════════════════════════════════════════════════ */
+const TanhCurve = ({ color = "#dc3545", width = 280, delay = 800 }) => {
+  const [vis, setVis] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVis(true); io.unobserve(el); } }, { threshold: .1 });
+    io.observe(el); return () => io.disconnect();
+  }, []);
+  const pts = [];
+  for (let i = -40; i <= 40; i++) {
+    const x = i / 10;
+    const y = Math.tanh(x);
+    pts.push(`${((x + 4) / 8) * 200},${(1 - (y + 1) / 2) * 80}`);
+  }
+  const d = "M" + pts.join(" L");
+  return (
+    <svg ref={ref} viewBox="0 0 200 80" style={{ width, height: width * 0.4, overflow:"visible",display:"block" }}>
+      {/* axis lines */}
+      <line x1="0" y1="40" x2="200" y2="40" stroke={color} strokeWidth=".4" opacity=".1" />
+      <line x1="100" y1="5" x2="100" y2="75" stroke={color} strokeWidth=".4" opacity=".1" />
+      {/* curve — glow layer */}
+      <path d={d} fill="none" stroke={color} strokeWidth="6" strokeLinecap="round" opacity=".06"
+        style={{ filter:`blur(8px)` }} />
+      {/* curve — main */}
+      <path d={d} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" opacity=".35"
+        style={{
+          strokeDasharray: 500,
+          strokeDashoffset: vis ? 0 : 500,
+          transition: `stroke-dashoffset 2.5s cubic-bezier(.4,0,.2,1) ${delay}ms`,
+        }} />
     </svg>
   );
 };
 
-/* ---------- Math Cursor Component ---------- */
-const themeAccents = {
-  ink:   "#ff4d4d",
-  pearl: "#00bcd4",
-  rose:  "#ff66cc",
-};
+/* ═══════════════════════════════════════════════════════════════════
+   HOME — EDITORIAL
+   ═══════════════════════════════════════════════════════════════════ */
+const HomePage = ({ setPage, dark, t, mx = 0.5, my = 0.5 }) => {
+  const [time, setTime] = useState("");
+  const [input, setInput] = useState("");
+  const [responses, setResponses] = useState([]);
+  const [chips, setChips] = useState(PROJECT_CHIPS);
+  const [typing, setTyping] = useState(false);
+  const endRef = useRef(null);
 
-const MathCursor = ({ theme = "ink" }) => {
-  const accent = themeAccents[theme] || themeAccents.ink;
-  const ref = React.useRef(null);
-  const [pos, setPos] = React.useState({ x: -100, y: -100 });
-  const [hovering, setHovering] = React.useState(false);
-  const targetRef = React.useRef({ x: -100, y: -100 });
+  useEffect(() => { const t=()=>setTime(new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true,timeZone:"America/New_York"})); t(); const id=setInterval(t,1000); return()=>clearInterval(id); }, []);
 
-  /* Track mouse movement with smoothing */
-  React.useEffect(() => {
-    const onMove = (e) => (targetRef.current = { x: e.clientX, y: e.clientY });
-    window.addEventListener("mousemove", onMove, { passive: true });
-    return () => window.removeEventListener("mousemove", onMove);
-  }, []);
+  const ask = useCallback((text) => {
+    if (!text.trim()) return;
+    setInput(""); setChips([]); setTyping(true);
+    setResponses(p => [...p, { role:"user", text:text.trim() }]);
+    setTimeout(() => endRef.current?.scrollIntoView({ behavior:"smooth" }), 80);
+    const intent = matchIntent(text);
+    setTimeout(() => {
+      const r = getResponse(intent);
+      setTyping(false);
+      setResponses(p => [...p, { role:"assistant", ...r }]);
+      setTimeout(() => { setChips(getChips(intent)); setTimeout(() => endRef.current?.scrollIntoView({ behavior:"smooth" }), 80); }, 300);
+      if (r.nav) setTimeout(() => setPage(r.nav), 2000);
+    }, 600 + Math.random() * 400);
+  }, [setPage]);
 
-  /* Animate motion */
-  React.useEffect(() => {
-    let raf;
-    const loop = () => {
-      setPos((p) => {
-        const k = 0.24;
-        const { x, y } = targetRef.current;
-        return { x: p.x + (x - p.x) * k, y: p.y + (y - p.y) * k };
-      });
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
-  /* Detect hover */
-  React.useEffect(() => {
-    const sel = "a, button, [role='button'], .project, .filter-item";
-    const enter = () => setHovering(true);
-    const leave = () => setHovering(false);
-    const els = document.querySelectorAll(sel);
-    els.forEach((el) => {
-      el.addEventListener("mouseenter", enter);
-      el.addEventListener("mouseleave", leave);
-    });
-    return () => els.forEach((el) => {
-      el.removeEventListener("mouseenter", enter);
-      el.removeEventListener("mouseleave", leave);
-    });
-  }, []);
-
-    return (
-    <>
-      <style>{`
-        @media (hover: hover) {
-          html, body { cursor: none; }
-        }
-      `}</style>
-      <svg
-        ref={ref}
-        width="60"
-        height="60"
-        viewBox="-30 -30 60 60"
-        style={{
-          position: "fixed",
-          left: pos.x - 30,
-          top: pos.y - 30,
-          pointerEvents: "none",
-          zIndex: 9999,
-          mixBlendMode: "difference",
-          filter: `drop-shadow(0 0 8px ${accent})`,
-        }}
-      >
-        <circle
-          r={hovering ? 18 : 14}
-          fill={accent}
-          opacity={hovering ? 1 : 0.8}
-        />
-      </svg>
-    </>
-  );
-};
-
-/* ---------- Guide Dot Cursor Component ---------- */
-const GuideDotCursor = ({ theme = "ink", grid = 20 }) => {
-  const accent = themeAccents[theme] || themeAccents.ink;
-  const [pos, setPos] = React.useState({ x: -100, y: -100 }); // start offscreen
-
-  React.useEffect(() => {
-    const onMove = (e) => {
-      // snap to nearest grid
-      const x = Math.round(e.clientX / grid) * grid;
-      const y = Math.round(e.clientY / grid) * grid;
-      setPos({ x, y });
-    };
-    window.addEventListener("mousemove", onMove, { passive: true });
-    return () => window.removeEventListener("mousemove", onMove);
-  }, [grid]);
-
-    return (
-    <>
-      {/* only show on pointer/hover devices */}
-      <style>{`
-        @media (hover: none) {
-          .guide-dot { display: none; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .guide-dot { transition: none !important; }
-        }
-      `}</style>
-      <div
-        className="guide-dot"
-        style={{
-          position: "fixed",
-          left: pos.x - 4,  // center a 8x8 dot
-          top: pos.y - 4,
-          width: 8,
-          height: 8,
-          borderRadius: "50%",
-          border: `1px solid ${accent}`,
-          background: "transparent",
-          opacity: 0.45,
-          pointerEvents: "none",
-          zIndex: 9998,
-          transition: "transform 90ms linear, opacity 120ms ease",
-          transform: "translateZ(0)", // keep it crisp
-          boxShadow: `0 0 0 1px ${accent}20`,
-        }}
-      />
-    </>
-  );
-};
-
-/* ---------- Slow Typewriter Component ---------- */
-const Typewriter = ({
-  text,
-  speed = 90,        // ms per character (slower typing)
-  startDelay = 600,   // pause before starting
-  cursorChar = "▎",
-}) => {
-  const [i, setI] = React.useState(0);
-
-  React.useEffect(() => {
-    const startT = setTimeout(() => {
-      const id = setInterval(() => {
-        setI((n) => {
-          if (n >= text.length) {
-            clearInterval(id);
-            return n;
-          }
-          return n + 1;
-        });
-      }, speed);
-    }, startDelay);
-    return () => clearTimeout(startT);
-  }, [text, speed, startDelay]);
-
-    return (
-    <>
-      <style>{`
-        .tw-caret {
-          display: inline-block;
-          animation: tw-blink 1s steps(1, end) infinite;
-          margin-left: 2px;
-        }
-        @keyframes tw-blink {
-          0%, 50% { opacity: 1; }
-          50.01%, 100% { opacity: 0; }
-        }
-      `}</style>
-      <span aria-label={text}>
-        {text.slice(0, i)}
-        <span className="tw-caret">{cursorChar}</span>
-      </span>
-    </>
-  );
-};
-
-/* ---------- Typewriter Text Component ---------- */
-const TypewriterText = ({
-  text,
-  speed = 28,          // ms per character
-  delayStart = 300,     // wait before typing
-  showCursor = true
-}) => {
-  const [out, setOut] = useState("");
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) {
-      setOut(text);
-      setDone(true);
-      return;
-    }
-
-    let i = 0;
-    const start = setTimeout(() => {
-      const id = setInterval(() => {
-        setOut(text.slice(0, i + 1));
-        i += 1;
-        if (i >= text.length) {
-          clearInterval(id);
-          setDone(true);
-        }
-      }, speed);
-    }, delayStart);
-
-    return () => clearTimeout(start);
-  }, [text, speed, delayStart]);
+  // parallax values for hero elements
+  const px = (mx - 0.5) * 20;
+  const py = (my - 0.5) * 20;
 
   return (
-    <span style={{ position: "relative", whiteSpace: "pre-wrap" }}>
-      {out}
-      {showCursor && (
-        <span
-          aria-hidden
-          style={{
-            display: "inline-block",
-            width: "0.6ch",
-            height: "1.1em",
-            marginLeft: "2px",
-            transform: "translateY(2px)",
-            background: "currentColor",
-            opacity: done ? 0 : 1,
-            animation: "blink 1s steps(1) infinite"
-          }}
-        />
-      )}
-      {/* keyframes once per page render */}
-      <style>{`
-        @keyframes blink { 50% { opacity: 0; } }
-      `}</style>
-    </span>
-  );
-};
-
-/* ---------- Responsive Grid CSS ---------- */
-const ResponsiveGridCSS = () => (
-  <style id="responsive-grid-fix">{`
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
-      /* Responsive project grid */
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 300px));
-      gap: 32px;
-      justify-content: center;
-      align-items: start;
-
-      /* FULL BLEED: remove all container padding and centering */
-      width: 100vw;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-
-      /* ensure grid spans entire viewport */
-      position: relative;
-      left: 50%;
-      right: 50%;
-      margin-left: -50vw;
-      margin-right: -50vw;
-    }
-
-    /* Project card base */
-    .project-card {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;  /* ensures spacing stays consistent */
-      height: 100%;                    /* equal card height */
-      min-height: 440px;
-      max-height: 620px;
-      min-width: 0;           /* prevent overflow */
-      border-radius: 12px;
-      border: 1px solid rgba(0,0,0,0.08);
-      background: #fff;       /* Pearl default; override inline for other themes */
-      padding: 16px;
-      box-sizing: border-box;
-      transition: transform .25s ease, box-shadow .25s ease;
-    }
-
-    /* Dark theme override (optional): set this class only when currentTheme === 'ink' */
-    .project-card.ink {
-      background: #0f0f0f;
-      border-color: rgba(255,255,255,0.75);
-    }
-
-    /* Rose (gradient) override (optional) */
-    .project-card.rose {
-      background: rgba(255,255,255,0.06);
-      border-color: rgba(255,255,255,0.22);
-      backdrop-filter: blur(6px);
-    }
-
-    .project-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-    }
-
-    /* Image wrapper keeps cards even and prevents collisions */
-    .project-card__media {
-      width: 100%;
-      aspect-ratio: 1 / 1;    /* perfect square */
-      border-radius: 10px;
-      overflow: hidden;
-      margin-bottom: 14px;
-      border: 1px solid rgba(0,0,0,0.06);
-    }
-    .project-card.ink .project-card__media { border-color: rgba(255,255,255,0.12); }
-    .project-card.rose .project-card__media { border-color: rgba(255,255,255,0.18); }
-
-    .project-card__media img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .project-card__title {
-      font-size: 18px;
-      font-weight: 600;
-      line-height: 1.25;
-      margin-bottom: 6px;
-      word-break: break-word;
-    }
-
-    .project-card__meta,
-    .project-card__desc {
-      font-size: 13px;
-      line-height: 1.45;
-      opacity: 0.8;
-    }
-
-    /* Wrap tags neatly on the same line(s) without overflow */
-    .project-card__tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 10px;
-    }
-    .project-card__tag {
-      font-size: 11px;
-      line-height: 1;
-      padding: 6px 8px;
-      border-radius: 999px;
-      border: 1px solid currentColor;
-      opacity: 0.8;
-      white-space: nowrap;
-    }
-
-    /* Small screens: allow narrower columns */
-    @media (max-width: 640px) {
-      .projects-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-      }
-    }
-
-    /* Timeline mobile responsiveness */
-    @media (max-width: 768px) {
-      .about-page {
-        padding-top: 80px !important;
-        padding-bottom: 80px !important;
-      }
-      
-      .about-page .timeline-grid {
-        display: block !important;
-        padding: 0 20px !important;
-        gap: 0 !important;
-      }
-      
-      .about-page .timeline-sidebar {
-        display: none !important;
-      }
-      
-      .about-page .timeline-content {
-        width: 100% !important;
-      }
-      
-      .about-page .timeline-content article {
-        margin-bottom: 60px !important;
-        padding-bottom: 30px !important;
-        border-bottom: 1px solid rgba(255,255,255,0.1) !important;
-      }
-      
-      .about-page .timeline-content article:last-child {
-        border-bottom: none !important;
-      }
-      
-      .about-page .timeline-content h3 {
-        font-size: 24px !important;
-        margin-bottom: 12px !important;
-        display: flex !important;
-        align-items: center !important;
-      }
-      
-      .about-page .timeline-content p {
-        font-size: 16px !important;
-        line-height: 1.6 !important;
-        margin-bottom: 15px !important;
-      }
-      
-      .about-page .timeline-content .glyph {
-        font-size: 20px !important;
-        margin-right: 12px !important;
-      }
-      
-      .about-page .timeline-content .kicker {
-        font-size: 14px !important;
-        opacity: 0.7 !important;
-        margin-bottom: 8px !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.5px !important;
-      }
-    }
-
-    /* Project Detail Page Styles */
-    .project-detail {
-      padding: 120px 40px 80px;
-      max-width: 1000px;
-      margin: 0 auto;
-      font-family: "Space Grotesk", sans-serif !important;
-    }
-
-    /* Force Space Grotesk font on all project detail elements */
-    .project-detail * {
-      font-family: "Space Grotesk", sans-serif !important;
-    }
-
-    .project-detail h1,
-    .project-detail h2,
-    .project-detail h3,
-    .project-detail h4,
-    .project-detail h5,
-    .project-detail h6,
-    .project-detail p,
-    .project-detail span,
-    .project-detail div {
-      font-family: "Space Grotesk", sans-serif !important;
-    }
-
-    /* Additional specificity to override any other CSS */
-    body .project-detail,
-    html .project-detail,
-    #root .project-detail {
-      font-family: "Space Grotesk", sans-serif !important;
-    }
-
-    body .project-detail *,
-    html .project-detail *,
-    #root .project-detail * {
-      font-family: "Space Grotesk", sans-serif !important;
-    }
-
-    .project-detail-header {
-      margin-bottom: 40px;
-    }
-
-    .back-button {
-      background: none;
-      border: 1px solid rgba(255,255,255,0.3);
-      color: inherit;
-      padding: 12px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-      font-family: '"Space Grotesk", sans-serif' !important;
-      transition: all 0.3s ease;
-    }
-
-    .back-button:hover {
-      background: rgba(255,255,255,0.1);
-      border-color: rgba(255,255,255,0.5);
-    }
-
-    .project-hero-simple {
-      margin-bottom: 60px;
-      text-align: center;
-      font-family: '"Space Grotesk", sans-serif' !important;
-    }
-
-    .project-detail-title {
-      font-size: 48px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      line-height: 1.2;
-    }
-
-    .project-detail-subtitle {
-      font-size: 20px;
-      opacity: 0.8;
-      margin-bottom: 24px;
-      font-style: italic;
-    }
-
-    .project-meta-simple {
-      font-size: 16px;
-      opacity: 0.9;
-    }
-
-    .project-meta-simple p {
-      margin: 8px 0;
-    }
-
-    .project-content-simple {
-      line-height: 1.7;
-      font-family: '"Space Grotesk", sans-serif' !important;
-    }
-
-    .content-heading {
-      font-size: 28px;
-      font-weight: 600;
-      margin: 60px 0 24px 0;
-      color: inherit;
-      font-family: '"Space Grotesk", sans-serif' !important;
-    }
-
-    .content-paragraph {
-      font-size: 18px;
-      margin-bottom: 24px;
-      opacity: 0.9;
-      font-family: '"Space Grotesk", sans-serif' !important;
-    }
-
-    .content-image {
-      margin: 40px 0;
-      text-align: center;
-    }
-
-    .content-image img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-    }
-
-    .content-image-pair {
-      margin: 40px 0;
-    }
-
-    .side-by-side-images {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin: 40px 0;
-    }
-
-    .side-by-side-images img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-    }
-
-    /* Project Card Styles */
-    .project {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 100%;
-      min-height: 440px;
-      max-height: 620px;
-      min-width: 0;
-      border-radius: 12px;
-      border: 1px solid rgba(0,0,0,0.08);
-      background: #fff;
-      padding: 16px;
-      box-sizing: border-box;
-      transition: transform .25s ease, box-shadow .25s ease;
-      text-decoration: none;
-      color: inherit;
-    }
-
-    /* Theme-specific project card styles */
-    .project.ink {
-      background: #0f0f0f;
-      border-color: rgba(255,255,255,0.12);
-      color: white;
-    }
-
-    .project.rose {
-      background: rgba(255,255,255,0.06);
-      border-color: rgba(255,255,255,0.22);
-      backdrop-filter: blur(6px);
-      color: white;
-    }
-
-    .project.pearl {
-      background: #fff;
-      border-color: rgba(0,0,0,0.08);
-      color: black;
-    }
-
-    .project:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-    }
-
-    .project-image {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      flex-shrink: 0;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-bottom: 14px;
-      border: 1px solid rgba(0,0,0,0.06);
-      position: relative; 
-    }
-
-    .project.ink .project-image { 
-      border-color: rgba(255,255,255,0.12); 
-    }
-
-    .project.rose .project-image { 
-      border-color: rgba(255,255,255,0.18); 
-    }
-
-    .project-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .external-link-indicator {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: rgba(255,255,255,0.9);
-      color: #000;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .project-title {
-      font-size: 18px;
-      font-weight: 600;
-      line-height: 1.25;
-      margin-bottom: 6px;
-      word-break: break-word;
-    }
-
-    .project-meta {
-      margin-bottom: 8px;
-    }
-
-    .project-year-company {
-      font-size: 12px;
-      font-weight: 500;
-    }
-
-    .project.ink .project-year-company {
-      color: rgba(255,255,255,0.6);
-    }
-
-    .project.rose .project-year-company {
-      color: rgba(255,255,255,0.6);
-    }
-
-    .project.pearl .project-year-company {
-      color: rgba(0,0,0,0.6);
-    }
-
-    .project-type {
-      font-size: 13px;
-      line-height: 1.45;
-      opacity: 0.8;
-      margin-bottom: 8px;
-    }
-
-    .project-description {
-      font-size: 13px;
-      line-height: 1.45;
-      opacity: 0.8;
-      margin-bottom: 12px;
-    }
-
-    .project-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 10px;
-    }
-
-    .project-tag {
-      font-size: 11px;
-      line-height: 1;
-      padding: 6px 8px;
-      border-radius: 999px;
-      border: 1px solid currentColor;
-      opacity: 0.8;
-      white-space: nowrap;
-    }
-
-    .project-tag-more {
-      font-size: 11px;
-      line-height: 1;
-      padding: 6px 8px;
-      border-radius: 999px;
-      opacity: 0.6;
-      white-space: nowrap;
-    }
-
-    .project.ink .project-tag-more {
-      background: rgba(255,255,255,0.1);
-    }
-
-    .project.rose .project-tag-more {
-      background: rgba(255,255,255,0.1);
-    }
-
-    .project.pearl .project-tag-more {
-      background: rgba(0,0,0,0.1);
-    }
-
-    /* Mobile responsiveness for project detail */
-    @media (max-width: 768px) {
-      .project-detail {
-        padding: 100px 20px 60px;
-      }
-      
-      .project-detail-title {
-        font-size: 36px;
-      }
-      
-      .project-detail-subtitle {
-        font-size: 18px;
-      }
-      
-      .content-heading {
-        font-size: 24px;
-        margin: 40px 0 16px 0;
-      }
-      
-      .content-paragraph {
-        font-size: 16px;
-        margin-bottom: 20px;
-      }
-      
-      .side-by-side-images {
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
-    }
-
-  `}</style>
-);
-
-/* ---------- Project Card Component ---------- */
-const ProjectCard = ({ project, theme }) => {
-  // Check if it's a project with detail page content defined
-  const hasDetailPage = ['mcp', 'forma', 'muse'].includes(project.id);
-  
-  if (project.externalLink) {
-    return (
-      <a 
-        href={project.externalLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`project ${project.className} ${theme}`}
-        data-category={project.category}
-      >
-        <div className="project-image">
-          <img src={project.imageData} alt={project.title} />
-        </div>
-
-        {/* ADD THIS NEW METADATA SECTION */}
-        <h3 className="project-title">{project.title}</h3>
-
-        {/* THEN year/company metadata */}
-        {(project.year || project.company) && (
-          <div className="project-meta">
-            <span className="project-year-company">
-              {project.year}{project.year && project.company && ' • '}{project.company}
-            </span>
+    <div style={{ position:"relative",zIndex:1 }}>
+
+      {/* ══ HERO ══ */}
+      <div style={{ minHeight:"100vh",display:"flex",flexDirection:"column",padding:"0 6vw",maxWidth:1200,margin:"0 auto",position:"relative",overflow:"hidden" }}>
+
+        {/* ── tanh curve with icon at inflection point ── */}
+        <div style={{ position:"relative",display:"flex",justifyContent:"center",alignItems:"center",paddingTop:"14vh",marginBottom:16 }}>
+          {/* the curve — full width */}
+          <div style={{ position:"absolute",width:"100%",left:0,top:"50%",transform:`translateY(-50%) translate(${-px*.4}px,${-py*.3}px)`,transition:"transform .2s ease-out" }}>
+            <TanhCurve color={t.accent} width={900} delay={200} />
           </div>
-        )}
-        <div className="project-type">{project.type}</div>
-        <p className="project-description">{project.description}</p>
-
-        {/* ADD THIS NEW TAGS SECTION */}
-        {project.tags && project.tags.length > 0 && (
-          <div className="project-tags">
-            {project.tags.slice(0, 3).map((tag, index) => (
-              <span key={index} className="project-tag">{tag}</span>
-            ))}
-            {project.tags.length > 3 && (
-              <span className="project-tag-more">+{project.tags.length - 3}</span>
-            )}
-          </div>
-        )}
-      </a>
-    );
-  }
-  /* If it doesn't have a detail page, render as non-clickable */
-  if (!hasDetailPage) {
-    return (
-      <div
-        className={`project ${project.className} ${theme}`}
-        data-category={project.category}
-        style={{ cursor: 'default' }}
-      >
-        <div className="project-image">
-          <img
-            src={project.imageData}
-            alt={project.title}
-          />
-        </div>
-        <h3 className="project-title">{project.title}</h3>
-        
-        {/* ADD THIS METADATA */}
-        {(project.year || project.company) && (
-          <div className="project-meta">
-            <span className="project-year-company">
-              {project.year}{project.year && project.company && ' • '}{project.company}
-            </span>
-          </div>
-        )}
-        
-        <div className="project-type">{project.type}</div>
-        <p className="project-description">{project.description}</p>
-        
-        {/* ADD TAGS */}
-        {project.tags && project.tags.length > 0 && (
-          <div className="project-tags">
-            {project.tags.slice(0, 3).map((tag, index) => (
-              <span key={index} className="project-tag">{tag}</span>
-            ))}
-            {project.tags.length > 3 && (
-              <span className="project-tag-more">+{project.tags.length - 3}</span>
-            )}
-          </div>
-        )}
-      </div>
-    );
-  }
-  return (
-    <Link
-      to={`/project/${project.id}`}
-      className={`project ${project.className} ${theme}`}
-      data-category={project.category}
-    >
-      <div className="project-image">
-        <img
-          src={project.imageData}
-          alt={project.title}
-        />
-      </div>
-      <h3 className="project-title">{project.title}</h3>
-      
-      {/* ADD THIS METADATA */}
-      {(project.year || project.company) && (
-        <div className="project-meta">
-          <span className="project-year-company">
-            {project.year}{project.year && project.company && ' • '}{project.company}
-          </span>
-        </div>
-      )}
-      
-      <div className="project-type">{project.type}</div>
-      <p className="project-description">{project.description}</p>
-      
-      {/* ADD TAGS */}
-      {project.tags && project.tags.length > 0 && (
-        <div className="project-tags">
-          {project.tags.slice(0, 3).map((tag, index) => (
-            <span key={index} className="project-tag">{tag}</span>
-          ))}
-          {project.tags.length > 3 && (
-            <span className="project-tag-more">+{project.tags.length - 3}</span>
-          )}
-        </div>
-      )}
-    </Link>
-    );
-};
-
-/* ---------- Project Detail Page Component ---------- */
-const ProjectDetailPage = ({ theme }) => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  
-  if (!id) return null;
-
-  // Project-specific content based on ID
-  const getProjectContent = (projectId) => {
-    const contentMap = {
-      'mcp': {
-        title: "MCP Interface",
-        subtitle: "Interface for Multi-Agent Interaction",
-        role: "Lead Product Designer",
-        team: "Founding Machine Learning Developers, Product Manager, Frontend Engineers",
-        content: [
-          "Model Communication Protocol (MCP) is a framework for orchestrating multiple language models as coordinated agents—each with a defined role, scoped context, and turn in the reasoning chain. It shifts prompting from monolithic to modular: models summarize, critique, and rewrite each other's outputs in sequence, forming a structured dialogue.",
-          "",
-          "While MCP introduces a powerful mental model, current workflows are often fragmented—spread across notebooks, orchestration libraries, and opaque API calls.",
-          "",
-          "This project visualizes MCP from an interface perspective—making agent interactions transparent, inspectable, and user-directed. Users assign roles, define execution order, and trace how ideas evolve across model handoffs. Designed through both a product and engineering lens, the system supports reproducibility, orchestration, and step-level debugging.",
-          "",
-          "## Unblocking the Workflow",
-          "",
-          "MCPs involve multiple moving parts — developers define specs, PMs scope features, engineers implement, and designers shape behavior. But without a shared interface, the flow breaks. Specs live across Notion, Slack, and code. This tool restructures that journey: model behavior is visualized, editable, and versioned — so every role stays in sync.",
-          "",
-          "## Designing for Dialogue",
-          "",
-          "Agents can be confusing-- make model-to-model collaboration legible. I leaned on conversation as a UI structure — each agent speaks, critiques, or rewrites. Users assign roles like Summarizer, Critic, or Rewriter to selected models. The interface supports multi-step task orchestration through simple dropdowns and a guided prompt builder.",
-          "",
-          "## Conversation Playback",
-          "",
-          "Outputs are presented as threaded messages, reflecting the sequence and evolution of ideas. The interface supports user feedback mid-dialogue, offering opportunities to intervene, redirect, or co-create.",
-          "",
-          "## Agent & Model Onboarding",
-          "",
-          "Educational overlays help non-technical users understand how agent roles function, and how models differ in tone, reliability, and application.",
-          "",
-          "## Session History & Sharing",
-          "",
-          "A lightweight session dashboard where past conversations can be reviewed, duplicated, or exported. Each session displays a timestamp, the assigned models and roles, and a preview of the final output. Users can sort by agent, task type, or date to surface relevant collaborations.",
-          "",
-          "## Developer Console: Multi-Agent Config & Execution",
-          "",
-          "This screen bridges interface design with the realities of modern LLMOps. It allows developers to structure multi-agent chains by assigning roles (e.g., Summarizer, Critic) to specific models, with full control over system prompts, temperature, and token limits. Configs are output as JSON payloads — not as an afterthought, but as a first-class asset for versioning and API execution.",
-          "",
-          "Each agent's response is logged with its inputs, latency, and token usage visible — because understanding model behavior at the step level is essential when chaining reasoning tasks across systems. Every interaction is replayable and forkable, supporting fast iteration and fine-grained debugging.",
-          "",
-          "The API panel integrates directly with live endpoints and code exports, supporting transition from prototype to production. By exposing telemetry (rate limits, response times, token consumption) alongside structured configuration, this interface doesn't just make LLM workflows usable — it makes them observable and maintainable.",
-          "",
-          "## User Journey & Flow",
-          "",
-          "The user experience maps a clear path from concept to execution. Users begin by defining their multi-agent task, selecting models and assigning roles, then watch as agents collaborate in real-time. The interface provides intervention points throughout—allowing users to redirect conversations, adjust parameters, or fork successful patterns into new workflows.",
-          "",
-          "## Making Model Communication Legible",
-          "",
-          "Building this interface began as an exploration of how multiple AI agents could collaborate more transparently—but it quickly evolved into a deeper question of how humans, too, might better understand, debug, and direct these interactions. What emerged is a system that treats multi-agent workflows not as code-first automations, but as legible, structured conversations.",
-          "",
-          "Through role assignment, sequential reasoning, and step-level traceability, this tool reframes prompting as orchestration—making LLM behavior both observable and controllable.",
-          "",
-          "## Reflection & Future Directions",
-          "",
-          "While this prototype focuses on visualizing core MCP flows, there's exciting room for future exploration:",
-          "",
-          "• Inter-agent memory systems (e.g., letting agents remember and reference prior states)",
-          "• Non-linear agent logic (e.g., conditionals, feedback loops, and voting)",
-          "• Live debugging + annotation layers for teams reviewing AI behavior",
-          "• LLMOps integrations like exporting traces to LangSmith, OpenPipe, or Hugging Face Spaces",
-          "• More expressive agent identities including tone preferences, formatting styles, or instructional personas",
-          "",
-          "Above all, this project reflects a belief that as models become more collaborative, so too must our tools—giving people a way to reason about AI reasoning."
-        ],
-        images: ['/images/projects/mcp/mcp-1.png','/images/projects/mcp/Setup.png', '/images/projects/mcp/Conversation.png', '/images/projects/mcp/Understanding Agents.png', '/images/projects/mcp/History.png', '/images/projects/mcp/Dev.png', '/images/projects/mcp/journey.png', '/images/projects/mcp/Model Guide.png']
-      },
-
-      'forma': {
-        title: "Forma Platform",
-        subtitle: "TEXT-SVG-IMAGE GENERATION ITERATION PLATFORM",
-        role: "Sr. Product Designer",
-        team: "Machine Learning Engineer, Founding Frontend Developer",
-        content: [
-          "This image-generating platform reimagines how users engage with generative art by merging intuitive creation tools with a transparent ecosystem for attribution, discovery, and iteration.",
-          "While generative tools often obscure the labor behind machine-made art, this platform foregrounds the time, iteration, and inspiration behind each piece.",
-          "",
-          "## WELCOME",
-          "",
-          "The welcome flow is intentionally minimal - a three-screen sequence consisting of a logo splash, followed by sign-up or sign-in. In a product that leverages complex machine learning systems and layered image iteration, the introduction is deliberately pared back.",
-          "",
-          "## DISCOVER", 
-          "",
-          "A scrollable feed surfaces trending and curated generative works. Clicking into any image reveals its creation journey - including iterations, total time, prompt history, and credited inspiration. Featured artists are showcased with bio blurbs and linked works.",
-          "",
-          "## CREATE + ITERATE",
-          "",
-          "Users generate images using a smart fill-in-the-blank prompt system, with controls for style, influence, and vibe. Outputs are editable as SVGs with a Figma-like toolbar, making it easy to tweak, remix, and iterate. Time and edit history are tracked to reflect effort.",
-          "",
-          "## ARTISTIC LINEAGE", 
-          "",
-          "This platform doesn't erase the origin of visual inspiration. It actively surfaces the artists, styles, and practices that shape generative works. Every image carries a thread back to its non-AI source.",
-          "",
-          "Original artists are credited throughout. Their profiles feature original works, a tab of inspired creations, and short bios with imagery - reinforcing transparency and showing their influence across the platform.",
-          "",
-          "## USER PROFILE",
-          "",
-          "Each user has a profile with tabs for created, liked, saved, and reposted work. The UI encourages identity-building and creative exploration, while tracking iteration timelines to celebrate the craft of generative art.",
-          "",
-          "## MACHINE LEARNING FOUNDATIONS",
-          "",
-          "The creative engine is powered by a few key ML-driven features that enhance control and transparency throughout the generation pipeline:",
-          "",
-          "## Prompt Temperature",
-          "",
-          "Controls allow users to modulate the randomness and creative looseness of their image generations, from structured to wildly abstract.",
-          "",
-          "## SVG-Based Output & Iteration Tracking",
-          "",
-          "Each visual is editable post-generation. Users can fine-tune details, mask out elements, and re-generate parts, creating a clear history of iterative effort.",
-          "",
-          "## Artist Influence Matching",
-          "",
-          "Leverages similarity search across training embeddings to surface likely inspirations behind generated works. These matched artists are credited, and users can explore their original pieces - spotlighting the real creatives behind the data.",
-        ],
-        images: [
-          '/images/projects/forma/forma2.png', 
-          '/images/projects/forma/forma3.png',
-          '/images/projects/forma/forma4.png',
-          '/images/projects/forma/forma6.png',
-          '/images/projects/forma/forma7.png',
-        ]
-      },
-      'muse': {
-        title: "Museum Experience",
-        subtitle: "Reimagining the Museum Experience: Smart Navigation & AR Exploration Confidential Client 8XX579",
-        role: "Sr. Product Designer",
-        team: "Frontend Developer, Product Manager, Software Engineer (FS), iOS Mobile Engineer, MLE: AR/VR ",
-        content: [
-          "## Reimagining the Museum Experience",
-          "Most museum apps are functional but flat. They provide basic maps and lists, but don't account for the way people actually move through and experience space. This project reimagined the museum guide — not as a static app, but as a context-aware spatial experience layered with exploration, orientation, and storytelling.",
-          "## Mapping the Existing User Journey",
-          "The existing flow revealed long stretches without context, requiring users to exit the app or retrace steps. It became clear that content needed to be tightly integrated with spatial navigation — not siloed in menus.",
-          "",
-          "Analyzing visitor behavior uncovered two core insights: Over 40% of visit time was spent trying to find locations. Most users abandoned the app after the first map interaction. These findings guided the structural redesign — the experience needed to adapt to physical movement and reduce friction in discovery.",
-          "## Designing the Flow", 
-          "The redesigned system flows naturally from 2D map → 3D environment → object-level stories. This progression lets users zoom in and out as they explore, surfacing relevant content without overwhelming the interface. Wireframes were built to test structure, hierarchy, and movement. The goal was to make exploration feel intuitive — like you're walking through the space, not clicking through an app.",
-          "",
-          "## A Layered Experience",
-          "To solve this, the app was built around three core components, layered seamlessly into the navigation: A live 2D wayfinding map that centers the visitor in real time and helps them navigate. A 3D spatial experience that previews exhibit zones, rooms, and transitions between spaces. A Featured Works section, embedded within the map and galleries, where users can explore individual objects, stories, and artist details",
-          "This structure lets visitors zoom in and out naturally — from building → exhibit → object — without losing their place or context.", 
-          "## 2D Map Navigation",
-          "A clean, zoomable map helps users orient themselves within the museum. Visitors can tap to preview galleries, view current location, and follow visual wayfinding cues designed to mirror real-world signage.",
-          "",
-          "## 3D Spatial Experience",
-          "The 3D mode offers a layered, immersive view of the museum layout. Users can explore floors and rooms in spatial context, making the app feel like an extension of the physical space.",
-          "",
-          "## Featured Exhibits & Object Detail",
-          "A curated section surfaces key works and exhibitions. Each object opens into an editorial-style layout, offering rich descriptions, artist context, and optional AR previews for selected pieces.",
-          "## System Architecture Overview",
-          "Data Collection: User interactions (clicks, dwell time, exhibit views), indoor location (BLE beacons or WiFi triangulation), time of visit",
-          "Processing Pipeline", 
-          "Event data is streamed and cleaned using Python + BigQuery, then passed to a lightweight content recommendation engine (collaborative filtering + content-based hybrid model)",
-          "## Model Outputs",
-          "Personalized exhibit recommendations shown in the Featured tab: Dynamic reorder of UI cards based on predicted interest score. Traffic heatmaps sent to a curator-facing dashboard (Metabase prototype). Feedback loop: User behavior is re-ingested to fine-tune recommendations over time. Privacy: All data collection is anonymized and opt-in, with local storage fallback for one-time guest users",
-          "## Tooling",
-          "Python (data pipeline), BigQuery (storage & queries), Scikit-learn (prototype ML models), Metabase (dashboard), Figma (UX/UI)"
-        ],
-        images: [
-          '/images/projects/muse/muse2.png',
-          '/images/projects/muse/muse3.png',
-          '/images/projects/muse/muse4.png',
-          '/images/projects/muse/muse5.png',
-          '/images/projects/muse/muse6.png',
-          '/images/projects/muse/muse7.png',
-          '/images/projects/muse/muse10.png',
-          '/images/projects/muse/muse13.png',
-        ]
-      }
-    };
-
-    return contentMap[projectId] || contentMap['default'];
-  };
-
-  const content = getProjectContent(id);
-
-  // Define specific image mappings for each project
-  const getImageForHeading = (heading, projectId, images) => {
-    const mappings = {
-      'muse': {
-        "Reimagining the Museum Experience": 0,
-        "Mapping the Existing User Journey": 1,
-        "Designing the Flow": 2,
-        "A Layered Experience": 3,
-        "2D Map Navigation": 4,
-        "3D Spatial Experience": 5,
-        "Featured Exhibits & Object Detail": 6,
-        "System Architecture Overview": 7,
-        "Model Outputs": 8,
-        "Tooling": 9
-      },
-      'mcp': {
-        "Unblocking the Workflow": 0,
-        "Designing for Dialogue": 1,
-        "Conversation Playback": 2,
-        "Agent & Model Onboarding": 3,
-        "Session History & Sharing": 4,
-        "Developer Console: Multi-Agent Config & Execution": 5,
-        "User Journey & Flow": 6,
-        "Making Model Communication Legible": 7,
-        "Reflection & Future Directions": 8
-      },
-      'forma': {
-        "WELCOME": 0,
-        "DISCOVER": 1,
-        "CREATE + ITERATE": 2,
-        "ARTISTIC LINEAGE": 3,
-        "USER PROFILE": 4,
-        "MACHINE LEARNING FOUNDATIONS": 5
-      }
-    };
-    
-    const projectMapping = mappings[projectId];
-    if (projectMapping && projectMapping[heading] !== undefined) {
-      return images[projectMapping[heading]];
-    }
-    return null;
-  };
-
-  const renderContent = () => {
-    const elements = [];
-
-    content.content.forEach((text, index) => {
-      if (text === "") {
-        elements.push(<br key={`br-${index}`} />);
-      } else if (text.startsWith("## ")) {
-        const headingText = text.replace("## ", "");
-        
-        elements.push(
-          <h2 key={`h2-${index}`} className="content-heading">
-            {headingText}
-          </h2>
-        );
-        
-        // Get the specific image for this heading
-        const imageData = getImageForHeading(headingText, id, content.images);
-        
-        if (imageData) {
-          if (typeof imageData === 'string' && imageData.includes('|')) {
-            const [leftImg, rightImg] = imageData.split('|');
-            elements.push(
-              <div key={`img-${index}`} className="content-image-pair">
-                <div className="side-by-side-images">
-                  <img src={leftImg} alt={`${content.title} - ${headingText} (1)`} />
-                  <img src={rightImg} alt={`${content.title} - ${headingText} (2)`} />
+          {/* icon — at inflection point */}
+          <div style={{ position:"relative",zIndex:2,transform:`translate(${px*.3}px,${py*.3}px)`,transition:"transform .15s ease-out" }}>
+            <Reveal delay={0}>
+              <div style={{ display:"flex",flexDirection:"column",alignItems:"center" }}>
+                <div style={{ width:170,height:170,borderRadius:"50%",overflow:"hidden",background:"#f5f2eb",border:`2.5px solid ${t.accent}`,boxShadow:`0 0 40px ${t.accent}15` }}>
+                  <Img src="/images/profilepic.png" alt="T" fb="linear-gradient(135deg,#dc3545,#c62836)" style={{ width:"100%",height:"100%",objectFit:"cover" }} />
                 </div>
               </div>
-            );
-          } else {
-            elements.push(
-              <div key={`img-${index}`} className="content-image">
-                <img src={imageData} alt={`${content.title} - ${headingText}`} />
-              </div>
-            );
-          }
-        }
-      } else {
-        elements.push(
-          <p key={`p-${index}`} className="content-paragraph">
-            {text}
-          </p>
-        );
-      }
-    });
-
-    return elements;
-  };
-
-  return (
-    <Fragment>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
-        .project-detail, .project-detail * {
-          font-family: "Space Grotesk", sans-serif !important;
-        }
-      `}</style>
-      <div className="project-detail" style={{ fontFamily: "Space Grotesk, sans-serif !important" }}>
-        <div className="project-detail-header">
-        <button onClick={() => navigate('/')} className="back-button">
-          ← Back to Work
-        </button>
-      </div>
-
-      <div className="project-hero-simple" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-        <h1 className="project-detail-title">{content.title}</h1>
-        {content.subtitle && (
-          <p className="project-detail-subtitle">{content.subtitle}</p>
-        )}
-        
-        {content.role && (
-          <div className="project-meta-simple">
-            <p><strong>Role:</strong> {content.role}</p>
-            {content.team && <p><strong>Team:</strong> {content.team}</p>}
-          </div>
-        )}
-      </div>
-
-      <div className="project-content-simple" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
-        {renderContent()}
-      </div>
-
-      <div className="project-navigation">
-      </div>
-    </div>
-    </Fragment>
-  );
-};
-
-/* ---------- Notebook Layout (global background grid + margin) ---------- */
-const NotebookLayout = ({ children, theme }) => {
-  const themeBackgrounds = {
-    ink:   { background: "black",                                                grid: "rgba(255,255,255,0.10)", text: "white", accent: "#ff4d4d" },
-    pearl: { background: "white",                                                grid: "rgba(0,0,0,0.08)",       text: "black", accent: "#00bcd4" },
-    rose:  { background: "linear-gradient(135deg, #ff0000 0%, #ff0062 50%, #ff0000 100%)",
-             grid: "rgba(255,255,255,0.15)",                                     text: "white", accent: "#ff66cc" },
-  };
-
-  const config = themeBackgrounds[theme] || themeBackgrounds.ink;
-
-  return (
-    <div
-      className="use-custom-cursor"   // ← ADD THIS
-      style={{
-        minHeight: "100vh",
-        color: config.text,
-        fontFamily: '"Space Grotesk", sans-serif',
-        position: "relative",
-      }}
-    >
-      {/* BACKGROUND FILL (bottom layer) */}
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          background: config.background,
-          zIndex: -2,
-        }}
-      />
-
-      {/* GRID OVERLAY (always above the fill) */}
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          backgroundImage: `
-            linear-gradient(to right, ${config.grid} 1px, transparent 1px),
-            linear-gradient(to bottom, ${config.grid} 1px, transparent 1px)
-          `,
-          backgroundSize: "20px 20px, 20px 20px",
-          pointerEvents: "none",
-          zIndex: -1,
-        }}
-      />
-
-      {/* NOTEBOOK MARGIN LINE */}
-      {/*
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 60,
-          width: 2,
-          height: "100%",
-          background: config.accent,
-          opacity: 0.8,
-          zIndex: 0,
-        }}
-      />
-      */}
-
-      {/* Foreground content */}
-      <div style={{ position: "relative", zIndex: 2 }}>
-        <GuideDotCursor theme={theme} grid={20} />
-        {children}
-          </div>
-      </div>
-  );
-};
-
-/* ---------- About Page (uses timeline) ---------- */
-const TimelineStep = React.forwardRef(({ stage }, ref) => {
-  const { ref: inViewRef, inView } = useInView({ threshold: 0.35, triggerOnce: false });
-
-  // Merge the two refs so we can both measure and observe
-  const setRefs = (el) => {
-    if (ref) ref.current = el;
-    inViewRef(el);
-  };
-
-  return (
-    <div
-      ref={setRefs}
-      style={{
-        marginBottom: "200px",
-        opacity: inView ? 1 : 0.25,
-        transform: inView ? "translateY(0)" : "translateY(24px)",
-        transition: "transform 450ms ease, opacity 450ms ease",
-      }}
-    >
-      <h3 style={{ fontSize: 26, marginBottom: 8 }}>{stage.title}</h3>
-      <p style={{ fontSize: 18, opacity: 0.8 }}>{stage.description}</p>
-      <p style={{ fontSize: 16, marginTop: 10, fontStyle: "italic" }}>{stage.content}</p>
-    </div>
-  );
-});
-
-const TapedPhoto = ({
-  src,
-  alt,
-  orientation = "portrait",
-  rotate = 0,
-  accent = "#ff4d4d",
-  caption = "",
-  backNote = "📓",
-}) => {
-  const [flipped, setFlipped] = React.useState(false);
-
-  const dims =
-    orientation === "portrait"
-      ? { width: 240, aspectRatio: "3 / 4" }
-      : orientation === "landscape"
-      ? { width: 320, aspectRatio: "4 / 3" }
-      : { width: 260, aspectRatio: "1 / 1" };
-
-  return (
-    <figure
-      onClick={() => setFlipped(!flipped)}
-      style={{
-        perspective: "1000px",
-        cursor: "pointer",
-        width: dims.width,
-        aspectRatio: dims.aspectRatio,
-        margin: "20px",
-        transform: `rotate(${rotate}deg)`,
-      }}
-    >
-      {/* tape strip */}
-      <span
-        style={{
-          position: "absolute",
-          top: -12,
-          left: "50%",
-          transform: "translateX(-50%) rotate(-2deg)",
-          width: 70,
-          height: 16,
-          background: "#d4a574",
-          opacity: 0.8,
-          borderRadius: 0,
-          zIndex: 2,
-        }}
-      />
-
-      {/* flipping card */}
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          height: "100%",
-          transformStyle: "preserve-3d",
-          transition: "transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1)",
-          transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
-        }}
-      >
-        {/* front image */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backfaceVisibility: "hidden",
-            borderRadius: "0px",
-            overflow: "hidden",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.25)",
-          }}
-        >
-          <img
-            src={src}
-            alt={alt}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-            }}
-          />
-        </div>
-
-        {/* back side */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "rgba(255,255,255,0.9)",
-            color: "#333",
-            borderRadius: "0px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontFamily: '"Space Grotesk", monospace',
-            fontSize: "16px",
-            fontWeight: 500,
-            backfaceVisibility: "hidden",
-            transform: "rotateY(180deg)",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
-          }}
-        >
-          {backNote}
-        </div>
-      </div>
-
-      {caption && (
-        <figcaption
-          style={{
-            fontSize: 13,
-            marginTop: 8,
-            textAlign: "center",
-            opacity: 0.75,
-          }}
-        >
-          {caption}
-        </figcaption>
-      )}
-    </figure>
-  );
-};
-
-const AboutPage = ({ theme = "ink" }) => {
-  const careerStages = [
-    {
-      id: "high-school",
-      title: "High School",
-      kicker: "Math was my first love",
-      body: "I used to solve equations for fun and sketch whatever I saw around me—usually while scrolling Tumblr deep into the night.",
-      glyph: "tanh",
-    },
-    {
-      id: "undergrad",
-      title: "Undergrad",
-      kicker: "I studied art and technology",
-      body: "I explored creative tech projects that lived between mediums—coding installations, designing speculative tools, and studying how systems and people interact.",
-      glyph: "∫",
-    },
-    {
-      id: "grad",
-      title: "Grad School",
-      kicker: "Architecture & Data Science era (barely slept)",
-      body: "I pivoted to architecture to bring more math and physics into my creative work. That curiosity expanded into data science—and then transformers dropped, and suddenly I was prototyping everything from spatial tools to AI-powered workflows.",
-      glyph: "▥",
-    },
-    {
-      id: "work",
-      title: "Work",
-      kicker: "Working across disciplines",
-      body: "I've worked across disciplines—designing, analyzing, and building with teams at Google, JPMorgan Chase, The Bond Center, CUNY, and Flad.",
-      glyph: "⚡",
-    },
-    {
-      id: "sabbatical",
-      title: "Bereavement Sabbatical",
-      kicker: "Loss",
-      body: "A sudden cancer diagnosis and ultimately losing my mom shattered my world. I took some time to heal.",
-      glyph: "♥",
-    },
-    {
-      id: "work-now",
-      title: "Now",
-      kicker: "",
-      body: "I've leaned fully into what I do best—crafting intuitive design systems powered by ML. My mother's ambition, intelligence, and kindness continue to inspire my work.",
-      glyph: "{…}",
-    },
-  ];
-
-  const accent =
-    theme === "pearl" ? "#00bcd4" : theme === "rose" ? "#ff66cc" : "#ff4d4d";
-
-  const [activeIdx, setActiveIdx] = useState(0);
-  const sectionRefs = useRef([]);
-
-  useEffect(() => {
-    const opts = { rootMargin: "0px 0px -50% 0px", threshold: 0.2 };
-    const io = new IntersectionObserver((entries) => {
-      const visible = entries.find((e) => e.isIntersecting);
-      if (visible) setActiveIdx(Number(visible.target.dataset.index));
-    }, opts);
-    sectionRefs.current.forEach((el) => el && io.observe(el));
-    return () => io.disconnect();
-  }, []);
-
-  const progress = ((activeIdx + 1) / careerStages.length) * 100;
-
-  return (
-    <section
-      className="about-page"
-      style={{
-        paddingTop: "140px",
-        paddingBottom: "140px",
-        fontFamily: '"Space Grotesk", sans-serif',
-        width: "100vw",
-        position: "relative",
-        left: "50%",
-        right: "50%",
-        marginLeft: "-50vw",
-        marginRight: "-50vw",
-        boxSizing: "border-box",
-      }}
-    >
-      {/* intro */}
-      <div
-        style={{
-          marginBottom: "140px",
-          padding: "80px 6vw", // keep a bit of breathing room
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "40px",
-        }}
-      >
-        <div style={{ flex: "1 1 420px", maxWidth: 700, textAlign: "center" }}>
-          <img 
-            src="/images/myname.gif" 
-            alt="Tanha" 
-            style={{ 
-              height: "180px", 
-              width: "auto", 
-              marginBottom: "12px",
-              objectFit: "contain"
-            }} 
-          />
-          <p style={{ fontSize: 22, lineHeight: 1.75, opacity: 0.9 }}>
-            My name, Tanha (تنحى) — pronounced (taan-haa) — means "carving" in Arabic
-            and mirrors the tanh (hyperbolic tangent) function. That dual meaning
-            reflects how I work: structured yet intuitive, analytical yet human.
-          </p>
-        </div>
-        <div style={{ flex: "0 0 auto" }}>
-          <TapedPhoto
-            src={theme === "pearl" ? "/images/tanha.jpg" : "/images/tanha.jpg"}
-            alt="Portrait"
-            orientation="portrait"
-            rotate={0}
-            accent={accent}
-          />
-        </div>
-      </div>
-
-      {/* timeline grid */}
-      <div
-        className="timeline-grid"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "300px 1fr",
-          gap: "60px",
-          alignItems: "start",
-          width: "100%",
-          padding: "0 6vw",
-          boxSizing: "border-box",
-        }}
-      >
-        {/* sidebar */}
-        <aside
-          className="timeline-sidebar"
-          style={{
-            position: "sticky",
-            top: "120px",
-            alignSelf: "start",
-          }}
-        >
-          <div style={{ position: "relative", paddingLeft: "20px" }}>
-            {/* base line */}
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: "10px",
-                width: "2px",
-                height: "100%",
-                background: "rgba(255,255,255,0.2)",
-              }}
-            />
-            {/* red scroll */}
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: "10px",
-                width: "2px",
-                height: `${progress}%`,
-                background: accent,
-                transition: "height 0.3s ease",
-              }}
-            />
-            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {careerStages.map((s, i) => (
-                <li
-                  key={s.id}
-                  onClick={() =>
-                    sectionRefs.current[i]?.scrollIntoView({ behavior: "smooth" })
-                  }
-                  style={{
-                    padding: "12px 0",
-                    cursor: "pointer",
-                    opacity: i === activeIdx ? 1 : 0.6,
-                    transition: "opacity 0.3s",
-                  }}
-                >
-                  <div style={{ fontSize: 16, fontWeight: 600 }}>{s.title}</div>
-                  <div style={{ fontSize: 13, opacity: 0.7 }}>{s.kicker}</div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </aside>
-
-        {/* main content */}
-        <div className="timeline-content">
-          {careerStages.map((s, i) => (
-            <article
-              key={s.id}
-              data-index={i}
-              ref={(el) => (sectionRefs.current[i] = el)}
-                style={{
-                marginBottom: "100px",
-                paddingBottom: "50px",
-                borderBottom: "1px solid rgba(255,255,255,0.1)",
-              }}
-            >
-              <h3 style={{ fontSize: 28, marginBottom: 8 }}>{s.title}</h3>
-              {s.kicker && (
-                <div style={{ fontSize: 16, opacity: 0.7, marginBottom: 10 }}>
-                  {s.kicker}
-              </div>
-              )}
-              <p style={{ fontSize: 20, lineHeight: 1.8, opacity: 0.9 }}>{s.body}</p>
-            </article>
-            ))}
+            </Reveal>
           </div>
         </div>
 
-      {/* hobbies collage */}
-      <div
-        style={{
-          marginTop: "120px",
-          borderTop: "1px solid rgba(255,255,255,0.12)",
-          padding: "80px 6vw",
-          width: "100%",
-          boxSizing: "border-box",
-        }}
-      >
-        <p
-          style={{
-            fontSize: 20,
-            lineHeight: 1.7,
-            maxWidth: 760,
-            margin: "0 auto 70px",
-            opacity: 0.9,
-            textAlign: "center",
-          }}
-        >
-          Outside of work, I really enjoy travel, photography and drinking coffee. I'm currently experimenting with brew temperature and grind size.
-        </p>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            width: "100%",
-          }}
-        >
-          <img
-            src="/images/about_scrap.gif"
-            alt="About scrapbook"
-            style={{
-              maxWidth: "100%",
-              height: "auto",
-              borderRadius: "8px",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
-            }}
-          />
-        </div>
-      </div>
-    </section>
-  );
-};
-
-/* ---------- Home Page ---------- */
-const HomePage = ({ theme }) => {
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  
-  // Update local time
-  useEffect(() => {
-    const el = document.getElementById("local-time");
-    if (!el) return;
-
-    const updateTime = () => {
-      const now = new Date();
-      const options = {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true,
-        timeZone: "America/New_York",
-      };
-      el.textContent = now.toLocaleTimeString([], options);
-    };
-
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
-  
-  const categories = [
-    { id: 'all', label: 'All' },
-    { id: 'product-design', label: 'Product Design' },
-    { id: 'ai-ml', label: 'AI/ML' },
-    { id: 'mobile-design', label: 'Mobile Design' },
-    { id: 'data-visualization', label: 'Data Viz' },
-    { id: 'writing', label: 'Writing/Research' },
-    { id: 'human-computer-interaction', label: 'HCI' },
-    { id: 'data-analysis', label: 'Data Analysis' },
-  ];
-
-  const filteredProjects = selectedCategory === 'all' 
-    ? projects 
-    : projects.filter(project => project.category === selectedCategory);
-
-  return (
-    <section style={{ padding: "150px 40px 80px" }}>
-      <div className="profile-image-container" style={{ display: "flex", justifyContent: "center", marginBottom: "60px" }}>
-        <img 
-          src={theme === "pearl" ? "/images/profile-light.gif" : "/images/profile-dark.gif"}
-          alt="Tanha profile"
-          style={{
-            width: '500px',
-            height: '500px',
-            borderRadius: '50%',
-            objectFit: 'cover',
-            objectPosition: 'center center',
-            border: '0px solid currentColor',
-            display: 'block',
-            margin: '0 auto'
-          }}
-        />
-      </div>
-      <h1 style={{ fontSize: "48px", fontWeight: 700, marginBottom: "20px", textAlign: "right", color: "inherit" }}>
-        I'm a Designer with a background in Data Science.
-      </h1>
-      <p style={{ fontSize: "30px", marginBottom: "40px", textAlign: "right", minHeight: 38 }}>
-        <Typewriter
-          text="I design from the inside out. I focus on turning AI-driven systems into intuitive tools."
-          speed={90}        // slower; tweak 70–120 as you like
-          startDelay={600}  // initial pause before typing
-          cursorChar="▎"    // try "|" or "▋" if you prefer
-        />
-      </p>
-      
-      {/* Local time + coordinates */}
-      <div
-        style={{
-          textAlign: "right",
-          fontSize: "14px",
-          opacity: 0.7,
-          marginTop: "-20px",
-          marginBottom: "60px",
-          fontFamily: '"Space Grotesk", monospace',
-        }}
-      >
-        <span id="local-time"></span> • 40.7128°N, 74.0060°W
-      </div>
-      
-      {/* Projects Section */}
-      <div style={{ marginTop: "80px" }}>
-        <h2 style={{ fontSize: "32px", fontWeight: 600, marginBottom: "30px", color: "inherit" }}>
-          Selected Work
-        </h2>
-        
-        {/* Category filters */}
-        <div style={{ marginBottom: "40px" }}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-            {categories.map(category => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                style={{
-                  padding: "8px 16px",
-                  borderRadius: "20px",
-                  border: "1px solid rgba(255,255,255,0.2)",
-                  background: selectedCategory === category.id ? "rgba(255,255,255,0.1)" : "transparent",
-                  color: "inherit",
-                  cursor: "pointer",
-                  fontSize: "14px",
-                  transition: "all 0.3s ease",
-                }}
-              >
-                {category.label}
-              </button>
-            ))}
+        {/* coords + time — clearly below the curve */}
+        <Reveal delay={400}>
+          <div style={{ display:"flex",justifyContent:"center",gap:16,alignItems:"center",fontSize:11,fontFamily:"var(--mono)",color:t.fgMuted,marginBottom:48,marginTop:60 }}>
+            <span>40.71°N, 74.01°W</span>
+            <span style={{ width:3,height:3,borderRadius:"50%",background:t.fgGhost }} />
+            <span>{time}</span>
           </div>
-          </div>
-          
-        {/* Projects grid */}
-        <div className="projects-grid" style={{ 
-          width: "100vw", 
-          position: "relative", 
-          left: "50%", 
-          right: "50%", 
-          marginLeft: "-50vw", 
-          marginRight: "-50vw"
-        }}>
-          {filteredProjects.map(project => (
-            <ProjectCard key={project.id} project={project} theme={theme} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
+        </Reveal>
 
-/* ---------- Visual Page ---------- */
-const VisualPage = ({ theme }) => {
-  const visualProjects = [
-    {
-      id: 'followme',
-      title: 'Follow Me, Dania',
-      type: 'album cover',
-      description: 'Album cover design featuring bold typography and atmospheric visual elements.',
-      imageData: '/images/visual/followme.png',
-      externalLink: true
-    },
-    {
-      id: 'mecollage',
-      title: 'Self Portrait',
-      type: 'art, graphic design',
-      description: 'Abstract.',
-      imageData: '/images/visual/mecollage.jpg'
-    },
-    {
-      id: 'hejaz',
-      title: 'Hejaz, Kingdom of Saudi Arabia',
-      type: 'branding, visual design, logo',
-      description: 'Cultural branding project celebrating the heritage and identity of the Hejaz region.',
-      imageData: '/images/visual/hejaz.gif'
-    },
-    {
-      id: 'bldg',
-      title: 'New York Commissioner Building',
-      type: 'illustration, commission',
-      description: 'Detailed architectural illustration capturing the historic character of NYC landmark.',
-      imageData: '/images/visual/bldg.jpg'
-    },
-    {
-      id: 'sheikhdallah-corp',
-      title: 'Sheikhdallah Corp',
-      type: 'graphic design, commission',
-      description: 'Corporate identity and graphic design solutions for business branding needs.',
-      imageData: '/images/visual/sheikhdallah_corp.jpg'
-    },
-    {
-      id: 'jism',
-      title: 'Jism, جسم (Body)',
-      type: 'illustration, anatomy series',
-      description: 'Anatomical illustration series exploring the human form through artistic interpretation.',
-      imageData: '/images/visual/jism.jpg'
-    },
-    {
-      id: 'atc',
-      title: 'Arab Tech Collective',
-      type: 'graphic design, logo, branding',
-      description: 'Modern identity design for tech community bridging Arab culture and innovation.',
-      imageData: '/images/visual/atc.jpg'
-    },
-    {
-      id: 'year2050',
-      title: 'Year 2050, Film Festival',
-      type: 'visual design, film poster, commission',
-      description: 'Futuristic poster design commission capturing the essence of forward-thinking cinema.',
-      imageData: '/images/visual/year2050.png'
-    }
-  ];
+        {/* typographic collision zone */}
+        <div style={{ position:"relative",flex:1,display:"flex",alignItems:"center",paddingBottom:"8vh" }}>
 
-  return (
-    <section style={{ padding: "150px 40px 80px" }}>
-      <h1 style={{ fontSize: "40px", fontWeight: 700, marginBottom: "30px", color: "inherit" }}>
-        Visual Projects
-      </h1>
-      <p style={{ fontSize: "18px", marginBottom: "40px", opacity: 0.8, color: "inherit" }}>
-        A collection of branding, illustration, and creative explorations.
-      </p>
-      
-      {/* Visual projects grid */}
-      <div className="projects-grid">
-        {visualProjects.map(project => (
-          <div
-            key={project.id}
-            className={`project-card ${theme === 'ink' ? 'ink' : theme === 'rose' ? 'rose' : ''}`}
-              style={{ 
-                color: 'inherit', 
-              transform: "translateZ(0)",
-              transition: "transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease",
-              border: "0.75px solid currentColor",
-              borderRadius: 12,
-              padding: 16,
-              background: theme === 'ink' ? '#0f0f0f' : theme === 'rose' ? 'rgba(255,255,255,0.06)' : '#fff',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = "translateY(-6px)";
-              e.currentTarget.style.boxShadow = "0 12px 28px rgba(0,0,0,0.18)";
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "none";
-            }}
-          >
-            <div className="project-card__media">
-              <img
-                src={project.imageData}
-                alt={project.title}
-                />
-              </div>
-            <div>
-              <h3 className="project-card__title">
-                {project.title}
-              </h3>
-              <p className="project-card__meta">
-                {project.type}
-              </p>
-              <p className="project-card__desc">
-                {project.description}
-          </p>
-        </div>
+          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:40,width:"100%",alignItems:"end" }}>
+            {/* left — colliding headline */}
+            <div style={{ position:"relative" }}>
+              <Reveal delay={300} mode="clipUp">
+                <div style={{ position:"relative" }}>
+                  {/* signature flip — blended intro */}
+                  <div style={{ marginBottom:-4,transform:`translate(${px*.15}px,${py*.1}px)`,transition:"transform .15s ease-out" }}>
+                    <SignatureFlip t={t} size="clamp(36px,5.5vw,72px)" />
                   </div>
-          ))}
+                  {/* headline */}
+                  <div style={{ fontSize:"clamp(36px,5.5vw,72px)",fontWeight:900,lineHeight:1,letterSpacing:"-.05em",color:t.fgMuted,transform:`translate(${px*.15}px,${py*.1}px)`,transition:"transform .15s ease-out" }}>
+                    i'm a designer<br/>
+                    with a background<br/>in data science
+                  </div>
+                </div>
+              </Reveal>
+            </div>
+            {/* right — pull quote */}
+            <div style={{ paddingLeft:"2vw",paddingBottom:20 }}>
+              <Reveal delay={600} mode="wipe">
+                <div style={{ borderLeft:`2px solid ${t.accent}`,paddingLeft:24 }}>
+                  <p style={{ fontSize:17,lineHeight:1.7,color:t.fgSoft,maxWidth:340 }}>
+                    I design from the inside out — turning AI-driven systems into intuitive tools.
+                  </p>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </div>
       </div>
-    </section>
-  );
-};
 
-/* ---------- Contact Page ---------- */
-const ContactPage = ({ theme = "ink" }) => {
-  const linkColor = theme === "rose" ? "#ffffff" : "#ff4d4d";
-  
-  return (
-    <section style={{ padding: "150px 40px 80px", textAlign: "center" }}>
-      <h1 style={{ fontSize: "40px", fontWeight: 700, marginBottom: "20px" }}>
-        Get in Touch
-      </h1>
-      <p style={{ fontSize: "18px", marginBottom: "40px", opacity: 0.8 }}>
-        Always open to collaboration and conversation.
-      </p>
-      <div style={{ display: "flex", justifyContent: "center", gap: "40px" }}>
-        <a
-          href="mailto:tanharchitecture@gmail.com"
-          style={{ fontSize: "20px", textDecoration: "underline", color: linkColor }}
-        >
-          Email
-        </a>
-        <a
-          href="https://linkedin.com/in/tanhata"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ fontSize: "20px", textDecoration: "underline", color: linkColor }}
-        >
-          LinkedIn
-        </a>
-    </div>
-  </section>
-);
-};
 
-/* ---------- Main Portfolio ---------- */
-const Portfolio = () => {
-  const [currentTheme, setCurrentTheme] = useState("ink");
+      {/* ══ WORK ══ */}
+      <section style={{ maxWidth:1200,margin:"0 auto",padding:"10vh 6vw" }}>
+        <div style={{ display:"grid",gridTemplateColumns:"1fr 2fr",gap:60,alignItems:"start" }}>
+          {/* left — label */}
+          <div style={{ position:"sticky",top:120 }}>
+            <Reveal>
+              <div style={{ fontSize:11,fontFamily:"var(--mono)",color:t.accent,letterSpacing:4,marginBottom:12,fontWeight:600 }}>WORK</div>
+              <div style={{ fontSize:13,color:t.fgMuted,lineHeight:1.6,marginBottom:24 }}>Product design, AI/ML,<br/>data visualization,<br/>and research.</div>
+            </Reveal>
+          </div>
+          {/* right — draggable project canvas */}
+          <DraggableCanvas items={PROJECTS} dark={dark} t={t} />
+        </div>
+      </section>
 
-  const themeNames = {
-    ink: "Ink",
-    pearl: "Pearl", 
-    rose: "Rose",
-  };
 
-      return (
-    <Router>
-      <ResponsiveGridCSS />
-      <NotebookLayout theme={currentTheme}>
-        <header
-                  style={{
-            padding: "20px 40px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            position: "sticky",
-            top: 0,
-            zIndex: 10,
-            borderBottom: "1px solid rgba(255,255,255,0.2)",
 
-            // Theme background logic
-            background:
-              currentTheme === "ink"
-                ? "#000000"
-                : currentTheme === "pearl"
-                ? "#ffffff"
-                : "linear-gradient(135deg, #ff0044 0%, #ff0066 50%, #ff0044 100%)",
-            color:
-              currentTheme === "ink"
-                ? "#ffffff"
-                : currentTheme === "pearl"
-                ? "#000000"
-                : "#ffffff",
+      {/* ══ EXPLORE — the prompt ══ */}
+      <div style={{ maxWidth:1200,margin:"0 auto",padding:"0 6vw" }}>
+        <div style={{ height:1,background:t.rule }} />
+      </div>
+      <section style={{ maxWidth:1200,margin:"0 auto",padding:"14vh 6vw 10vh" }}>
+        <Reveal>
+          <div style={{ textAlign:"center",marginBottom:48 }}>
+            <div style={{ fontSize:11,fontFamily:"var(--mono)",color:t.accent,letterSpacing:4,marginBottom:16,fontWeight:600 }}>EXPLORE</div>
+            <h2 style={{ fontSize:"clamp(28px,4vw,48px)",fontWeight:900,letterSpacing:"-.04em",lineHeight:1,marginBottom:12 }}>
+              Curious about <span style={{ fontFamily:"'EB Garamond',serif",fontStyle:"italic",fontWeight:400 }}>something?</span>
+            </h2>
+            <p style={{ fontSize:14,color:t.fgMuted,lineHeight:1.6,maxWidth:400,margin:"0 auto" }}>Ask about projects, process, background, or how to connect.</p>
+          </div>
+        </Reveal>
 
-            boxShadow:
-              currentTheme === "pearl"
-                ? "0 2px 10px rgba(0,0,0,0.05)"
-                : "0 2px 10px rgba(0,0,0,0.3)",
-          }}
-        >
-          {/* Navigation */}
-          <nav style={{ display: "flex", gap: "30px" }}>
-            <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>
-              Home
-            </Link>
-            <Link
-              to="/about"
-              style={{ color: "inherit", textDecoration: "none" }}
-            >
-              About
-            </Link>
-            <Link
-              to="/visual"
-              style={{ color: "inherit", textDecoration: "none" }}
-            >
-              Visual
-            </Link>
-            <Link
-              to="/contact"
-              style={{ color: "inherit", textDecoration: "none" }}
-            >
-              Contact
-            </Link>
-          </nav>
+        {/* centered conversation container */}
+        <div style={{ maxWidth:600,margin:"0 auto" }}>
 
-          {/* Theme toggle buttons */}
-          <div>
-            {Object.entries(themeNames).map(([key, label]) => (
-              <button
-                key={key}
-                onClick={() => setCurrentTheme(key)}
-                style={{
-                  marginLeft: "10px",
-                  padding: "6px 10px",
-                  background:
-                    currentTheme === key
-                      ? "rgba(255,255,255,0.15)"
-                      : "transparent",
-                  border:
-                    currentTheme === "pearl"
-                      ? "1px solid rgba(0,0,0,0.2)"
-                      : "1px solid rgba(255,255,255,0.2)",
-                  borderRadius: "6px",
-                  color: "inherit",
-                  cursor: "pointer",
-                  fontSize: "12px",
-                  transition: "all 0.25s ease",
-                }}
-              >
-                {label}
-              </button>
+          {/* input first — prominent */}
+          <Reveal delay={100}>
+            <div style={{ marginBottom:20 }}>
+              <div style={{ display:"flex",gap:8,alignItems:"center",background:t.card,border:"1px solid "+t.cardBorder,borderRadius:16,padding:"6px 6px 6px 22px",transition:"border .3s, box-shadow .3s" }}
+                onFocus={e=>{e.currentTarget.style.borderColor=t.accentBorder;e.currentTarget.style.boxShadow=`0 0 0 3px ${t.accentSoft}`;}}
+                onBlur={e=>{e.currentTarget.style.borderColor=t.cardBorder;e.currentTarget.style.boxShadow="none";}}>
+                <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();ask(input);}}} placeholder="Ask me anything..." style={{ flex:1,background:"transparent",border:"none",outline:"none",color:t.fg,fontSize:15,fontFamily:"inherit",padding:"12px 0" }} />
+                <button onClick={()=>ask(input)} disabled={!input.trim()} style={{ width:42,height:42,borderRadius:12,background:input.trim()?"linear-gradient(135deg,"+t.accent+",#c62836)":t.card,border:"none",cursor:input.trim()?"pointer":"default",display:"flex",alignItems:"center",justifyContent:"center",transition:"all .25s",flexShrink:0 }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity:input.trim()?1:.1 }}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* chips — centered */}
+          {chips.length > 0 && (
+            <Reveal delay={200}>
+              <div style={{ display:"flex",flexWrap:"wrap",gap:8,justifyContent:"center",marginBottom:32 }}>
+                {chips.map(c => (
+                  <button key={c} onClick={()=>ask(c)} style={{ background:t.card,border:"1px solid "+t.cardBorder,borderRadius:99,padding:"9px 18px",color:t.fgMuted,fontSize:12,fontWeight:500,cursor:"pointer",fontFamily:"inherit",transition:"all .3s" }}
+                    onMouseEnter={e=>{e.target.style.color=t.accent;e.target.style.borderColor=t.accentBorder;}}
+                    onMouseLeave={e=>{e.target.style.color=t.fgMuted;e.target.style.borderColor=t.cardBorder;}}
+                  >{c}</button>
+                ))}
+              </div>
+            </Reveal>
+          )}
+
+          {/* conversation thread */}
+          {responses.length > 0 && (
+            <div style={{ borderTop:`1px solid ${t.rule}`,paddingTop:24 }}>
+              {responses.map((r,i) => (
+                <div key={i} style={{ marginBottom:16,animation:"fadeUp .4s ease both" }}>
+                  {r.role==="user" ? (
+                    <div style={{ display:"flex",justifyContent:"flex-end" }}>
+                      <div style={{ background:t.bubbleUser,border:"1px solid "+t.bubbleUserBorder,borderRadius:"16px 16px 4px 16px",padding:"12px 20px",fontSize:14,lineHeight:1.6,color:t.fgSoft,maxWidth:400 }}>{r.text}</div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div style={{ background:t.card,border:"1px solid "+t.cardBorder,borderRadius:"16px 16px 16px 4px",padding:"14px 20px",fontSize:14,lineHeight:1.65,color:t.fgSoft,maxWidth:480 }}>
+                        {r.text}
+                        {r.link && <div style={{ marginTop:10 }}><a href={r.link} target="_blank" rel="noopener noreferrer" style={{ fontSize:12,color:t.accent,textDecoration:"none",borderBottom:"1px solid rgba(220,53,69,.2)",paddingBottom:1,fontWeight:600 }}>View case study {"\u2192"}</a></div>}
+                        {r.nav && <div style={{ marginTop:10 }}><button onClick={()=>setPage(r.nav)} style={{ fontSize:12,color:t.accent,background:"none",border:"none",borderBottom:"1px solid rgba(220,53,69,.2)",padding:"0 0 1px",cursor:"pointer",fontFamily:"inherit",fontWeight:600 }}>Go to page {"\u2192"}</button></div>}
+                        {r.tiles && <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginTop:14 }}>{FEATURED.map(p => <GlassTile key={p.id} p={p} dark={dark} />)}</div>}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+              {typing && <div style={{ display:"inline-flex",gap:4,padding:"14px 20px",background:t.card,border:"1px solid "+t.cardBorder,borderRadius:"16px 16px 16px 4px",animation:"fadeUp .25s ease both" }}>{[0,1,2].map(j => <span key={j} style={{ width:6,height:6,borderRadius:"50%",background:"rgba(220,80,80,.5)",animation:`dotPulse 1.2s ease-in-out ${j*.2}s infinite` }} />)}</div>}
+              <div ref={endRef} />
+            </div>
+          )}
+        </div>
+
+        {/* contact strip */}
+        <Reveal>
+          <div style={{ display:"flex",justifyContent:"center",gap:32,marginTop:80,paddingTop:32,borderTop:"1px solid "+t.rule }}>
+            {[{href:"mailto:tanharchitecture@gmail.com",label:"tanharchitecture@gmail.com"},{href:"https://linkedin.com/in/tanhata",label:"linkedin.com/in/tanhata",ext:true}].map(l => (
+              <a key={l.label} href={l.href} target={l.ext?"_blank":undefined} rel={l.ext?"noopener noreferrer":undefined} style={{ fontSize:12,color:t.fgMuted,textDecoration:"none",fontFamily:"var(--mono)",transition:"color .3s" }}
+                onMouseEnter={e=>e.target.style.color=t.accent}
+                onMouseLeave={e=>e.target.style.color=t.fgMuted}
+              >{l.label}</a>
             ))}
           </div>
-      </header>
-      <Routes>
-          <Route path="/" element={<HomePage theme={currentTheme} />} />
-          <Route path="/about" element={<AboutPage theme={currentTheme} />} />
-          <Route path="/visual" element={<VisualPage theme={currentTheme} />} />
-          <Route path="/contact" element={<ContactPage theme={currentTheme} />} />
-          <Route path="/project/:id" element={<ProjectDetailPage theme={currentTheme} />} />
-      </Routes>
-        <footer
-                    style={{
-            padding: "40px",
-            borderTop: "1px solid rgba(255,255,255,0.2)",
-            textAlign: "center",
-            marginTop: "80px",
-            opacity: 0.7,
-          }}
-        >
-            © Tanha Alsheikhdallah 2025
-      </footer>
-      </NotebookLayout>
-    </Router> 
+        </Reveal>
+      </section>
+    </div>
   );
 };
 
-export default Portfolio; 
+/* ═══════════════════════════════════════════════════════════════════
+   WORK PAGE
+   ═══════════════════════════════════════════════════════════════════ */
+const FILTERS = [{id:"all",label:"All"}, ...Object.entries(CAT).map(([id,v])=>({id,label:v.label}))];
+const WorkPage = ({ dark, t }) => {
+  const [f,setF]=useState("all");
+  const list = f==="all"?PROJECTS:PROJECTS.filter(p=>p.cat===f);
+  return (
+    <div style={{ paddingTop:80,position:"relative",zIndex:1 }}>
+      <div style={{ maxWidth:1100,margin:"0 auto",padding:"60px 6vw 0" }}>
+        <Reveal>
+          <div style={{ marginBottom:48 }}>
+            <h1 style={{ fontSize:"clamp(36px,5vw,64px)",fontWeight:900,letterSpacing:"-.04em",marginBottom:8,lineHeight:.95 }}>
+              Selected<br/>
+              <span style={{ fontFamily:"'EB Garamond',serif",fontWeight:400,fontStyle:"italic",letterSpacing:"-.02em" }}>Works</span>
+            </h1>
+            <p style={{ fontSize:14,color:t.fgMuted }}>{list.length} project{list.length!==1?"s":""}</p>
+          </div>
+        </Reveal>
+        <div style={{ display:"flex",flexWrap:"wrap",gap:8,marginBottom:48 }}>
+          {FILTERS.map(fl => { const a=f===fl.id; const cat=CAT[fl.id]; return (
+            <button key={fl.id} onClick={()=>setF(fl.id)} style={{ padding:"8px 18px",borderRadius:99,fontSize:12,fontWeight:600,fontFamily:"var(--mono)",cursor:"pointer",transition:"all .25s",background:a?(cat?`${cat.color}15`:t.accent+"15"):"transparent",border:a?`1px solid ${cat?cat.color+"40":t.accent+"40"}`:`1px solid ${t.rule}`,color:a?(cat?cat.color:t.accent):t.fgMuted,letterSpacing:.5 }}>{fl.label}</button>
+          );})}
+        </div>
+      </div>
+      <div style={{ maxWidth:1100,margin:"0 auto",padding:"0 6vw 80px" }}>
+        <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))",gap:20 }}>
+          {list.map((p,i) => <WorkFlipCard key={p.id} p={p} dark={dark} t={t} delay={i*80} />)}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* work page flip card — matches home cards */
+const WorkFlipCard = ({ p, dark, t, delay = 0 }) => {
+  const [flipped,setFlipped] = useState(false);
+  const [ok,setOk] = useState(true);
+  const c = gc(p.cat);
+  const bg = dark?"rgba(255,255,255,.025)":"rgba(0,0,0,.02)";
+  const bdr = dark?"rgba(255,255,255,.06)":"rgba(0,0,0,.06)";
+  const sub = dark?"rgba(255,255,255,.35)":"rgba(0,0,0,.4)";
+  const txt = dark?"rgba(255,255,255,.6)":"rgba(0,0,0,.55)";
+  const fg = dark?"#fff":"#1a1a1a";
+  const hoverTimer = useRef(null);
+
+  return (
+    <div
+      onMouseEnter={() => { hoverTimer.current = setTimeout(() => setFlipped(true), 300); }}
+      onMouseLeave={() => { clearTimeout(hoverTimer.current); setFlipped(false); }}
+      style={{ height:370,perspective:600,cursor:"pointer",animation:`fadeUp .6s cubic-bezier(.4,0,.2,1) ${delay}ms both` }}>
+      <div style={{ width:"100%",height:"100%",position:"relative",transformStyle:"preserve-3d",willChange:"transform",transition:"transform .9s cubic-bezier(.25,.1,.25,1), box-shadow .5s ease",transform:flipped?"scale(1.03) rotateY(180deg)":"rotateY(0deg)",boxShadow:flipped?`0 12px 40px rgba(0,0,0,.2)`:"none" }}>
+        {/* FRONT */}
+        <div style={{ position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",borderRadius:14,overflow:"hidden" }}>
+          <div style={{ background:dark?"rgba(20,20,20,.95)":"rgba(255,255,255,.95)",border:`1px solid ${bdr}`,borderRadius:14,overflow:"hidden",color:fg,height:"100%",display:"flex",flexDirection:"column" }}>
+            <div style={{ position:"relative",width:"100%",flex:1,overflow:"hidden",borderRadius:"13px 13px 0 0",minHeight:0 }}>
+              {ok&&p.img&&<img src={p.img} alt={p.title} onError={()=>setOk(false)} style={{ width:"100%",height:"100%",objectFit:"cover" }} />}
+              {(!ok||!p.img)&&<div style={{ width:"100%",height:"100%",background:`linear-gradient(135deg,${c.color}15,${c.color}30)` }} />}
+              <div style={{ position:"absolute",inset:0,background:"linear-gradient(0deg,rgba(0,0,0,.5) 0%,transparent 60%)" }} />
+              <span style={{ position:"absolute",top:10,left:10,fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(0,0,0,.7)",border:`1px solid ${c.color}35`,color:c.color,fontWeight:600,letterSpacing:.5 }}>{c.label}</span>
+              <a href={p.link} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{ position:"absolute",top:10,right:10,width:28,height:28,borderRadius:"50%",background:"rgba(0,0,0,.7)",border:`1px solid ${dark?"rgba(255,255,255,.15)":"rgba(0,0,0,.1)"}`,display:"flex",alignItems:"center",justifyContent:"center",textDecoration:"none" }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </a>
+            </div>
+            <div style={{ padding:"12px 16px 14px",flexShrink:0 }}>
+              <h3 style={{ fontSize:14,fontWeight:700,marginBottom:2,lineHeight:1.3 }}>{p.title}</h3>
+              <div style={{ fontSize:11,color:sub,fontWeight:500 }}>{p.sub}</div>
+            </div>
+          </div>
+        </div>
+        {/* BACK */}
+        <div style={{ position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",transform:"rotateY(180deg)",borderRadius:14,overflow:"hidden" }}>
+          <div style={{ background:dark?`linear-gradient(145deg, ${c.color}22, rgba(10,10,10,.97))`:`linear-gradient(145deg, ${c.color}15, rgba(255,255,255,.97))`,border:`1.5px solid ${c.color}40`,borderRadius:14,color:fg,height:"100%",display:"flex",flexDirection:"column",padding:"24px 20px",position:"relative" }}>
+            <div style={{ position:"absolute",top:12,right:12,width:20,height:20,borderTop:`2px solid ${c.color}40`,borderRight:`2px solid ${c.color}40`,borderRadius:"0 4px 0 0" }} />
+            <div style={{ position:"absolute",bottom:12,left:12,width:20,height:20,borderBottom:`2px solid ${c.color}40`,borderLeft:`2px solid ${c.color}40`,borderRadius:"0 0 0 4px" }} />
+            <div style={{ width:32,height:3,borderRadius:2,background:c.color,marginBottom:16 }} />
+            <h3 style={{ fontSize:20,fontWeight:800,marginBottom:4,letterSpacing:"-.02em" }}>{p.title}</h3>
+            <div style={{ fontSize:11,color:c.color,fontWeight:600,marginBottom:14,fontFamily:"var(--mono)" }}>{p.sub}</div>
+            <p style={{ fontSize:12.5,lineHeight:1.65,color:txt,flex:1 }}>{p.desc}</p>
+            {p.tags && <div style={{ display:"flex",flexWrap:"wrap",gap:5,marginTop:14,marginBottom:14 }}>{p.tags.map(tag => <span key={tag} style={{ fontSize:9,padding:"3px 8px",borderRadius:99,background:`${c.color}15`,border:`1px solid ${c.color}30`,color:c.color,fontWeight:600 }}>{tag}</span>)}</div>}
+            <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:"auto" }}>
+              <span style={{ fontSize:10,fontFamily:"var(--mono)",color:sub }}>{p.year}</span>
+              <a href={p.link} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{ fontSize:11,color:c.color,textDecoration:"none",fontWeight:700,display:"flex",alignItems:"center",gap:4 }}>
+                View project <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   ABOUT
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════
+   TANH TIMELINE — life as a function, with bubbles
+   ═══════════════════════════════════════════════════════════════════ */
+const LIFE = [
+  { x:-2.5, title:"High School",    kicker:"Math was my first love",      body:"I used to solve equations for fun and sketch whatever I saw around me — usually while scrolling Tumblr deep into the night.", r:18 },
+  { x:-1.5, title:"Undergrad",      kicker:"Art and technology",           body:"I explored creative tech projects that lived between mediums — coding installations, designing speculative tools, and studying how systems and people interact.", r:22 },
+  { x:-0.5, title:"Grad School",    kicker:"Architecture & Data Science",  body:"I pivoted to architecture to bring more math and physics into my creative work. That curiosity expanded into data science — and then transformers dropped, and suddenly I was prototyping everything from spatial tools to AI-powered workflows.", r:28 },
+  { x: 0.5, title:"Work",           kicker:"Across disciplines",           body:"I've worked across disciplines — designing, analyzing, and building with teams at Google, JPMorgan Chase, The Bond Center, CUNY, and Flad.", r:26 },
+  { x: 1.5, title:"Loss",           kicker:"The inflection point",         body:"A sudden cancer diagnosis and ultimately losing my mom shattered my world. I took some time to heal.", r:34, inflection:true },
+  { x: 2.5, title:"Now",            kicker:"Converging",                   body:"I've leaned fully into what I do best — crafting intuitive design systems powered by ML. My mother's ambition, intelligence, and kindness continue to inspire my work.", r:24 },
+];
+
+const tanh = x => (Math.exp(x) - Math.exp(-x)) / (Math.exp(x) + Math.exp(-x));
+
+const TanhTimeline = ({ t, dark }) => {
+  const [active, setActive] = useState(null);
+  const [drawn, setDrawn] = useState(false);
+  const ref = useRef(null);
+
+  // draw curve on scroll into view
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setDrawn(true); io.unobserve(el); } }, { threshold:.15 });
+    io.observe(el); return () => io.disconnect();
+  }, []);
+
+  const W = 900, H = 380;
+  const pad = { l:60, r:60, t:80, b:120 };
+  const pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+  const mapX = x => pad.l + ((x + 3) / 6) * pw;
+  const mapY = y => pad.t + ((1 - y) / 2) * ph;
+
+  // curve path
+  const steps = 200;
+  const pathD = Array.from({ length: steps + 1 }, (_, i) => {
+    const x = -3 + (6 * i) / steps;
+    const y = tanh(x);
+    return `${i === 0 ? "M" : "L"}${mapX(x).toFixed(1)},${mapY(y).toFixed(1)}`;
+  }).join(" ");
+
+  const pts = LIFE.map(ch => ({ cx: mapX(ch.x), cy: mapY(tanh(ch.x)), ...ch }));
+
+  return (
+    <div ref={ref} style={{ maxWidth:960,margin:"0 auto",padding:"6vh 3vw 2vh" }}>
+      <Reveal>
+        <div style={{ marginBottom:12 }}>
+          <div style={{ fontSize:11,fontFamily:"var(--mono)",color:t.fgMuted,letterSpacing:3 }}>TIMELINE</div>
+        </div>
+      </Reveal>
+
+      {/* SVG viz */}
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%",height:"auto",overflow:"visible",cursor:"default" }}>
+        <defs>
+          <filter id="tbglow"><feGaussianBlur stdDeviation="6" /></filter>
+        </defs>
+
+        {/* zero axis */}
+        <line x1={pad.l} y1={mapY(0)} x2={W - pad.r} y2={mapY(0)} stroke={dark?"rgba(255,255,255,.05)":"rgba(0,0,0,.04)"} strokeWidth="1" strokeDasharray="3 5" />
+
+        {/* asymptote labels */}
+        <text x={pad.l - 8} y={mapY(1)} textAnchor="end" fill={dark?"rgba(255,255,255,.12)":"rgba(0,0,0,.08)"} fontSize="9" fontFamily="var(--mono)" dominantBaseline="middle">+1</text>
+        <text x={pad.l - 8} y={mapY(-1)} textAnchor="end" fill={dark?"rgba(255,255,255,.12)":"rgba(0,0,0,.08)"} fontSize="9" fontFamily="var(--mono)" dominantBaseline="middle">−1</text>
+
+        {/* glow behind curve */}
+        <path d={pathD} fill="none" stroke={t.accent} strokeWidth="8" opacity=".06" filter="url(#tbglow)" />
+
+        {/* ghost curve (full, faint) */}
+        <path d={pathD} fill="none" stroke={dark?"rgba(255,255,255,.08)":"rgba(0,0,0,.06)"} strokeWidth="1.5" />
+
+        {/* drawn curve */}
+        <path d={pathD} fill="none" stroke={t.accent} strokeWidth="2"
+          strokeDasharray="2000" strokeDashoffset={drawn ? 0 : 2000}
+          style={{ transition:"stroke-dashoffset 2.5s cubic-bezier(.4,0,.2,1)" }} />
+
+        {/* bubbles */}
+        {pts.map((p, i) => {
+          const isActive = active === i;
+          const delay = `${0.8 + i * 0.3}s`;
+          return (
+            <g key={i} style={{ cursor:"pointer" }}
+              onMouseEnter={() => setActive(i)} onMouseLeave={() => setActive(null)}
+              onClick={() => setActive(active === i ? null : i)}>
+              {/* pulse ring */}
+              {isActive && !p.inflection && (
+                <circle cx={p.cx} cy={p.cy} r={p.r + 8} fill="none" stroke={t.accent} strokeWidth="1" opacity=".2">
+                  <animate attributeName="r" values={`${p.r};${p.r + 16}`} dur="1.5s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values=".3;0" dur="1.5s" repeatCount="indefinite" />
+                </circle>
+              )}
+              {/* outer ring */}
+              <circle cx={p.cx} cy={p.cy}
+                r={drawn ? (isActive ? p.r + 3 : p.r) : 0}
+                fill={p.inflection ? "transparent" : `${t.accent}${isActive ? "20" : "08"}`}
+                stroke={p.inflection ? (isActive ? t.fg : dark?"rgba(255,255,255,.15)":"rgba(0,0,0,.1)") : (isActive ? t.accent : `${t.accent}40`)}
+                strokeWidth={p.inflection ? 1.5 : 1}
+                style={{ transition:`all .6s cubic-bezier(.4,0,.2,1) ${drawn ? delay : "0s"}` }} />
+              {/* inner dot */}
+              <circle cx={p.cx} cy={p.cy}
+                r={drawn ? (isActive ? 5 : 3) : 0}
+                fill={p.inflection ? (isActive ? t.fg : dark?"rgba(255,255,255,.25)":"rgba(0,0,0,.15)") : t.accent}
+                style={{ transition:`all .5s cubic-bezier(.4,0,.2,1) ${drawn ? delay : "0s"}` }} />
+              {/* title above bubble */}
+              <text x={p.cx} y={p.cy - p.r - 10} textAnchor="middle"
+                fill={isActive ? t.fg : dark?"rgba(255,255,255,.3)":"rgba(0,0,0,.2)"}
+                fontSize={isActive ? "13" : "11"} fontWeight={isActive ? "700" : "500"}
+                fontFamily="'DM Sans',sans-serif"
+                style={{ transition:"all .3s" }}>
+                {p.title}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+
+      {/* text panel — clearly below the viz */}
+      <div style={{ minHeight:100,padding:"4px 0 12px" }}>
+        {active !== null ? (
+          <div style={{
+            maxWidth:460,
+            margin: active <= 2 ? "0" : active === 4 ? "0 auto" : "0 0 0 auto",
+            textAlign: LIFE[active].inflection ? "center" : "left",
+            animation:"fadeUp .4s ease both",
+          }}>
+            <div style={{ display:"flex",alignItems:"baseline",gap:8,marginBottom:4,justifyContent:LIFE[active].inflection?"center":"flex-start" }}>
+              <span style={{ fontSize:10,fontFamily:"var(--mono)",color:LIFE[active].inflection?t.fgGhost:t.accent,fontWeight:600 }}>
+                {String(active + 1).padStart(2, "0")}
+              </span>
+              <span style={{ fontSize:15,fontFamily:"'EB Garamond',serif",fontStyle:"italic",color:t.fgMuted }}>{LIFE[active].kicker}</span>
+            </div>
+            <p style={{
+              fontSize:15,lineHeight:1.75,
+              color:LIFE[active].inflection ? t.fgMuted : t.fgSoft,
+            }}>{LIFE[active].body}</p>
+          </div>
+        ) : (
+          <div style={{ textAlign:"center",padding:"8px 0" }}>
+            <p style={{ fontSize:12,fontFamily:"var(--mono)",color:t.fgMuted }}>hover a moment to read its story</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   ABOUT — DICTIONARY ENTRY
+   ═══════════════════════════════════════════════════════════════════ */
+const AboutPage = ({ dark, t }) => {
+  const [showArabic, setShowArabic] = useState(false);
+  useEffect(() => {
+    const id = setInterval(() => setShowArabic(s => !s), 3000);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div style={{ paddingTop:80,position:"relative",zIndex:1 }}>
+
+      {/* ── dictionary entry ── */}
+      <div style={{ maxWidth:900,margin:"0 auto",padding:"12vh 6vw 4vh" }}>
+        <Reveal>
+          <div style={{ display:"flex",alignItems:"stretch",gap:32,maxWidth:800 }}>
+            {/* portrait — stretches to match text height */}
+            <div style={{ width:280,borderRadius:4,overflow:"hidden",flexShrink:0,marginLeft:-16,border:`2px solid ${t.accent}` }}>
+              <Img src="/images/tanha.jpg" alt="Tanha" fb={`linear-gradient(135deg,${t.accent}20,${t.accent}40)`} style={{ width:"100%",height:"100%",objectFit:"cover" }} />
+            </div>
+            {/* dictionary content */}
+            <div style={{ flex:1 }}>
+              {/* headword + pronunciation */}
+              <div style={{ marginBottom:16 }}>
+                <div style={{ height:"clamp(80px,9vw,110px)",perspective:500,marginBottom:4 }}>
+                  <div style={{
+                    position:"relative",transformStyle:"preserve-3d",
+                    transition:"transform .8s cubic-bezier(.4,0,.2,1)",
+                    transform:showArabic?"rotateX(180deg)":"rotateX(0deg)",
+                    height:"100%",
+                  }}>
+                    <div style={{ backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",height:"100%",display:"flex",alignItems:"center" }}>
+                      <h1 style={{ fontSize:"clamp(36px,5vw,56px)",fontWeight:900,letterSpacing:"-.05em",lineHeight:1,margin:0 }}>tanha</h1>
+                    </div>
+                    <div style={{ position:"absolute",top:0,left:0,height:"100%",display:"flex",alignItems:"center",backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",transform:"rotateX(180deg)" }}>
+                      <h1 style={{ fontSize:"clamp(36px,5vw,56px)",fontFamily:"'Aref Ruqaa',serif",fontWeight:700,lineHeight:1,margin:0,color:t.fg }}>{"\u062a\u0646\u062d\u0649 "}</h1>
+                    </div>
+                  </div>
+                </div>
+                <div style={{ fontSize:15,fontFamily:"'EB Garamond',serif",fontStyle:"italic",color:t.fgMuted }}>/taan·haa/</div>
+              </div>
+
+              {/* definitions */}
+              <div style={{ borderTop:`1px solid ${t.rule}`,paddingTop:16 }}>
+                {/* definition 1 — Arabic */}
+                <div style={{ marginBottom:18 }}>
+                  <div style={{ display:"flex",alignItems:"baseline",gap:8,marginBottom:4 }}>
+                    <span style={{ fontSize:12,fontFamily:"var(--mono)",color:t.accent,fontWeight:700 }}>1</span>
+                    <span style={{ fontSize:11,fontFamily:"var(--mono)",color:t.fgMuted,letterSpacing:3 }}>ARABIC</span>
+                    <span style={{ fontSize:13,fontFamily:"'EB Garamond',serif",fontStyle:"italic",color:t.fgMuted }}>noun</span>
+                  </div>
+                  <p style={{ fontSize:15,lineHeight:1.65,color:t.fgSoft,paddingLeft:24 }}>
+                    Carving, etching — to shape by removing. From the root <span style={{ fontFamily:"'Aref Ruqaa',serif",fontSize:17 }}>{"\u0646\u062d\u062a"}</span> (n-ḥ-t).
+                  </p>
+                </div>
+
+                {/* definition 2 — mathematics */}
+                <div style={{ marginBottom:16 }}>
+                  <div style={{ display:"flex",alignItems:"baseline",gap:8,marginBottom:4 }}>
+                    <span style={{ fontSize:12,fontFamily:"var(--mono)",color:t.accent,fontWeight:700 }}>2</span>
+                    <span style={{ fontSize:11,fontFamily:"var(--mono)",color:t.fgMuted,letterSpacing:3 }}>MATHEMATICS</span>
+                    <span style={{ fontSize:13,fontFamily:"'EB Garamond',serif",fontStyle:"italic",color:t.fgMuted }}>function</span>
+                  </div>
+                  <p style={{ fontSize:15,lineHeight:1.65,color:t.fgSoft,paddingLeft:24 }}>
+                    tanh(x) — the hyperbolic tangent. Maps any input to a value between −1 and 1. Smooth, bounded, always converging.<sup style={{ fontSize:9,color:t.accent,marginLeft:2,cursor:"default" }}>3</sup>
+                  </p>
+                  <div style={{ paddingLeft:24,marginTop:8 }}>
+                    <code style={{ fontSize:12,fontFamily:"var(--mono)",color:t.fgMuted,background:t.card,padding:"4px 10px",borderRadius:4,border:`1px solid ${t.rule}` }}>tanh(x) = (eˣ − e⁻ˣ) / (eˣ + e⁻ˣ)</code>
+                  </div>
+                </div>
+              </div>
+              {/* footnote */}
+              <div style={{ marginTop:20,paddingTop:12,borderTop:`1px solid ${t.rule}` }}>
+                <p style={{ fontSize:12,lineHeight:1.6,color:t.fgMuted,fontFamily:"'EB Garamond',serif",fontStyle:"italic" }}>
+                  <sup style={{ fontSize:8,color:t.accent,marginRight:4 }}>3</sup>
+                  Also travels compulsively, photographs everything, and has strong opinions about coffee.
+                </p>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+
+
+      {/* ── TANH TIMELINE VIZ ── */}
+      <TanhTimeline t={t} dark={dark} />
+
+
+      {/* ── contact strip ── */}
+      <div style={{ maxWidth:900,margin:"0 auto",padding:"4vh 6vw 10vh" }}>
+        <Reveal>
+          <div style={{ height:1,background:t.rule,marginBottom:32 }} />
+          <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center" }}>
+            <div style={{ fontSize:13,color:t.fgMuted }}>Let's connect</div>
+            <div style={{ display:"flex",gap:24 }}>
+              {[{href:"mailto:tanharchitecture@gmail.com",label:"Email"},{href:"https://linkedin.com/in/tanhata",label:"LinkedIn",ext:true}].map(l => (
+                <a key={l.label} href={l.href} target={l.ext?"_blank":undefined} rel={l.ext?"noopener noreferrer":undefined} style={{ fontSize:12,fontFamily:"var(--mono)",color:t.fgMuted,textDecoration:"none",transition:"color .3s" }}
+                  onMouseEnter={e=>e.target.style.color=t.accent}
+                  onMouseLeave={e=>e.target.style.color=t.fgMuted}
+                >{l.label}</a>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </div>
+  );
+};
+
+const VisualPage = ({ dark, t }) => {
+  return (
+    <div style={{ paddingTop:80,position:"relative",zIndex:1 }}>
+      {/* masthead */}
+      <div style={{ padding:"10vh 6vw 2vh",maxWidth:1200,margin:"0 auto" }}>
+        <Reveal>
+          <div style={{ borderBottom:`2px solid ${t.fg}`,paddingBottom:16,marginBottom:8 }}>
+            <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-end" }}>
+              <div>
+                <div style={{ fontSize:11,fontFamily:"var(--mono)",color:t.accent,letterSpacing:6,fontWeight:700,marginBottom:8 }}>THE VISUAL ISSUE</div>
+                <h1 style={{ fontSize:"clamp(56px,9vw,120px)",fontWeight:900,letterSpacing:"-.06em",lineHeight:.85,fontFamily:"'DM Sans',sans-serif" }}>
+                  Visual<br/>
+                  <span style={{ fontFamily:"'EB Garamond',serif",fontWeight:400,fontStyle:"italic",letterSpacing:"-.02em" }}>Works</span>
+                </h1>
+              </div>
+              <div style={{ fontSize:11,fontFamily:"var(--mono)",color:t.fgGhost,textAlign:"right",paddingBottom:8 }}>
+                <div>Nº 01 — 2026</div>
+                <div style={{ marginTop:4 }}>{VISUALS.length} pieces</div>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+        {/* subhead strip */}
+        <Reveal delay={100}>
+          <div style={{ display:"flex",justifyContent:"space-between",fontSize:10,fontFamily:"var(--mono)",color:t.fgMuted,letterSpacing:2,paddingTop:8,paddingBottom:40,borderBottom:`1px solid ${t.rule}` }}>
+            <span>BRANDING</span><span>ILLUSTRATION</span><span>CREATIVE EXPLORATION</span><span>PHOTOGRAPHY</span>
+          </div>
+        </Reveal>
+      </div>
+
+      {/* editorial spreads */}
+      {VISUALS.map((v,i) => {
+        const layout = i % 4;
+        const ratio = v.ratio || "3/4";
+        return (
+          <Reveal key={v.id} delay={i*50}>
+            {layout === 0 ? (
+              /* type-heavy spread — big title, portrait image */
+              <div style={{ maxWidth:1200,margin:"0 auto",padding:"8vh 6vw",display:"grid",gridTemplateColumns:"1.2fr 1fr",gap:60,alignItems:"center" }}>
+                <div>
+                  <div style={{ fontSize:10,fontFamily:"var(--mono)",color:t.accent,letterSpacing:4,marginBottom:16,fontWeight:600 }}>{String(i+1).padStart(2,"0")} — {v.type.toUpperCase()}</div>
+                  <h2 style={{ fontSize:"clamp(40px,5vw,72px)",fontWeight:900,letterSpacing:"-.04em",lineHeight:.95,marginBottom:20 }}>
+                    {v.title.split(" ").map((w,wi) => (
+                      <span key={wi}>
+                        {wi === 1 ? <span style={{ fontFamily:"'EB Garamond',serif",fontStyle:"italic",fontWeight:400,background:`${t.accent}15`,padding:"0 6px",borderRadius:4 }}>{w}</span> : w}
+                        {wi < v.title.split(" ").length - 1 ? " " : ""}
+                      </span>
+                    ))}
+                  </h2>
+                  <p style={{ fontSize:14,lineHeight:1.7,color:t.fgMuted,maxWidth:360 }}>{v.type}</p>
+                </div>
+                <div style={{ aspectRatio:ratio,borderRadius:4,overflow:"hidden",border:`1px solid ${t.rule}` }}>
+                  <Img src={v.img} alt={v.title} fb={dark?"#111":"#ddd"} style={{ width:"100%",height:"100%",objectFit:"cover" }} />
+                </div>
+              </div>
+            ) : layout === 1 ? (
+              /* image-left portrait, stacked type right */
+              <div style={{ maxWidth:1200,margin:"0 auto",padding:"4vh 6vw",display:"grid",gridTemplateColumns:"1fr 1fr",gap:40,alignItems:"center" }}>
+                <div style={{ aspectRatio:ratio,borderRadius:4,overflow:"hidden" }}>
+                  <Img src={v.img} alt={v.title} fb={dark?"#111":"#ddd"} style={{ width:"100%",height:"100%",objectFit:"cover" }} />
+                </div>
+                <div style={{ paddingLeft:20 }}>
+                  <div style={{ fontSize:80,fontWeight:900,color:t.fgGhost,lineHeight:1,letterSpacing:"-.06em",fontFamily:"'DM Sans',sans-serif" }}>{String(i+1).padStart(2,"0")}</div>
+                  <h3 style={{ fontSize:28,fontWeight:800,letterSpacing:"-.02em",marginTop:-12,marginBottom:8,position:"relative" }}>
+                    {v.title}
+                    <span style={{ display:"inline-block",width:8,height:8,borderRadius:"50%",background:t.accent,marginLeft:8,verticalAlign:"super" }} />
+                  </h3>
+                  <div style={{ color:t.fgMuted,fontFamily:"'EB Garamond',serif",fontStyle:"italic",fontSize:16 }}>{v.type}</div>
+                </div>
+              </div>
+            ) : layout === 2 ? (
+              /* portrait image centered with type below */
+              <div style={{ maxWidth:1200,margin:"0 auto",padding:"8vh 6vw",textAlign:"center" }}>
+                <div style={{ maxWidth:700,margin:"0 auto" }}>
+                  <div style={{ aspectRatio:ratio,maxWidth:320,borderRadius:4,overflow:"hidden",margin:"0 auto 24px",border:`1px solid ${t.rule}` }}>
+                    <Img src={v.img} alt={v.title} fb={dark?"#111":"#ddd"} style={{ width:"100%",height:"100%",objectFit:"cover" }} />
+                  </div>
+                  <div style={{ fontSize:11,fontFamily:"var(--mono)",color:t.accent,letterSpacing:4,marginBottom:16 }}>{v.type.toUpperCase()}</div>
+                  <h3 style={{ fontSize:"clamp(28px,4vw,48px)",fontWeight:800,letterSpacing:"-.03em",lineHeight:1.1,marginBottom:16 }}>
+                    <span style={{ borderBottom:`3px solid ${t.accent}` }}>{v.title}</span>
+                  </h3>
+                  <div style={{ width:40,height:1,background:t.rule,margin:"0 auto" }} />
+                </div>
+              </div>
+            ) : (
+              /* full-width contained — portrait image, type below */
+              <div style={{ maxWidth:1200,margin:"0 auto",padding:"4vh 6vw" }}>
+                <div style={{ aspectRatio:ratio,maxHeight:"70vh",borderRadius:8,overflow:"hidden" }}>
+                  <Img src={v.img} alt={v.title} fb={dark?"#111":"#ddd"} style={{ width:"100%",height:"100%",objectFit:"cover" }} />
+                </div>
+                <div style={{ display:"flex",justifyContent:"space-between",alignItems:"baseline",marginTop:16 }}>
+                  <div>
+                    <div style={{ fontSize:10,fontFamily:"var(--mono)",letterSpacing:3,color:t.accent,marginBottom:4 }}>{v.type.toUpperCase()}</div>
+                    <h3 style={{ fontSize:28,fontWeight:800,letterSpacing:"-.02em" }}>{v.title}</h3>
+                  </div>
+                  <div style={{ fontSize:64,fontWeight:900,color:t.fgGhost,lineHeight:1 }}>{String(i+1).padStart(2,"0")}</div>
+                </div>
+              </div>
+            )}
+
+            {/* divider between items */}
+            {i < VISUALS.length - 1 && (
+              <div style={{ maxWidth:1200,margin:"0 auto",padding:"0 6vw" }}>
+                <div style={{ height:1,background:t.rule }} />
+              </div>
+            )}
+          </Reveal>
+        );
+      })}
+
+      {/* colophon */}
+      <div style={{ padding:"10vh 6vw 6vh",textAlign:"center" }}>
+        <div style={{ fontSize:11,fontFamily:"var(--mono)",color:t.fgGhost,letterSpacing:6 }}>FIN</div>
+      </div>
+    </div>
+  );
+};
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   APP
+   ═══════════════════════════════════════════════════════════════════ */
+export default function App() {
+  const [page, setPage] = useState("home");
+  const [dark, setDark] = useState(false);
+  const [mx, setMx] = useState(0.5);
+  const [my, setMy] = useState(0.5);
+  const go = p => { setPage(p); window.scrollTo({top:0,behavior:"smooth"}); };
+
+  useEffect(() => {
+    const h = e => { setMx(e.clientX / window.innerWidth); setMy(e.clientY / window.innerHeight); };
+    window.addEventListener("mousemove", h, { passive:true });
+    return () => window.removeEventListener("mousemove", h);
+  }, []);
+
+  const t = dark ? {
+    bg:"#000", fg:"#fff", fgSoft:"rgba(255,255,255,.55)", fgMuted:"rgba(255,255,255,.25)", fgGhost:"rgba(255,255,255,.1)",
+    card:"rgba(255,255,255,.02)", cardBorder:"rgba(255,255,255,.06)", rule:"rgba(255,255,255,.06)",
+    navBg:"rgba(0,0,0,.8)", inputBg:"rgba(255,255,255,.012)", inputBorder:"rgba(255,255,255,.04)",
+    accent:"#dc3545", accentSoft:"rgba(220,53,69,.08)", accentBorder:"rgba(220,53,69,.15)",
+    bubbleUser:"rgba(220,53,69,.05)", bubbleUserBorder:"rgba(220,53,69,.08)",
+    bubbleBot:"rgba(255,255,255,.012)", bubbleBotBorder:"rgba(255,255,255,.04)",
+    scrollbar:"rgba(255,255,255,.06)", selection:"rgba(220,53,69,.3)",
+  } : {
+    bg:"#f5f2eb", fg:"#1a1a1a", fgSoft:"rgba(0,0,0,.55)", fgMuted:"rgba(0,0,0,.3)", fgGhost:"rgba(0,0,0,.08)",
+    card:"rgba(0,0,0,.02)", cardBorder:"rgba(0,0,0,.06)", rule:"rgba(0,0,0,.08)",
+    navBg:"rgba(245,242,235,.95)", inputBg:"rgba(0,0,0,.02)", inputBorder:"rgba(0,0,0,.08)",
+    accent:"#c0392b", accentSoft:"rgba(192,57,43,.06)", accentBorder:"rgba(192,57,43,.12)",
+    bubbleUser:"rgba(192,57,43,.05)", bubbleUserBorder:"rgba(192,57,43,.08)",
+    bubbleBot:"rgba(0,0,0,.02)", bubbleBotBorder:"rgba(0,0,0,.06)",
+    scrollbar:"rgba(0,0,0,.08)", selection:"rgba(192,57,43,.15)",
+  };
+
+  return (
+    <div style={{ minHeight:"100vh",color:t.fg,fontFamily:"'DM Sans','Helvetica Neue',sans-serif","--mono":"'JetBrains Mono',monospace","--fg":t.fg,"--fgSoft":t.fgSoft,"--fgMuted":t.fgMuted,"--fgGhost":t.fgGhost,"--accent":t.accent,"--card":t.card,"--cardBorder":t.cardBorder,"--rule":t.rule,"--bg":t.bg, transition:"color .5s, background .5s" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Playball&display=swap');
+        @keyframes dotPulse{0%,80%,100%{transform:scale(.4);opacity:.3}40%{transform:scale(1);opacity:1}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+        @keyframes meshDrift{0%,100%{transform:translate(0,0) rotate(0deg)}33%{transform:translate(2%,-1%) rotate(.3deg)}66%{transform:translate(-1%,1.5%) rotate(-.3deg)}}
+        @keyframes spinSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+        *{box-sizing:border-box;margin:0;padding:0}
+        html{scroll-behavior:smooth}
+        body{background:${t.bg};transition:background .5s}
+        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:${t.scrollbar};border-radius:99px}
+        ::selection{background:${t.selection}}
+      `}</style>
+      <MeshBG dark={dark} mx={mx} my={my} />
+      <Nav page={page} go={go} dark={dark} setDark={setDark} t={t} />
+      {page==="home" && <HomePage setPage={go} dark={dark} t={t} mx={mx} my={my} />}
+      {page==="work" && <WorkPage dark={dark} t={t} />}
+      {page==="about" && <AboutPage dark={dark} t={t} />}
+      {page==="visual" && <VisualPage dark={dark} t={t} />}
+      <div style={{ position:"relative",zIndex:1,borderTop:`1px solid ${t.rule}`,padding:"32px 24px",textAlign:"center",fontSize:11,opacity:.15,fontFamily:"var(--mono)" }}>{"\u00a9"} Tanha Alsheikhdallah 2025</div>
+    </div>
+  );
+}
