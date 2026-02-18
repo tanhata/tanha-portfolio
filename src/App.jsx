@@ -15,19 +15,19 @@ const CAT = {
 const gc = id => CAT[id] || CAT["product-design"];
 
 const PROJECTS = [
-  { id:"lattice",       title:"Lattice",                  sub:"Next Gen Experiment Tracking", desc:"ML experiment tracker connecting experiments, papers, and evaluations.",              cat:"product-design", img:"/images/lattice.png",         link:"https://tanhata.github.io/lattice-case-study/",    year:"2026", tags:["Product Design"],                featured:true },
-  { id:"model-pulse",   title:"ModelPulse",               sub:"AI Performance Platform",      desc:"Enterprise observability — detect drift, monitor accuracy, manage compliance.",       cat:"product-design", img:"/images/model-pulse.jpg",     link:"https://tanhata.github.io/modelpulse-case-study/", year:"2025", tags:["React","D3.js","Product Design"], featured:true },
-  { id:"plotmind",      title:"Plotmind",                  sub:"No-Code Data Intelligence",    desc:"Low-code environment for advanced data visualizations in enterprise pipelines.",     cat:"product-design", img:"/images/plotmind.png",        link:"https://tanhata.github.io/plotmind-case-study/",   year:"2025", tags:["Framer","Python","Product Design"], featured:true },
-  { id:"code-gen",      title:"AI Design Tools",           sub:"Code Gen Research",            desc:"How design teams leverage LLM-driven code assistants for front-end prototyping.",     cat:"writing",        img:"/images/codereview.png",      link:"https://open.substack.com/pub/talshe/p/dissecting-ai-design-capabilities", year:"2025", tags:["Research"] },
-  { id:"mcp",           title:"Multi-Agent Collaboration", sub:"MCP Interface",                desc:"Conversation UIs enabling distributed AI agents to coordinate and refine outputs.",   cat:"product-design", img:"/images/mcp.gif",            link:"https://tanhata.github.io/mcp-case-study/",        year:"2024", tags:["Figma","Product Design"],        featured:true },
-  { id:"tangent",       title:"Tangent",                   sub:"Parametric Geometry",          desc:"Real-time parametric geometry with natural language input and live 3D.",             cat:"product-design", img:"/images/tangent.png",  link:"https://docs.google.com/presentation/d/e/2PACX-1vRjNEWLMh6TRxoEeeHaeL_ePIp357aN6xCbF96EgSPOmyIOAjsyWw7KoLbwnlk5QlhleyfO8OZxrGbA/pub", year:"2024", tags:["Figma","Python"] },
-  { id:"recursive-orbit",title:"Recursive Orbit",         sub:"Grief & Memory",               desc:"Interactive visualization exploring grief via generative data.",                     cat:"data-visualization", img:"/images/recursive-orbit.gif", link:"https://tanhata.github.io/recursive-orbit/",   year:"2024", tags:["Javascript"] },
-  { id:"aura",          title:"AURA",                      sub:"AR Museum Guide",              desc:"AR museum guide — spatial storytelling through layered narratives.",                 cat:"mobile-design",  img:"/images/aura.png",           link:"https://tanhata.github.io/aura-case-study/",       year:"2022", tags:["AR/VR","Mobile"], featured:true },
-  { id:"green-spaces",  title:"The Green Divide",          sub:"NYC Park Access",              desc:"Mapping disparities in park access across NYC neighborhoods.",                      cat:"data-analysis",  img:"/images/green_spaces.gif",   link:"/green_divide_story.html",                         year:"2021", tags:["Python"] },
-  { id:"bitlot",        title:"BitLot",                    sub:"Product Analytics",            desc:"Product analytics platform for data-driven decisions.",                            cat:"data-analysis",  img:"/images/bitlot.gif",         link:"https://drive.google.com/file/d/1tAwTFKHjWch9u-SEe0oKMHvTClIR3FT8/view", year:"2021", tags:["Python"] },
-  { id:"heating",       title:"Energy Optimization",       sub:"Predictive ML",                desc:"Building heating load optimization and energy efficiency.",                        cat:"ai-ml",          img:"/images/heating-loads.gif",   link:"https://drive.google.com/file/d/1FHQsm3s1dJWWMKKBy-QRjClEO3rS2OZ8/view", year:"2022", tags:["Python","AI/ML"] },
-  { id:"living",        title:"Living Computing",          sub:"Adaptive Interfaces",          desc:"Interfaces that respond to human behavior and context.",                           cat:"human-computer-interaction", img:"/images/living-computing.gif", link:"https://www.youtube.com/watch?v=Geo17VbvWtU", year:"2021", tags:["Arduino","C++"] },
-  { id:"gravity",       title:"Gravity Game",              sub:"Physics Simulation",           desc:"Physics-based interactive game.",                                                 cat:"human-computer-interaction", img:"/images/gravitygame.png", link:"https://tanhata.github.io/gravitygame/",       year:"2020", tags:["HCI"] },
+  { id:"lattice",       title:"Lattice",                  sub:"Next Gen Experiment Tracking", desc:"ML experiment tracker connecting experiments, papers, and evaluations.",              cat:"product-design", img:"./images/lattice.png",         link:"https://tanhata.github.io/lattice-case-study/",    year:"2026", tags:["Product Design"],                featured:true },
+  { id:"model-pulse",   title:"ModelPulse",               sub:"AI Performance Platform",      desc:"Enterprise observability — detect drift, monitor accuracy, manage compliance.",       cat:"product-design", img:"./images/model-pulse.jpg",     link:"https://tanhata.github.io/modelpulse-case-study/", year:"2025", tags:["React","D3.js","Product Design"], featured:true },
+  { id:"plotmind",      title:"Plotmind",                  sub:"No-Code Data Intelligence",    desc:"Low-code environment for advanced data visualizations in enterprise pipelines.",     cat:"product-design", img:"./images/plotmind.png",        link:"https://tanhata.github.io/plotmind-case-study/",   year:"2025", tags:["Framer","Python","Product Design"], featured:true },
+  { id:"code-gen",      title:"AI Design Tools",           sub:"Code Gen Research",            desc:"How design teams leverage LLM-driven code assistants for front-end prototyping.",     cat:"writing",        img:"./images/codereview.png",      link:"https://open.substack.com/pub/talshe/p/dissecting-ai-design-capabilities", year:"2025", tags:["Research"] },
+  { id:"mcp",           title:"Multi-Agent Collaboration", sub:"MCP Interface",                desc:"Conversation UIs enabling distributed AI agents to coordinate and refine outputs.",   cat:"product-design", img:"./images/mcp.gif",            link:"https://tanhata.github.io/mcp-case-study/",        year:"2024", tags:["Figma","Product Design"],        featured:true },
+  { id:"tangent",       title:"Tangent",                   sub:"Parametric Geometry",          desc:"Real-time parametric geometry with natural language input and live 3D.",             cat:"product-design", img:"./images/tangent.png",  link:"https://docs.google.com/presentation/d/e/2PACX-1vRjNEWLMh6TRxoEeeHaeL_ePIp357aN6xCbF96EgSPOmyIOAjsyWw7KoLbwnlk5QlhleyfO8OZxrGbA/pub", year:"2024", tags:["Figma","Python"] },
+  { id:"recursive-orbit",title:"Recursive Orbit",         sub:"Grief & Memory",               desc:"Interactive visualization exploring grief via generative data.",                     cat:"data-visualization", img:"./images/recursive-orbit.gif", link:"https://tanhata.github.io/recursive-orbit/",   year:"2024", tags:["Javascript"] },
+  { id:"aura",          title:"AURA",                      sub:"AR Museum Guide",              desc:"AR museum guide — spatial storytelling through layered narratives.",                 cat:"mobile-design",  img:"./images/aura.png",           link:"https://tanhata.github.io/aura-case-study/",       year:"2022", tags:["AR/VR","Mobile"], featured:true },
+  { id:"green-spaces",  title:"The Green Divide",          sub:"NYC Park Access",              desc:"Mapping disparities in park access across NYC neighborhoods.",                      cat:"data-analysis",  img:"./images/green_spaces.gif",   link:"/green_divide_story.html",                         year:"2021", tags:["Python"] },
+  { id:"bitlot",        title:"BitLot",                    sub:"Product Analytics",            desc:"Product analytics platform for data-driven decisions.",                            cat:"data-analysis",  img:"./images/bitlot.gif",         link:"https://drive.google.com/file/d/1tAwTFKHjWch9u-SEe0oKMHvTClIR3FT8/view", year:"2021", tags:["Python"] },
+  { id:"heating",       title:"Energy Optimization",       sub:"Predictive ML",                desc:"Building heating load optimization and energy efficiency.",                        cat:"ai-ml",          img:"./images/heating-loads.gif",   link:"https://drive.google.com/file/d/1FHQsm3s1dJWWMKKBy-QRjClEO3rS2OZ8/view", year:"2022", tags:["Python","AI/ML"] },
+  { id:"living",        title:"Living Computing",          sub:"Adaptive Interfaces",          desc:"Interfaces that respond to human behavior and context.",                           cat:"human-computer-interaction", img:"./images/living-computing.gif", link:"https://www.youtube.com/watch?v=Geo17VbvWtU", year:"2021", tags:["Arduino","C++"] },
+  { id:"gravity",       title:"Gravity Game",              sub:"Physics Simulation",           desc:"Physics-based interactive game.",                                                 cat:"human-computer-interaction", img:"./images/gravitygame.png", link:"https://tanhata.github.io/gravitygame/",       year:"2020", tags:["HCI"] },
 ];
 const FEATURED = PROJECTS.filter(p => p.featured);
 const DATA_PROJECTS = PROJECTS.filter(p => ["data-analysis","ai-ml","data-visualization","writing"].includes(p.cat) && !p.featured);
@@ -42,14 +42,14 @@ const CAREER = [
 ];
 
 const VISUALS = [
-  { id:"followme",     title:"Follow Me, Dania",              type:"album cover",     img:"/images/visual/followme.png", ratio:"1/1" },
-  { id:"mecollage",    title:"Self Portrait",                  type:"illustration, handdrawn", img:"/images/visual/mecollage.jpg" },
-  { id:"hejaz",        title:"Hejaz, Kingdom of Saudi Arabia", type:"branding",        img:"/images/visual/hejaz.gif", ratio:"1/1" },
-  { id:"bldg",         title:"NYC Commissioner Building",      type:"illustration",    img:"/images/visual/bldg.jpg" },
-  { id:"sheikhdallah", title:"Sheikhdallah Corp",              type:"graphic design",  img:"/images/visual/sheikhdallah_corp.jpg" },
-  { id:"jism",         title:"Jism, \u062c\u0633\u0645 (Body)",type:"illustration, handdrawn", img:"/images/visual/jism.jpg" },
-  { id:"atc",          title:"Arab Tech Collective",           type:"branding",        img:"/images/visual/atc.jpg" },
-  { id:"year2050",     title:"Year 2050, Film Festival",       type:"poster",          img:"/images/visual/year2050.png" },
+  { id:"followme",     title:"Follow Me, Dania",              type:"album cover",     img:"./images/visual/followme.png", ratio:"1/1" },
+  { id:"mecollage",    title:"Self Portrait",                  type:"illustration, handdrawn", img:"./images/visual/mecollage.jpg" },
+  { id:"hejaz",        title:"Hejaz, Kingdom of Saudi Arabia", type:"branding",        img:"./images/visual/hejaz.gif", ratio:"1/1" },
+  { id:"bldg",         title:"NYC Commissioner Building",      type:"illustration",    img:"./images/visual/bldg.jpg" },
+  { id:"sheikhdallah", title:"Sheikhdallah Corp",              type:"graphic design",  img:"./images/visual/sheikhdallah_corp.jpg" },
+  { id:"jism",         title:"Jism, \u062c\u0633\u0645 (Body)",type:"illustration, handdrawn", img:"./images/visual/jism.jpg" },
+  { id:"atc",          title:"Arab Tech Collective",           type:"branding",        img:"./images/visual/atc.jpg" },
+  { id:"year2050",     title:"Year 2050, Film Festival",       type:"poster",          img:"./images/visual/year2050.png" },
 ];
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -487,7 +487,7 @@ const HomePage = ({ setPage, dark, t, mx = 0.5, my = 0.5 }) => {
             <Reveal delay={0}>
               <div style={{ display:"flex",flexDirection:"column",alignItems:"center" }}>
                 <div style={{ width:170,height:170,borderRadius:"50%",overflow:"hidden",background:"#f5f2eb",border:`2.5px solid ${t.accent}`,boxShadow:`0 0 40px ${t.accent}15` }}>
-                  <Img src="/images/profilepic.png" alt="T" fb="linear-gradient(135deg,#dc3545,#c62836)" style={{ width:"100%",height:"100%",objectFit:"cover" }} />
+                  <Img src="./images/profilepic.png" alt="T" fb="linear-gradient(135deg,#dc3545,#c62836)" style={{ width:"100%",height:"100%",objectFit:"cover" }} />
                 </div>
               </div>
             </Reveal>
@@ -903,7 +903,7 @@ const AboutPage = ({ dark, t }) => {
           <div style={{ display:"flex",alignItems:"stretch",gap:32,maxWidth:800 }}>
             {/* portrait — stretches to match text height */}
             <div style={{ width:280,borderRadius:4,overflow:"hidden",flexShrink:0,marginLeft:-16,border:`2px solid ${t.accent}` }}>
-              <Img src="/images/tanha.jpg" alt="Tanha" fb={`linear-gradient(135deg,${t.accent}20,${t.accent}40)`} style={{ width:"100%",height:"100%",objectFit:"cover" }} />
+              <Img src="./images/tanha.jpg" alt="Tanha" fb={`linear-gradient(135deg,${t.accent}20,${t.accent}40)`} style={{ width:"100%",height:"100%",objectFit:"cover" }} />
             </div>
             {/* dictionary content */}
             <div style={{ flex:1 }}>
