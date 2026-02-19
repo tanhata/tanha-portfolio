@@ -1,5 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
+/* responsive hook */
+const useMobile = (bp = 768) => {
+  const [m, setM] = useState(typeof window !== "undefined" ? window.innerWidth < bp : false);
+  useEffect(() => { const h = () => setM(window.innerWidth < bp); window.addEventListener("resize", h); return () => window.removeEventListener("resize", h); }, [bp]);
+  return m;
+};
+
 /* ═══════════════════════════════════════════════════════════════════
    DATA
    ═══════════════════════════════════════════════════════════════════ */
@@ -15,19 +22,19 @@ const CAT = {
 const gc = id => CAT[id] || CAT["product-design"];
 
 const PROJECTS = [
-  { id:"lattice",       title:"Lattice",                  sub:"Next Gen Experiment Tracking", desc:"ML experiment tracker connecting experiments, papers, and evaluations.",              cat:"product-design", img:"./images/lattice.png",         link:"https://tanhata.github.io/lattice-case-study/",    year:"2026", tags:["Product Design"],                featured:true },
-  { id:"model-pulse",   title:"ModelPulse",               sub:"AI Performance Platform",      desc:"Enterprise observability — detect drift, monitor accuracy, manage compliance.",       cat:"product-design", img:"./images/model-pulse.jpg",     link:"https://tanhata.github.io/modelpulse-case-study/", year:"2025", tags:["React","D3.js","Product Design"], featured:true },
-  { id:"plotmind",      title:"Plotmind",                  sub:"No-Code Data Intelligence",    desc:"Low-code environment for advanced data visualizations in enterprise pipelines.",     cat:"product-design", img:"./images/plotmind.png",        link:"https://tanhata.github.io/plotmind-case-study/",   year:"2025", tags:["Framer","Python","Product Design"], featured:true },
-  { id:"code-gen",      title:"AI Design Tools",           sub:"Code Gen Research",            desc:"How design teams leverage LLM-driven code assistants for front-end prototyping.",     cat:"writing",        img:"./images/codereview.png",      link:"https://open.substack.com/pub/talshe/p/dissecting-ai-design-capabilities", year:"2025", tags:["Research"] },
-  { id:"mcp",           title:"Multi-Agent Collaboration", sub:"MCP Interface",                desc:"Conversation UIs enabling distributed AI agents to coordinate and refine outputs.",   cat:"product-design", img:"./images/mcp.gif",            link:"https://tanhata.github.io/mcp-case-study/",        year:"2024", tags:["Figma","Product Design"],        featured:true },
-  { id:"tangent",       title:"Tangent",                   sub:"Parametric Geometry",          desc:"Real-time parametric geometry with natural language input and live 3D.",             cat:"product-design", img:"./images/tangent.png",  link:"https://docs.google.com/presentation/d/e/2PACX-1vRjNEWLMh6TRxoEeeHaeL_ePIp357aN6xCbF96EgSPOmyIOAjsyWw7KoLbwnlk5QlhleyfO8OZxrGbA/pub", year:"2024", tags:["Figma","Python"] },
-  { id:"recursive-orbit",title:"Recursive Orbit",         sub:"Grief & Memory",               desc:"Interactive visualization exploring grief via generative data.",                     cat:"data-visualization", img:"./images/recursive-orbit.gif", link:"https://tanhata.github.io/recursive-orbit/",   year:"2024", tags:["Javascript"] },
-  { id:"aura",          title:"AURA",                      sub:"AR Museum Guide",              desc:"AR museum guide — spatial storytelling through layered narratives.",                 cat:"mobile-design",  img:"./images/aura.png",           link:"https://tanhata.github.io/aura-case-study/",       year:"2022", tags:["AR/VR","Mobile"], featured:true },
-  { id:"green-spaces",  title:"The Green Divide",          sub:"NYC Park Access",              desc:"Mapping disparities in park access across NYC neighborhoods.",                      cat:"data-analysis",  img:"./images/green_spaces.gif",   link:"/green_divide_story.html",                         year:"2021", tags:["Python"] },
-  { id:"bitlot",        title:"BitLot",                    sub:"Product Analytics",            desc:"Product analytics platform for data-driven decisions.",                            cat:"data-analysis",  img:"./images/bitlot.gif",         link:"https://drive.google.com/file/d/1tAwTFKHjWch9u-SEe0oKMHvTClIR3FT8/view", year:"2021", tags:["Python"] },
-  { id:"heating",       title:"Energy Optimization",       sub:"Predictive ML",                desc:"Building heating load optimization and energy efficiency.",                        cat:"ai-ml",          img:"./images/heating-loads.gif",   link:"https://drive.google.com/file/d/1FHQsm3s1dJWWMKKBy-QRjClEO3rS2OZ8/view", year:"2022", tags:["Python","AI/ML"] },
-  { id:"living",        title:"Living Computing",          sub:"Adaptive Interfaces",          desc:"Interfaces that respond to human behavior and context.",                           cat:"human-computer-interaction", img:"./images/living-computing.gif", link:"https://www.youtube.com/watch?v=Geo17VbvWtU", year:"2021", tags:["Arduino","C++"] },
-  { id:"gravity",       title:"Gravity Game",              sub:"Physics Simulation",           desc:"Physics-based interactive game.",                                                 cat:"human-computer-interaction", img:"./images/gravitygame.png", link:"https://tanhata.github.io/gravitygame/",       year:"2020", tags:["HCI"] },
+  { id:"lattice",       title:"Lattice",                  sub:"Next Gen Experiment Tracking", desc:"ML experiment tracker connecting experiments, papers, and evaluations.",              cat:"product-design", img:"/images/lattice.png",         link:"https://tanhata.github.io/lattice-case-study/",    year:"2026", tags:["Product Design"],                featured:true },
+  { id:"model-pulse",   title:"ModelPulse",               sub:"AI Performance Platform",      desc:"Enterprise observability — detect drift, monitor accuracy, manage compliance.",       cat:"product-design", img:"/images/model-pulse.jpg",     link:"https://tanhata.github.io/modelpulse-case-study/", year:"2025", tags:["React","D3.js","Product Design"], featured:true },
+  { id:"plotmind",      title:"Plotmind",                  sub:"No-Code Data Intelligence",    desc:"Low-code environment for advanced data visualizations in enterprise pipelines.",     cat:"product-design", img:"/images/plotmind.png",        link:"https://tanhata.github.io/plotmind-case-study/",   year:"2025", tags:["Framer","Python","Product Design"], featured:true },
+  { id:"code-gen",      title:"AI Design Tools",           sub:"Code Gen Research",            desc:"How design teams leverage LLM-driven code assistants for front-end prototyping.",     cat:"writing",        img:"/images/codereview.png",      link:"https://open.substack.com/pub/talshe/p/dissecting-ai-design-capabilities", year:"2025", tags:["Research"] },
+  { id:"mcp",           title:"Multi-Agent Collaboration", sub:"MCP Interface",                desc:"Conversation UIs enabling distributed AI agents to coordinate and refine outputs.",   cat:"product-design", img:"/images/mcp.gif",            link:"https://tanhata.github.io/mcp-case-study/",        year:"2024", tags:["Figma","Product Design"],        featured:true },
+  { id:"tangent",       title:"Tangent",                   sub:"Parametric Geometry",          desc:"Real-time parametric geometry with natural language input and live 3D.",             cat:"product-design", img:"/images/tangent.png",  link:"https://docs.google.com/presentation/d/e/2PACX-1vRjNEWLMh6TRxoEeeHaeL_ePIp357aN6xCbF96EgSPOmyIOAjsyWw7KoLbwnlk5QlhleyfO8OZxrGbA/pub", year:"2024", tags:["Figma","Python"] },
+  { id:"recursive-orbit",title:"Recursive Orbit",         sub:"Grief & Memory",               desc:"Interactive visualization exploring grief via generative data.",                     cat:"data-visualization", img:"/images/recursive-orbit.gif", link:"https://tanhata.github.io/recursive-orbit/",   year:"2024", tags:["Javascript"] },
+  { id:"aura",          title:"AURA",                      sub:"AR Museum Guide",              desc:"AR museum guide — spatial storytelling through layered narratives.",                 cat:"mobile-design",  img:"/images/aura.png",           link:"https://tanhata.github.io/aura-case-study/",       year:"2022", tags:["AR/VR","Mobile"], featured:true },
+  { id:"green-spaces",  title:"The Green Divide",          sub:"NYC Park Access",              desc:"Mapping disparities in park access across NYC neighborhoods.",                      cat:"data-analysis",  img:"/images/green_spaces.gif",   link:"/green_divide_story.html",                         year:"2021", tags:["Python"] },
+  { id:"bitlot",        title:"BitLot",                    sub:"Product Analytics",            desc:"Product analytics platform for data-driven decisions.",                            cat:"data-analysis",  img:"/images/bitlot.gif",         link:"https://drive.google.com/file/d/1tAwTFKHjWch9u-SEe0oKMHvTClIR3FT8/view", year:"2021", tags:["Python"] },
+  { id:"heating",       title:"Energy Optimization",       sub:"Predictive ML",                desc:"Building heating load optimization and energy efficiency.",                        cat:"ai-ml",          img:"/images/heating-loads.gif",   link:"https://drive.google.com/file/d/1FHQsm3s1dJWWMKKBy-QRjClEO3rS2OZ8/view", year:"2022", tags:["Python","AI/ML"] },
+  { id:"living",        title:"Living Computing",          sub:"Adaptive Interfaces",          desc:"Interfaces that respond to human behavior and context.",                           cat:"human-computer-interaction", img:"/images/living-computing.gif", link:"https://www.youtube.com/watch?v=Geo17VbvWtU", year:"2021", tags:["Arduino","C++"] },
+  { id:"gravity",       title:"Gravity Game",              sub:"Physics Simulation",           desc:"Physics-based interactive game.",                                                 cat:"human-computer-interaction", img:"/images/gravitygame.png", link:"https://tanhata.github.io/gravitygame/",       year:"2020", tags:["HCI"] },
 ];
 const FEATURED = PROJECTS.filter(p => p.featured);
 const DATA_PROJECTS = PROJECTS.filter(p => ["data-analysis","ai-ml","data-visualization","writing"].includes(p.cat) && !p.featured);
@@ -42,14 +49,14 @@ const CAREER = [
 ];
 
 const VISUALS = [
-  { id:"followme",     title:"Follow Me, Dania",              type:"album cover",     img:"./images/visual/followme.png", ratio:"1/1" },
-  { id:"mecollage",    title:"Self Portrait",                  type:"illustration, handdrawn", img:"./images/visual/mecollage.jpg" },
-  { id:"hejaz",        title:"Hejaz, Kingdom of Saudi Arabia", type:"branding",        img:"./images/visual/hejaz.gif", ratio:"1/1" },
-  { id:"bldg",         title:"NYC Commissioner Building",      type:"illustration",    img:"./images/visual/bldg.jpg" },
-  { id:"sheikhdallah", title:"Sheikhdallah Corp",              type:"graphic design",  img:"./images/visual/sheikhdallah_corp.jpg" },
-  { id:"jism",         title:"Jism, \u062c\u0633\u0645 (Body)",type:"illustration, handdrawn", img:"./images/visual/jism.jpg" },
-  { id:"atc",          title:"Arab Tech Collective",           type:"branding",        img:"./images/visual/atc.jpg" },
-  { id:"year2050",     title:"Year 2050, Film Festival",       type:"poster",          img:"./images/visual/year2050.png" },
+  { id:"followme",     title:"Follow Me, Dania",              type:"album cover",     img:"/images/visual/followme.png", ratio:"1/1" },
+  { id:"mecollage",    title:"Self Portrait",                  type:"illustration, handdrawn", img:"/images/visual/mecollage.jpg" },
+  { id:"hejaz",        title:"Hejaz, Kingdom of Saudi Arabia", type:"branding",        img:"/images/visual/hejaz.gif", ratio:"1/1" },
+  { id:"bldg",         title:"NYC Commissioner Building",      type:"illustration",    img:"/images/visual/bldg.jpg" },
+  { id:"sheikhdallah", title:"Sheikhdallah Corp",              type:"graphic design",  img:"/images/visual/sheikhdallah_corp.jpg" },
+  { id:"jism",         title:"Jism, \u062c\u0633\u0645 (Body)",type:"illustration, handdrawn", img:"/images/visual/jism.jpg" },
+  { id:"atc",          title:"Arab Tech Collective",           type:"branding",        img:"/images/visual/atc.jpg" },
+  { id:"year2050",     title:"Year 2050, Film Festival",       type:"poster",          img:"/images/visual/year2050.png" },
 ];
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -114,18 +121,18 @@ const Reveal = ({ children, delay = 0, y = 30, mode = "fade" }) => {
   return <div ref={ref} style={{ opacity:v?1:0, transform:v?"translateY(0)":`translateY(${y}px)`, transition:`opacity .9s cubic-bezier(.4,0,.2,1) ${delay}ms, transform .9s cubic-bezier(.4,0,.2,1) ${delay}ms` }}>{children}</div>;
 };
 
-const Nav = ({ page, go, dark, setDark, t }) => {
+const Nav = ({ page, go, dark, setDark, t, mob }) => {
   const links = [{id:"home",label:"Home"},{id:"about",label:"About"},{id:"work",label:"Work"},{id:"visual",label:"Visual"}];
   return (
-    <nav style={{ position:"fixed",top:0,left:0,right:0,zIndex:100,display:"flex",justifyContent:"space-between",alignItems:"center",padding:"16px 32px",background:t.navBg,backdropFilter:"blur(24px)",borderBottom:`1px solid ${t.rule}`,transition:"background .5s, border .5s" }}>
+    <nav style={{ position:"fixed",top:0,left:0,right:0,zIndex:100,display:"flex",justifyContent:"space-between",alignItems:"center",padding:mob?"10px 14px":"16px 32px",background:t.navBg,backdropFilter:"blur(24px)",borderBottom:`1px solid ${t.rule}`,transition:"background .5s, border .5s" }}>
       {/* theme toggle */}
-      <button onClick={()=>setDark(!dark)} style={{ width:36,height:36,borderRadius:99,background:t.card,border:`1px solid ${t.cardBorder}`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",transition:"all .3s" }} aria-label="Toggle theme">
+      <button onClick={()=>setDark(!dark)} style={{ width:mob?32:36,height:mob?32:36,borderRadius:99,background:t.card,border:`1px solid ${t.cardBorder}`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",transition:"all .3s",flexShrink:0 }} aria-label="Toggle theme">
         {dark
           ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={t.fg} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
           : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={t.fg} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         }
       </button>
-      <div style={{ display:"flex",gap:6 }}>{links.map(l => <button key={l.id} onClick={()=>go(l.id)} style={{ background:page===l.id?t.accentSoft:"transparent",border:page===l.id?`1px solid ${t.accentBorder}`:"1px solid transparent",borderRadius:8,padding:"7px 16px",color:page===l.id?t.fg:t.fgMuted,fontSize:13,fontWeight:500,cursor:"pointer",fontFamily:"inherit",transition:"all .25s" }}>{l.label}</button>)}</div>
+      <div style={{ display:"flex",gap:mob?2:6 }}>{links.map(l => <button key={l.id} onClick={()=>go(l.id)} style={{ background:page===l.id?t.accentSoft:"transparent",border:page===l.id?`1px solid ${t.accentBorder}`:"1px solid transparent",borderRadius:8,padding:mob?"6px 10px":"7px 16px",color:page===l.id?t.fg:t.fgMuted,fontSize:mob?11:13,fontWeight:500,cursor:"pointer",fontFamily:"inherit",transition:"all .25s" }}>{l.label}</button>)}</div>
     </nav>
   );
 };
@@ -441,7 +448,7 @@ const TanhCurve = ({ color = "#dc3545", width = 280, delay = 800 }) => {
 /* ═══════════════════════════════════════════════════════════════════
    HOME — EDITORIAL
    ═══════════════════════════════════════════════════════════════════ */
-const HomePage = ({ setPage, dark, t, mx = 0.5, my = 0.5 }) => {
+const HomePage = ({ setPage, dark, t, mx = 0.5, my = 0.5, mob }) => {
   const [time, setTime] = useState("");
   const [input, setInput] = useState("");
   const [responses, setResponses] = useState([]);
@@ -486,8 +493,8 @@ const HomePage = ({ setPage, dark, t, mx = 0.5, my = 0.5 }) => {
           <div style={{ position:"relative",zIndex:2,transform:`translate(${px*.3}px,${py*.3}px)`,transition:"transform .15s ease-out" }}>
             <Reveal delay={0}>
               <div style={{ display:"flex",flexDirection:"column",alignItems:"center" }}>
-                <div style={{ width:170,height:170,borderRadius:"50%",overflow:"hidden",background:"#f5f2eb",border:`2.5px solid ${t.accent}`,boxShadow:`0 0 40px ${t.accent}15` }}>
-                  <Img src="./images/profilepic.png" alt="T" fb="linear-gradient(135deg,#dc3545,#c62836)" style={{ width:"100%",height:"100%",objectFit:"cover" }} />
+                <div style={{ width:mob?120:170,height:mob?120:170,borderRadius:"50%",overflow:"hidden",background:"#f5f2eb",border:`2.5px solid ${t.accent}`,boxShadow:`0 0 40px ${t.accent}15` }}>
+                  <Img src="/images/profilepic.png" alt="T" fb="linear-gradient(135deg,#dc3545,#c62836)" style={{ width:"100%",height:"100%",objectFit:"cover" }} />
                 </div>
               </div>
             </Reveal>
@@ -506,7 +513,7 @@ const HomePage = ({ setPage, dark, t, mx = 0.5, my = 0.5 }) => {
         {/* typographic collision zone */}
         <div style={{ position:"relative",flex:1,display:"flex",alignItems:"center",paddingBottom:"8vh" }}>
 
-          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:40,width:"100%",alignItems:"end" }}>
+          <div style={{ display:"grid",gridTemplateColumns:mob?"1fr":"1fr 1fr",gap:mob?24:40,width:"100%",alignItems:mob?"start":"end" }}>
             {/* left — colliding headline */}
             <div style={{ position:"relative" }}>
               <Reveal delay={300} mode="clipUp">
@@ -524,7 +531,7 @@ const HomePage = ({ setPage, dark, t, mx = 0.5, my = 0.5 }) => {
               </Reveal>
             </div>
             {/* right — pull quote */}
-            <div style={{ paddingLeft:"2vw",paddingBottom:20 }}>
+            <div style={{ paddingLeft:mob?0:"2vw",paddingBottom:mob?0:20 }}>
               <Reveal delay={600} mode="wipe">
                 <div style={{ borderLeft:`2px solid ${t.accent}`,paddingLeft:24 }}>
                   <p style={{ fontSize:17,lineHeight:1.7,color:t.fgSoft,maxWidth:340 }}>
@@ -539,17 +546,23 @@ const HomePage = ({ setPage, dark, t, mx = 0.5, my = 0.5 }) => {
 
 
       {/* ══ WORK ══ */}
-      <section style={{ maxWidth:1200,margin:"0 auto",padding:"10vh 6vw" }}>
-        <div style={{ display:"grid",gridTemplateColumns:"1fr 2fr",gap:60,alignItems:"start" }}>
+      <section style={{ maxWidth:1200,margin:"0 auto",padding:mob?"8vh 5vw":"10vh 6vw" }}>
+        <div style={{ display:"grid",gridTemplateColumns:mob?"1fr":"1fr 2fr",gap:mob?24:60,alignItems:"start" }}>
           {/* left — label */}
-          <div style={{ position:"sticky",top:120 }}>
+          <div style={{ position:mob?"static":"sticky",top:120 }}>
             <Reveal>
               <div style={{ fontSize:11,fontFamily:"var(--mono)",color:t.accent,letterSpacing:4,marginBottom:12,fontWeight:600 }}>WORK</div>
-              <div style={{ fontSize:13,color:t.fgMuted,lineHeight:1.6,marginBottom:24 }}>Product design, AI/ML,<br/>data visualization,<br/>and research.</div>
+              <div style={{ fontSize:13,color:t.fgMuted,lineHeight:1.6,marginBottom:mob?0:24 }}>Product design, AI/ML,<br/>data visualization,<br/>and research.</div>
             </Reveal>
           </div>
-          {/* right — draggable project canvas */}
-          <DraggableCanvas items={PROJECTS} dark={dark} t={t} />
+          {/* right — draggable project canvas (desktop) or card grid (mobile) */}
+          {mob ? (
+            <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:12 }}>
+              {PROJECTS.filter(p=>p.featured).map((p,i) => <GlassTile key={p.id} p={p} dark={dark} delay={i*80} />)}
+            </div>
+          ) : (
+            <DraggableCanvas items={PROJECTS} dark={dark} t={t} />
+          )}
         </div>
       </section>
 
@@ -559,7 +572,7 @@ const HomePage = ({ setPage, dark, t, mx = 0.5, my = 0.5 }) => {
       <div style={{ maxWidth:1200,margin:"0 auto",padding:"0 6vw" }}>
         <div style={{ height:1,background:t.rule }} />
       </div>
-      <section style={{ maxWidth:1200,margin:"0 auto",padding:"14vh 6vw 10vh" }}>
+      <section style={{ maxWidth:1200,margin:"0 auto",padding:mob?"10vh 5vw 8vh":"14vh 6vw 10vh" }}>
         <Reveal>
           <div style={{ textAlign:"center",marginBottom:48 }}>
             <div style={{ fontSize:11,fontFamily:"var(--mono)",color:t.accent,letterSpacing:4,marginBottom:16,fontWeight:600 }}>EXPLORE</div>
@@ -630,7 +643,7 @@ const HomePage = ({ setPage, dark, t, mx = 0.5, my = 0.5 }) => {
 
         {/* contact strip */}
         <Reveal>
-          <div style={{ display:"flex",justifyContent:"center",gap:32,marginTop:80,paddingTop:32,borderTop:"1px solid "+t.rule }}>
+          <div style={{ display:"flex",flexDirection:mob?"column":"row",justifyContent:"center",gap:mob?12:32,alignItems:"center",marginTop:mob?48:80,paddingTop:32,borderTop:"1px solid "+t.rule }}>
             {[{href:"mailto:tanharchitecture@gmail.com",label:"tanharchitecture@gmail.com"},{href:"https://linkedin.com/in/tanhata",label:"linkedin.com/in/tanhata",ext:true}].map(l => (
               <a key={l.label} href={l.href} target={l.ext?"_blank":undefined} rel={l.ext?"noopener noreferrer":undefined} style={{ fontSize:12,color:t.fgMuted,textDecoration:"none",fontFamily:"var(--mono)",transition:"color .3s" }}
                 onMouseEnter={e=>e.target.style.color=t.accent}
@@ -648,14 +661,14 @@ const HomePage = ({ setPage, dark, t, mx = 0.5, my = 0.5 }) => {
    WORK PAGE
    ═══════════════════════════════════════════════════════════════════ */
 const FILTERS = [{id:"all",label:"All"}, ...Object.entries(CAT).map(([id,v])=>({id,label:v.label}))];
-const WorkPage = ({ dark, t }) => {
+const WorkPage = ({ dark, t, mob }) => {
   const [f,setF]=useState("all");
   const list = f==="all"?PROJECTS:PROJECTS.filter(p=>p.cat===f);
   return (
     <div style={{ paddingTop:80,position:"relative",zIndex:1 }}>
-      <div style={{ maxWidth:1100,margin:"0 auto",padding:"60px 6vw 0" }}>
+      <div style={{ maxWidth:1100,margin:"0 auto",padding:mob?"40px 5vw 0":"60px 6vw 0" }}>
         <Reveal>
-          <div style={{ marginBottom:48 }}>
+          <div style={{ marginBottom:mob?32:48 }}>
             <h1 style={{ fontSize:"clamp(36px,5vw,64px)",fontWeight:900,letterSpacing:"-.04em",marginBottom:8,lineHeight:.95 }}>
               Selected<br/>
               <span style={{ fontFamily:"'EB Garamond',serif",fontWeight:400,fontStyle:"italic",letterSpacing:"-.02em" }}>Works</span>
@@ -663,15 +676,15 @@ const WorkPage = ({ dark, t }) => {
             <p style={{ fontSize:14,color:t.fgMuted }}>{list.length} project{list.length!==1?"s":""}</p>
           </div>
         </Reveal>
-        <div style={{ display:"flex",flexWrap:"wrap",gap:8,marginBottom:48 }}>
+        <div style={{ display:"flex",flexWrap:"wrap",gap:8,marginBottom:mob?32:48 }}>
           {FILTERS.map(fl => { const a=f===fl.id; const cat=CAT[fl.id]; return (
-            <button key={fl.id} onClick={()=>setF(fl.id)} style={{ padding:"8px 18px",borderRadius:99,fontSize:12,fontWeight:600,fontFamily:"var(--mono)",cursor:"pointer",transition:"all .25s",background:a?(cat?`${cat.color}15`:t.accent+"15"):"transparent",border:a?`1px solid ${cat?cat.color+"40":t.accent+"40"}`:`1px solid ${t.rule}`,color:a?(cat?cat.color:t.accent):t.fgMuted,letterSpacing:.5 }}>{fl.label}</button>
+            <button key={fl.id} onClick={()=>setF(fl.id)} style={{ padding:mob?"6px 14px":"8px 18px",borderRadius:99,fontSize:mob?11:12,fontWeight:600,fontFamily:"var(--mono)",cursor:"pointer",transition:"all .25s",background:a?(cat?`${cat.color}15`:t.accent+"15"):"transparent",border:a?`1px solid ${cat?cat.color+"40":t.accent+"40"}`:`1px solid ${t.rule}`,color:a?(cat?cat.color:t.accent):t.fgMuted,letterSpacing:.5 }}>{fl.label}</button>
           );})}
         </div>
       </div>
-      <div style={{ maxWidth:1100,margin:"0 auto",padding:"0 6vw 80px" }}>
-        <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))",gap:20 }}>
-          {list.map((p,i) => <WorkFlipCard key={p.id} p={p} dark={dark} t={t} delay={i*80} />)}
+      <div style={{ maxWidth:1100,margin:"0 auto",padding:mob?"0 5vw 60px":"0 6vw 80px" }}>
+        <div style={{ display:"grid",gridTemplateColumns:mob?"1fr 1fr":`repeat(auto-fill,minmax(320px,1fr))`,gap:mob?12:20 }}>
+          {list.map((p,i) => <WorkFlipCard key={p.id} p={p} dark={dark} t={t} delay={i*80} mob={mob} />)}
         </div>
       </div>
     </div>
@@ -679,7 +692,7 @@ const WorkPage = ({ dark, t }) => {
 };
 
 /* work page flip card — matches home cards */
-const WorkFlipCard = ({ p, dark, t, delay = 0 }) => {
+const WorkFlipCard = ({ p, dark, t, delay = 0, mob }) => {
   const [flipped,setFlipped] = useState(false);
   const [ok,setOk] = useState(true);
   const c = gc(p.cat);
@@ -694,7 +707,7 @@ const WorkFlipCard = ({ p, dark, t, delay = 0 }) => {
     <div
       onMouseEnter={() => { hoverTimer.current = setTimeout(() => setFlipped(true), 300); }}
       onMouseLeave={() => { clearTimeout(hoverTimer.current); setFlipped(false); }}
-      style={{ height:370,perspective:600,cursor:"pointer",animation:`fadeUp .6s cubic-bezier(.4,0,.2,1) ${delay}ms both` }}>
+      style={{ height:mob?280:370,perspective:600,cursor:"pointer",animation:`fadeUp .6s cubic-bezier(.4,0,.2,1) ${delay}ms both` }}>
       <div style={{ width:"100%",height:"100%",position:"relative",transformStyle:"preserve-3d",willChange:"transform",transition:"transform .9s cubic-bezier(.25,.1,.25,1), box-shadow .5s ease",transform:flipped?"scale(1.03) rotateY(180deg)":"rotateY(0deg)",boxShadow:flipped?`0 12px 40px rgba(0,0,0,.2)`:"none" }}>
         {/* FRONT */}
         <div style={{ position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",borderRadius:14,overflow:"hidden" }}>
@@ -716,14 +729,14 @@ const WorkFlipCard = ({ p, dark, t, delay = 0 }) => {
         </div>
         {/* BACK */}
         <div style={{ position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",transform:"rotateY(180deg)",borderRadius:14,overflow:"hidden" }}>
-          <div style={{ background:dark?`linear-gradient(145deg, ${c.color}22, rgba(10,10,10,.97))`:`linear-gradient(145deg, ${c.color}15, rgba(255,255,255,.97))`,border:`1.5px solid ${c.color}40`,borderRadius:14,color:fg,height:"100%",display:"flex",flexDirection:"column",padding:"24px 20px",position:"relative" }}>
+          <div style={{ background:dark?`linear-gradient(145deg, ${c.color}22, rgba(10,10,10,.97))`:`linear-gradient(145deg, ${c.color}15, rgba(255,255,255,.97))`,border:`1.5px solid ${c.color}40`,borderRadius:14,color:fg,height:"100%",display:"flex",flexDirection:"column",padding:mob?"16px 14px":"24px 20px",position:"relative" }}>
             <div style={{ position:"absolute",top:12,right:12,width:20,height:20,borderTop:`2px solid ${c.color}40`,borderRight:`2px solid ${c.color}40`,borderRadius:"0 4px 0 0" }} />
             <div style={{ position:"absolute",bottom:12,left:12,width:20,height:20,borderBottom:`2px solid ${c.color}40`,borderLeft:`2px solid ${c.color}40`,borderRadius:"0 0 0 4px" }} />
-            <div style={{ width:32,height:3,borderRadius:2,background:c.color,marginBottom:16 }} />
-            <h3 style={{ fontSize:20,fontWeight:800,marginBottom:4,letterSpacing:"-.02em" }}>{p.title}</h3>
-            <div style={{ fontSize:11,color:c.color,fontWeight:600,marginBottom:14,fontFamily:"var(--mono)" }}>{p.sub}</div>
-            <p style={{ fontSize:12.5,lineHeight:1.65,color:txt,flex:1 }}>{p.desc}</p>
-            {p.tags && <div style={{ display:"flex",flexWrap:"wrap",gap:5,marginTop:14,marginBottom:14 }}>{p.tags.map(tag => <span key={tag} style={{ fontSize:9,padding:"3px 8px",borderRadius:99,background:`${c.color}15`,border:`1px solid ${c.color}30`,color:c.color,fontWeight:600 }}>{tag}</span>)}</div>}
+            <div style={{ width:32,height:3,borderRadius:2,background:c.color,marginBottom:mob?10:16 }} />
+            <h3 style={{ fontSize:mob?16:20,fontWeight:800,marginBottom:4,letterSpacing:"-.02em" }}>{p.title}</h3>
+            <div style={{ fontSize:mob?10:11,color:c.color,fontWeight:600,marginBottom:mob?8:14,fontFamily:"var(--mono)" }}>{p.sub}</div>
+            <p style={{ fontSize:mob?11:12.5,lineHeight:1.65,color:txt,flex:1,overflow:"hidden" }}>{p.desc}</p>
+            {p.tags && !mob && <div style={{ display:"flex",flexWrap:"wrap",gap:5,marginTop:14,marginBottom:14 }}>{p.tags.map(tag => <span key={tag} style={{ fontSize:9,padding:"3px 8px",borderRadius:99,background:`${c.color}15`,border:`1px solid ${c.color}30`,color:c.color,fontWeight:600 }}>{tag}</span>)}</div>}
             <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:"auto" }}>
               <span style={{ fontSize:10,fontFamily:"var(--mono)",color:sub }}>{p.year}</span>
               <a href={p.link} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{ fontSize:11,color:c.color,textDecoration:"none",fontWeight:700,display:"flex",alignItems:"center",gap:4 }}>
@@ -887,7 +900,7 @@ const TanhTimeline = ({ t, dark }) => {
 /* ═══════════════════════════════════════════════════════════════════
    ABOUT — DICTIONARY ENTRY
    ═══════════════════════════════════════════════════════════════════ */
-const AboutPage = ({ dark, t }) => {
+const AboutPage = ({ dark, t, mob }) => {
   const [showArabic, setShowArabic] = useState(false);
   useEffect(() => {
     const id = setInterval(() => setShowArabic(s => !s), 3000);
@@ -898,12 +911,12 @@ const AboutPage = ({ dark, t }) => {
     <div style={{ paddingTop:80,position:"relative",zIndex:1 }}>
 
       {/* ── dictionary entry ── */}
-      <div style={{ maxWidth:900,margin:"0 auto",padding:"12vh 6vw 4vh" }}>
+      <div style={{ maxWidth:900,margin:"0 auto",padding:mob?"8vh 5vw 4vh":"12vh 6vw 4vh" }}>
         <Reveal>
-          <div style={{ display:"flex",alignItems:"stretch",gap:32,maxWidth:800 }}>
-            {/* portrait — stretches to match text height */}
-            <div style={{ width:280,borderRadius:4,overflow:"hidden",flexShrink:0,marginLeft:-16,border:`2px solid ${t.accent}` }}>
-              <Img src="./images/tanha.jpg" alt="Tanha" fb={`linear-gradient(135deg,${t.accent}20,${t.accent}40)`} style={{ width:"100%",height:"100%",objectFit:"cover" }} />
+          <div style={{ display:"flex",flexDirection:mob?"column":"row",alignItems:mob?"center":"stretch",gap:mob?24:32,maxWidth:800 }}>
+            {/* portrait */}
+            <div style={{ width:mob?"100%":280,maxWidth:mob?280:undefined,borderRadius:4,overflow:"hidden",flexShrink:0,marginLeft:mob?0:-16,border:`2px solid ${t.accent}` }}>
+              <Img src="/images/tanha.jpg" alt="Tanha" fb={`linear-gradient(135deg,${t.accent}20,${t.accent}40)`} style={{ width:"100%",height:mob?320:"100%",objectFit:"cover" }} />
             </div>
             {/* dictionary content */}
             <div style={{ flex:1 }}>
@@ -974,10 +987,10 @@ const AboutPage = ({ dark, t }) => {
 
 
       {/* ── contact strip ── */}
-      <div style={{ maxWidth:900,margin:"0 auto",padding:"4vh 6vw 10vh" }}>
+      <div style={{ maxWidth:900,margin:"0 auto",padding:mob?"4vh 5vw 10vh":"4vh 6vw 10vh" }}>
         <Reveal>
           <div style={{ height:1,background:t.rule,marginBottom:32 }} />
-          <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center" }}>
+          <div style={{ display:"flex",flexDirection:mob?"column":"row",justifyContent:"space-between",alignItems:mob?"flex-start":"center",gap:mob?12:0 }}>
             <div style={{ fontSize:13,color:t.fgMuted }}>Let's connect</div>
             <div style={{ display:"flex",gap:24 }}>
               {[{href:"mailto:tanharchitecture@gmail.com",label:"Email"},{href:"https://linkedin.com/in/tanhata",label:"LinkedIn",ext:true}].map(l => (
@@ -994,14 +1007,14 @@ const AboutPage = ({ dark, t }) => {
   );
 };
 
-const VisualPage = ({ dark, t }) => {
+const VisualPage = ({ dark, t, mob }) => {
   return (
     <div style={{ paddingTop:80,position:"relative",zIndex:1 }}>
       {/* masthead */}
-      <div style={{ padding:"10vh 6vw 2vh",maxWidth:1200,margin:"0 auto" }}>
+      <div style={{ padding:mob?"8vh 5vw 2vh":"10vh 6vw 2vh",maxWidth:1200,margin:"0 auto" }}>
         <Reveal>
           <div style={{ borderBottom:`2px solid ${t.fg}`,paddingBottom:16,marginBottom:8 }}>
-            <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-end" }}>
+            <div style={{ display:"flex",flexDirection:mob?"column":"row",justifyContent:"space-between",alignItems:mob?"flex-start":"flex-end",gap:mob?12:0 }}>
               <div>
                 <div style={{ fontSize:11,fontFamily:"var(--mono)",color:t.accent,letterSpacing:6,fontWeight:700,marginBottom:8 }}>THE VISUAL ISSUE</div>
                 <h1 style={{ fontSize:"clamp(56px,9vw,120px)",fontWeight:900,letterSpacing:"-.06em",lineHeight:.85,fontFamily:"'DM Sans',sans-serif" }}>
@@ -1018,7 +1031,7 @@ const VisualPage = ({ dark, t }) => {
         </Reveal>
         {/* subhead strip */}
         <Reveal delay={100}>
-          <div style={{ display:"flex",justifyContent:"space-between",fontSize:10,fontFamily:"var(--mono)",color:t.fgMuted,letterSpacing:2,paddingTop:8,paddingBottom:40,borderBottom:`1px solid ${t.rule}` }}>
+          <div style={{ display:"flex",justifyContent:"space-between",fontSize:10,fontFamily:"var(--mono)",color:t.fgMuted,letterSpacing:2,paddingTop:8,paddingBottom:40,borderBottom:`1px solid ${t.rule}`,gap:mob?16:0,overflowX:mob?"auto":"visible",whiteSpace:mob?"nowrap":"normal" }}>
             <span>BRANDING</span><span>ILLUSTRATION</span><span>CREATIVE EXPLORATION</span><span>PHOTOGRAPHY</span>
           </div>
         </Reveal>
@@ -1032,7 +1045,7 @@ const VisualPage = ({ dark, t }) => {
           <Reveal key={v.id} delay={i*50}>
             {layout === 0 ? (
               /* type-heavy spread — big title, portrait image */
-              <div style={{ maxWidth:1200,margin:"0 auto",padding:"8vh 6vw",display:"grid",gridTemplateColumns:"1.2fr 1fr",gap:60,alignItems:"center" }}>
+              <div style={{ maxWidth:1200,margin:"0 auto",padding:mob?"6vh 5vw":"8vh 6vw",display:"grid",gridTemplateColumns:mob?"1fr":"1.2fr 1fr",gap:mob?24:60,alignItems:"center" }}>
                 <div>
                   <div style={{ fontSize:10,fontFamily:"var(--mono)",color:t.accent,letterSpacing:4,marginBottom:16,fontWeight:600 }}>{String(i+1).padStart(2,"0")} — {v.type.toUpperCase()}</div>
                   <h2 style={{ fontSize:"clamp(40px,5vw,72px)",fontWeight:900,letterSpacing:"-.04em",lineHeight:.95,marginBottom:20 }}>
@@ -1051,11 +1064,11 @@ const VisualPage = ({ dark, t }) => {
               </div>
             ) : layout === 1 ? (
               /* image-left portrait, stacked type right */
-              <div style={{ maxWidth:1200,margin:"0 auto",padding:"4vh 6vw",display:"grid",gridTemplateColumns:"1fr 1fr",gap:40,alignItems:"center" }}>
+              <div style={{ maxWidth:1200,margin:"0 auto",padding:mob?"4vh 5vw":"4vh 6vw",display:"grid",gridTemplateColumns:mob?"1fr":"1fr 1fr",gap:mob?16:40,alignItems:"center" }}>
                 <div style={{ aspectRatio:ratio,borderRadius:4,overflow:"hidden" }}>
                   <Img src={v.img} alt={v.title} fb={dark?"#111":"#ddd"} style={{ width:"100%",height:"100%",objectFit:"cover" }} />
                 </div>
-                <div style={{ paddingLeft:20 }}>
+                <div style={{ paddingLeft:mob?0:20 }}>
                   <div style={{ fontSize:80,fontWeight:900,color:t.fgGhost,lineHeight:1,letterSpacing:"-.06em",fontFamily:"'DM Sans',sans-serif" }}>{String(i+1).padStart(2,"0")}</div>
                   <h3 style={{ fontSize:28,fontWeight:800,letterSpacing:"-.02em",marginTop:-12,marginBottom:8,position:"relative" }}>
                     {v.title}
@@ -1080,7 +1093,7 @@ const VisualPage = ({ dark, t }) => {
               </div>
             ) : (
               /* full-width contained — portrait image, type below */
-              <div style={{ maxWidth:1200,margin:"0 auto",padding:"4vh 6vw" }}>
+              <div style={{ maxWidth:1200,margin:"0 auto",padding:mob?"4vh 5vw":"4vh 6vw" }}>
                 <div style={{ aspectRatio:ratio,maxHeight:"70vh",borderRadius:8,overflow:"hidden" }}>
                   <Img src={v.img} alt={v.title} fb={dark?"#111":"#ddd"} style={{ width:"100%",height:"100%",objectFit:"cover" }} />
                 </div>
@@ -1121,6 +1134,7 @@ export default function App() {
   const [dark, setDark] = useState(false);
   const [mx, setMx] = useState(0.5);
   const [my, setMy] = useState(0.5);
+  const mob = useMobile();
   const go = p => { setPage(p); window.scrollTo({top:0,behavior:"smooth"}); };
 
   useEffect(() => {
@@ -1138,7 +1152,7 @@ export default function App() {
     bubbleBot:"rgba(255,255,255,.012)", bubbleBotBorder:"rgba(255,255,255,.04)",
     scrollbar:"rgba(255,255,255,.06)", selection:"rgba(220,53,69,.3)",
   } : {
-    bg:"#f5f2eb", fg:"#1a1a1a", fgSoft:"rgba(0,0,0,.55)", fgMuted:"rgba(0,0,0,.3)", fgGhost:"rgba(0,0,0,.08)",
+    bg:"#f5f2eb", fg:"#1a1a1a", fgSoft:"rgba(0,0,0,.6)", fgMuted:"rgba(0,0,0,.45)", fgGhost:"rgba(0,0,0,.08)",
     card:"rgba(0,0,0,.02)", cardBorder:"rgba(0,0,0,.06)", rule:"rgba(0,0,0,.08)",
     navBg:"rgba(245,242,235,.95)", inputBg:"rgba(0,0,0,.02)", inputBorder:"rgba(0,0,0,.08)",
     accent:"#c0392b", accentSoft:"rgba(192,57,43,.06)", accentBorder:"rgba(192,57,43,.12)",
@@ -1164,11 +1178,11 @@ export default function App() {
         ::selection{background:${t.selection}}
       `}</style>
       <MeshBG dark={dark} mx={mx} my={my} />
-      <Nav page={page} go={go} dark={dark} setDark={setDark} t={t} />
-      {page==="home" && <HomePage setPage={go} dark={dark} t={t} mx={mx} my={my} />}
-      {page==="work" && <WorkPage dark={dark} t={t} />}
-      {page==="about" && <AboutPage dark={dark} t={t} />}
-      {page==="visual" && <VisualPage dark={dark} t={t} />}
+      <Nav page={page} go={go} dark={dark} setDark={setDark} t={t} mob={mob} />
+      {page==="home" && <HomePage setPage={go} dark={dark} t={t} mx={mx} my={my} mob={mob} />}
+      {page==="work" && <WorkPage dark={dark} t={t} mob={mob} />}
+      {page==="about" && <AboutPage dark={dark} t={t} mob={mob} />}
+      {page==="visual" && <VisualPage dark={dark} t={t} mob={mob} />}
       <div style={{ position:"relative",zIndex:1,borderTop:`1px solid ${t.rule}`,padding:"32px 24px",textAlign:"center",fontSize:11,opacity:.15,fontFamily:"var(--mono)" }}>{"\u00a9"} Tanha Alsheikhdallah 2025</div>
     </div>
   );
