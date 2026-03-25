@@ -24,7 +24,7 @@ const gc = id => CAT[id] || CAT["product-design"];
 const PROJECTS = [
   { id:"clear-exp",      title:"Clear Expression", sub:"Designing AI Typography",      desc:"I encoded reading instructions into AI typography.",                               cat:"writing",                   color:"#db2777", img:"/images/clearexp.png",        link:"https://tanhata.github.io/clear-expression/",      year:"2026", frame:"raw",          aspectRatio:"1613/1022", featured:true },
   { id:"plotmind",       title:"Plotmind",         sub:"No-Code Data Intelligence",    desc:"Low-code environment for advanced data visualizations in enterprise pipelines.",    cat:"product-design",            color:"#7c3aed", img:"/images/plotmind.png",        link:"https://tanhata.github.io/plotmind-case-study/",   year:"2025", frame:"raw",          aspectRatio:"2056/1437", featured:true },
-  { id:"model-pulse",    title:"ModelPulse",       sub:"AI Performance Platform",      desc:"Enterprise observability — detect drift, monitor accuracy, manage compliance.",      cat:"product-design",            color:"#0369a1", img:"/images/modelpulse.png",     link:"https://tanhata.github.io/modelpulse-case-study/", year:"2025", frame:"raw",          aspectRatio:"1956/1224", featured:true },
+  { id:"model-pulse",    title:"ModelPulse",       sub:"AI Performance Platform",      desc:"Enterprise observability — detect drift, monitor accuracy, manage compliance.",      cat:"product-design",            color:"#0369a1", img:"/images/modelpulse.png",      link:"https://tanhata.github.io/modelpulse-case-study/", year:"2025", frame:"raw",          aspectRatio:"1956/1224", featured:true },
   { id:"lattice",        title:"Lattice",         sub:"Next Gen Experiment Tracking", desc:"ML experiment tracker connecting experiments, papers, and evaluations.",             cat:"product-design",            color:"#c0392b", img:"/images/lattice.png",         link:"https://tanhata.github.io/lattice-case-study/",    year:"2026", frame:"raw",          aspectRatio:"1832/845", featured:true },
   { id:"mcp",            title:"Multi-Agent",      sub:"MCP Interface",                desc:"Conversation UIs enabling distributed AI agents to coordinate and refine outputs.", cat:"product-design",            color:"#d97706", img:"/images/mcp.gif",             link:"https://tanhata.github.io/mcp-case-study/",        year:"2024", frame:"laptop",       featured:true },
   { id:"aura",           title:"AURA",             sub:"AR Museum Guide",              desc:"AR museum guide — spatial storytelling through layered narratives.",                cat:"mobile-design",             color:"#059669", img:"/images/aura.png",            link:"https://tanhata.github.io/aura-case-study/",       year:"2022", frame:"triplePhone",  featured:true },
@@ -1239,58 +1239,108 @@ const AboutTeaser = ({ t, go, mob }) => {
 /* ══════════════════════════════════════════════════
    HOME
 ══════════════════════════════════════════════════ */
-const HomePage = ({ t, mob, setCursorHovered, go, onAccentChange }) => (
-  <div style={{ position:"relative", zIndex:1 }}>
-    <div style={{ padding: mob?"110px 20px 36px":"130px 44px 44px", position:"relative", display:"flex", flexDirection:"column", alignItems:"center", textAlign:"center" }}>
-      <div style={{ position:"absolute", inset:0, pointerEvents:"none", backgroundImage:`radial-gradient(circle, ${t.fg}11 1px, transparent 1px)`, backgroundSize:"28px 28px", WebkitMaskImage:"radial-gradient(ellipse 75% 75% at 50% 50%, black 20%, transparent 100%)", maskImage:"radial-gradient(ellipse 75% 75% at 50% 50%, black 20%, transparent 100%)", animation:"particleDrift 18s ease-in-out infinite" }} />
-      <h1 style={{ fontSize: mob?"clamp(34px,9vw,52px)":"clamp(44px,5.2vw,80px)", fontFamily:"'DM Sans',sans-serif", fontWeight:800, letterSpacing:"-.05em", lineHeight:1.05, color:t.fg, position:"relative", zIndex:1 }}>
-        <span style={{ display:"inline-block", animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .05s both", opacity:0 }}>
-          <TanhaFlip t={t} />
-        </span>
-        {" "}
-        <span style={{ display:"inline-block", animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .18s both", opacity:0 }}>turns</span>
-        {" "}
-        <span style={{ display:"inline-block", animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .28s both", opacity:0 }}>
-          <CyclingPhrase t={t} interval={3200} phrases={[
-            "model weights",
-            "training data",
-            "raw outputs",
-            "latent space",
-            "evaluation scores",
-          ]} />
-        </span>
-        {" "}
-        <span style={{ display:"inline-block", animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .38s both", opacity:0 }}>into</span>
-        {" "}
-        <span style={{ display:"inline-block", animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .48s both", opacity:0 }}>
-          <CyclingPhrase t={t} interval={4100} phrases={[
-            "things people actually want to use",
-            "products people trust",
-            "interfaces that make sense",
-          ]} />
-        </span>
-      </h1>
-    </div>
-    <div>
-      {FEATURED.map((p, i) => (
-        <ProjectRow key={p.id} p={p} index={i} t={t} mob={mob} onEnter={setCursorHovered} onLeave={() => setCursorHovered(null)} onAccentChange={onAccentChange} />
-      ))}
-    </div>
-    <AboutTeaser t={t} go={go} mob={mob} />
-    <div style={{ borderTop:`1px solid ${t.rule}`, padding: mob?"20px 20px":"24px 44px", display:"flex", flexDirection: mob?"column":"row", justifyContent:"space-between", alignItems: mob?"flex-start":"center", gap: mob?10:0 }}>
-      <span style={{ fontSize:9, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, letterSpacing:1.5, opacity:.5 }}>© Tanha Alsheikhdallah 2026</span>
-      <div style={{ display:"flex", gap:24 }}>
-        {[{ href:"mailto:tanharchitecture@gmail.com", label:"Email" }, { href:"https://linkedin.com/in/tanhata", label:"LinkedIn", ext:true }].map(l => (
-          <a key={l.label} href={l.href} target={l.ext?"_blank":undefined} rel={l.ext?"noopener noreferrer":undefined}
-            style={{ fontSize:10, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, textDecoration:"none", letterSpacing:1.5, transition:"color .2s", opacity:.65 }}
-            onMouseEnter={e=>e.target.style.color=t.accent}
-            onMouseLeave={e=>e.target.style.color=t.fgMuted}
-          >{l.label}</a>
-        ))}
+const HomePage = ({ t, mob, setCursorHovered, go, onAccentChange }) => {
+  const scrollRef = useRef(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const idx = Math.round(el.scrollLeft / el.clientWidth);
+      setActiveIdx(idx);
+      if (FEATURED[idx] && onAccentChange) {
+        onAccentChange(FEATURED[idx].color || gc(FEATURED[idx].cat).color);
+      }
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [onAccentChange]);
+
+  const scrollTo = (idx) => {
+    const el = scrollRef.current;
+    if (el) el.scrollTo({ left: idx * el.clientWidth, behavior: 'smooth' });
+  };
+
+  return (
+    <div style={{ position:"relative", zIndex:1, height:"100vh", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+      {/* hero */}
+      <div style={{ padding: mob?"88px 24px 0":"100px 52px 0", position:"relative", flexShrink:0, display:"flex", justifyContent:"center", textAlign:"center" }}>
+        <div style={{ position:"absolute", inset:0, pointerEvents:"none", backgroundImage:`radial-gradient(circle, ${t.fg}0d 1px, transparent 1px)`, backgroundSize:"28px 28px", WebkitMaskImage:"radial-gradient(ellipse 90% 60% at 50% 0%, black 20%, transparent 100%)", maskImage:"radial-gradient(ellipse 90% 60% at 50% 0%, black 20%, transparent 100%)", animation:"particleDrift 18s ease-in-out infinite" }} />
+        <h1 style={{ fontSize: mob?"clamp(22px,5vw,32px)":"clamp(24px,2.6vw,40px)", fontFamily:"'DM Sans',sans-serif", fontWeight:800, letterSpacing:"-.05em", lineHeight:1.05, color:t.fg, position:"relative", zIndex:1, maxWidth:900 }}>
+          <span style={{ display:"inline-block", animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .05s both", opacity:0 }}><TanhaFlip t={t} /></span>
+          {" "}
+          <span style={{ display:"inline-block", animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .18s both", opacity:0 }}>turns</span>
+          {" "}
+          <span style={{ display:"inline-block", animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .28s both", opacity:0 }}>
+            <CyclingPhrase t={t} interval={3200} phrases={["model weights","training data","raw outputs","latent space","evaluation scores"]} />
+          </span>
+          {" "}
+          <span style={{ display:"inline-block", animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .38s both", opacity:0 }}>into</span>
+          {" "}
+          <span style={{ display:"inline-block", animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .48s both", opacity:0 }}>
+            <CyclingPhrase t={t} interval={4100} phrases={["things people actually want to use","products people trust","interfaces that make sense"]} />
+          </span>
+        </h1>
+      </div>
+      {/* horizontal scroll */}
+      <div ref={scrollRef} style={{ flex:1, display:"flex", overflowX:"scroll", overflowY:"hidden", scrollSnapType:"x mandatory", WebkitOverflowScrolling:"touch", scrollbarWidth:"none", msOverflowStyle:"none", minHeight:0 }}>
+        {FEATURED.map((p, i) => {
+          const color = p.color || gc(p.cat).color;
+          const [hovered, setHovered] = useState(false);
+          return (
+            <div key={p.id} style={{ flexShrink:0, width:"100vw", scrollSnapAlign:"start", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-start", padding: mob?"6px 20px 0":"8px 52px 0", position:"relative", minHeight:0, overflowY:"hidden", justifyContent:"center" }}>
+              <a href={p.link} target="_blank" rel="noopener noreferrer"
+                onMouseEnter={() => { setHovered(true); setCursorHovered({ title:p.title, color, sub:p.sub, year:p.year }); }}
+                onMouseLeave={() => { setHovered(false); setCursorHovered(null); }}
+                style={{ display:"block", textDecoration:"none", width:"100%", maxWidth: mob?380:680,
+                  transform: hovered ? "translateY(-4px)" : "translateY(0)",
+                  transition:"transform .55s cubic-bezier(.4,0,.2,1)", cursor:"none" }}
+              >
+                <DeviceFrame frame={p.frame} img={p.img} hovered={hovered} t={t} accent={color} screenId={p.id} url={p.link} aspectRatio={p.aspectRatio} />
+                <div style={{ display:"flex", alignItems:"baseline", justifyContent:"space-between", padding:"10px 2px 0", opacity:1, transform:"translateY(0)" }}>
+                  <div style={{ display:"flex", alignItems:"baseline", gap:10 }}>
+                    <span style={{ fontSize:15, fontWeight:700, color:t.fg, letterSpacing:"-.02em" }}>{p.title}</span>
+                    <span style={{ fontSize:11, color:t.fgMuted, fontFamily:"'EB Garamond',serif", fontStyle:"italic" }}>{p.sub}</span>
+                  </div>
+                  <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                    <span style={{ fontSize:9, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, opacity:.5 }}>{p.year}</span>
+                    <div style={{ width:6, height:6, borderRadius:"50%", background:color }} />
+                  </div>
+                </div>
+              </a>
+            </div>
+          );
+        })}
+      </div>
+      {/* dots + arrows */}
+      <div style={{ flexShrink:0, padding:"10px 0 12px", display:"flex", alignItems:"center", justifyContent:"center", gap:16 }}>
+        <button onClick={() => scrollTo(Math.max(0, activeIdx-1))} style={{ background:"none", border:"none", cursor:"none", color: activeIdx===0?t.fgGhost:t.fgMuted, fontSize:16, padding:"0 4px", transition:"color .2s" }}>←</button>
+        <div style={{ display:"flex", gap:7, alignItems:"center" }}>
+          {FEATURED.map((p, i) => (
+            <button key={i} onClick={() => scrollTo(i)} style={{ background:"none", border:"none", cursor:"none", padding:2 }}>
+              <div style={{ width: i===activeIdx?18:6, height:6, borderRadius:99, background: i===activeIdx?(p.color||gc(p.cat).color):t.fgGhost, transition:"all .35s cubic-bezier(.4,0,.2,1)" }} />
+            </button>
+          ))}
+        </div>
+        <button onClick={() => scrollTo(Math.min(FEATURED.length-1, activeIdx+1))} style={{ background:"none", border:"none", cursor:"none", color: activeIdx===FEATURED.length-1?t.fgGhost:t.fgMuted, fontSize:16, padding:"0 4px", transition:"color .2s" }}>→</button>
+      </div>
+      {/* footer */}
+      <div style={{ flexShrink:0, borderTop:`1px solid ${t.rule}`, padding: mob?"14px 20px":"16px 44px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+        <span style={{ fontSize:9, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, letterSpacing:1.5, opacity:.4 }}>© Tanha Alsheikhdallah 2026</span>
+        <div style={{ display:"flex", gap:24 }}>
+          {[{ href:"mailto:tanharchitecture@gmail.com", label:"Email" },{ href:"https://linkedin.com/in/tanhata", label:"LinkedIn", ext:true }].map(l => (
+            <a key={l.label} href={l.href} target={l.ext?"_blank":undefined} rel={l.ext?"noopener noreferrer":undefined}
+              style={{ fontSize:10, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, textDecoration:"none", letterSpacing:1.5, transition:"color .2s", opacity:.65 }}
+              onMouseEnter={e=>e.target.style.color=t.accent}
+              onMouseLeave={e=>e.target.style.color=t.fgMuted}
+            >{l.label}</a>
+          ))}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 /* ══════════════════════════════════════════════════
    WORK PAGE
@@ -1437,7 +1487,7 @@ const AboutPage = ({ t, mob }) => {
     <div style={{ paddingTop:0, position:"relative", zIndex:1 }}>
 
       {/* ── SECTION 1: Hero — name + photo together ── */}
-      <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", padding: mob?"100px 20px 60px":"120px 44px 80px", maxWidth:1100, margin:"0 auto", position:"relative" }}>
+      <div style={{ minHeight:"85vh", display:"flex", alignItems:"center", padding: mob?"100px 20px 40px":"120px 44px 40px", maxWidth:1100, margin:"0 auto", position:"relative" }}>
         <div style={{ position:"absolute", inset:0, backgroundImage:`radial-gradient(circle, ${t.fg}08 1px, transparent 1px)`, backgroundSize:"28px 28px", WebkitMaskImage:"radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%)", maskImage:"radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%)", pointerEvents:"none" }} />
         <div style={{ display:"grid", gridTemplateColumns: mob?"1fr":"1fr 1fr", gap: mob?32:72, alignItems:"center", width:"100%", position:"relative", zIndex:1 }}>
           {/* photo — left */}
@@ -1463,28 +1513,29 @@ const AboutPage = ({ t, mob }) => {
             </div>
           </Reveal>
         </div>
-        {/* scroll cue */}
-        <div style={{ position:"absolute", bottom:32, left:"50%", transform:"translateX(-50%)", display:"flex", flexDirection:"column", alignItems:"center", gap:6, animation:"fadeUp 1s ease 1.2s both" }}>
-          <span style={{ fontSize:7, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, letterSpacing:3, opacity:.5 }}>SCROLL</span>
-          <div style={{ width:1, height:32, background:`linear-gradient(to bottom, ${t.fgMuted}, transparent)`, opacity:.4 }} />
-        </div>
       </div>
 
       {/* ── SECTION 2: Bio ── */}
-      <div style={{ padding: mob?"8vh 20px":"10vh 44px", maxWidth:700, margin:"0 auto" }}>
+      <div style={{ padding: mob?"8vh 20px":"10vh 44px", maxWidth:680, margin:"0 auto" }}>
         <Reveal y={32}>
-          <div>
-            <p style={{ fontSize: mob?18:22, fontFamily:"'EB Garamond',serif", fontWeight:400, lineHeight:1.5, color:t.fg, marginBottom:22 }}>
-              Hi, I'm Tanha — a designer and builder working at the intersection of machine learning and products.
+          <div style={{ display:"flex", flexDirection:"column", gap:22 }}>
+            <p style={{ fontSize: mob?15:17, fontFamily:"'EB Garamond',serif", fontWeight:400, lineHeight:1.85, color:t.fg, margin:0 }}>
+              Hi, I'm Tanha — a designer and researcher who started in architecture, which turned out to be less about buildings and more about learning how to move between disciplines without losing the thread. I've since spent time with interdisciplinary AI teams at{" "}
+              <a href="https://www.archleague.org/article/j-max-bond-center/" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>The J Max Bond Center</a>,{" "}
+              <a href="https://www.flad.com" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>Flad</a>,{" "}
+              <a href="https://google.com" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>Google</a>, and{" "}
+              <a href="https://jpmorganchase.com" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>Chase</a>.{" "}
+              I'm drawn to the hard problems around <span style={{ color:t.accent, fontWeight:700 }}>interpretability and trust</span> and how to design for them.
             </p>
-            <p style={{ fontSize: mob?13:14, lineHeight:1.85, color:t.fgMuted, marginBottom:18 }}>
-              I've spent time with teams at The J Max Bond Center, Flad, Google, and Chase — always in the room where technical systems had to make sense to real people.
+            <p style={{ fontSize: mob?15:17, fontFamily:"'EB Garamond',serif", fontWeight:400, lineHeight:1.85, color:t.fg, margin:0 }}>
+              I love side projects to explore what I'm sitting with at the moment.{" "}
+              <a href="https://tanhata.github.io/clear-expression/" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>Clear Expression</a>
+              {" "}came from spending a lot of time with Classical Arabic texts and the preservation of reading techniques;{" "}
+              <a href="https://tanhata.github.io/recursive-orbit/" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>Recursive Orbit</a>
+              {" "}came from the grief I was trying to make sense of after losing my mom.
             </p>
-            <p style={{ fontSize: mob?13:14, lineHeight:1.85, color:t.fgMuted, marginBottom:24 }}>
-              I'm drawn to the hard problems in human-AI collaboration — how people come to trust (or distrust) model outputs, what interpretability actually looks like as a product surface, and whether it's possible to design interfaces that make AI behavior genuinely legible without making them feel clinical.
-            </p>
-            <p style={{ fontSize: mob?12:13, fontFamily:"'EB Garamond',serif", fontStyle:"italic", color:t.fgMuted, opacity:.7, lineHeight:1.6 }}>
-              I also love fashion, traveling, photography, and have strong opinions about coffee. :)
+            <p style={{ fontSize: mob?15:17, fontFamily:"'EB Garamond',serif", fontStyle:"italic", fontWeight:400, lineHeight:1.85, color:t.fgMuted, margin:0 }}>
+              Outside of work, I love fashion and outfit coordination, coffee brewing and photography.
             </p>
           </div>
         </Reveal>
@@ -1579,26 +1630,8 @@ const VisualPage = ({ t, mob }) => {
   const [hoveredId, setHoveredId] = useState(null);
   return (
     <div style={{ paddingTop:80, position:"relative", zIndex:1, minHeight:"100vh" }}>
-
-      {/* personal intro — sketchbook tone */}
-      <div style={{ padding: mob?"5vh 20px 3vh":"6vh 44px 4vh", maxWidth:900, margin:"0 auto" }}>
-        <Reveal>
-          <div style={{ display:"flex", flexDirection: mob?"column":"row", alignItems: mob?"flex-start":"flex-end", justifyContent:"space-between", gap:20 }}>
-            <div>
-              <p style={{ fontSize: mob?28:36, fontFamily:"'EB Garamond',serif", fontStyle:"italic", fontWeight:400, color:t.fg, lineHeight:1.1, letterSpacing:"-.01em", marginBottom:8 }}>
-                things Tanha makes for the love of it
-              </p>
-              <p style={{ fontSize:11, color:t.fgMuted, lineHeight:1.6, maxWidth:380 }}>
-                Illustration, branding, event stationery, album art — commissions welcome.
-              </p>
-            </div>
-
-          </div>
-        </Reveal>
-      </div>
-
-      {/* masonry-style grid */}
-      <div style={{ padding: mob?"0 16px":"0 44px", maxWidth:1100, margin:"0 auto" }}>
+      {/* masonry grid — no header */}
+      <div style={{ padding: mob?"16px 16px":"24px 44px", maxWidth:1100, margin:"0 auto" }}>
         <div style={{ columns: mob?2:3, columnGap: mob?12:20, columnFill:"balance" }}>
           {VISUALS.map((v, i) => {
             const isHovered = hoveredId === v.id;
@@ -1615,12 +1648,11 @@ const VisualPage = ({ t, mob }) => {
                 >
                   {/* image */}
                   <div style={{ borderRadius:6, overflow:"hidden", background:t.frameBg, aspectRatio: v.ratio || "3/4", position:"relative",
-                    boxShadow: isHovered ? `0 12px 40px rgba(0,0,0,.18)` : "0 0 0 rgba(0,0,0,0)",
+                    boxShadow: isHovered ? `0 12px 40px rgba(0,0,0,.18)` : "none",
                     transition:"box-shadow .5s cubic-bezier(.4,0,.2,1)",
                   }}>
                     {ok
-                      ? <img
-                          src={v.img} alt={v.title}
+                      ? <img src={v.img} alt={v.title}
                           style={{ width:"100%", height:"100%", objectFit:"cover", display:"block",
                             transform: isHovered ? "scale(1.03)" : "scale(1)",
                             transition:"transform .55s cubic-bezier(.4,0,.2,1)",
@@ -1631,25 +1663,12 @@ const VisualPage = ({ t, mob }) => {
                           <span style={{ fontSize:8, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, letterSpacing:1.5 }}>{v.title}</span>
                         </div>
                     }
-                    {/* hover overlay */}
-                    <div style={{
-                      position:"absolute", inset:0,
-                      background:"rgba(0,0,0,.45)",
-                      opacity: isHovered ? 1 : 0,
-                      transition:"opacity .3s ease",
-                      display:"flex", flexDirection:"column", justifyContent:"flex-end", padding:"14px 12px",
-                    }}>
-                      <div style={{ fontSize:11, fontWeight:600, color:"#fff", letterSpacing:"-.01em", lineHeight:1.2, marginBottom:3 }}>{v.title}</div>
-                      <div style={{ fontSize:8, color:"rgba(255,255,255,.55)", fontFamily:"'JetBrains Mono',monospace", letterSpacing:1 }}>{v.type}</div>
-                    </div>
                   </div>
-                  {/* caption below — visible always on mobile, hidden on hover desktop */}
-                  {mob && (
-                    <div style={{ padding:"6px 2px 0" }}>
-                      <div style={{ fontSize:9, color:t.fg, fontWeight:500, lineHeight:1.2 }}>{v.title}</div>
-                      <div style={{ fontSize:7.5, color:t.fgMuted, fontFamily:"'JetBrains Mono',monospace", letterSpacing:.5, marginTop:1 }}>{v.type}</div>
-                    </div>
-                  )}
+                  {/* caption — always visible below image */}
+                  <div style={{ padding:"6px 2px 0", display:"flex", justifyContent:"space-between", alignItems:"baseline" }}>
+                    <span style={{ fontSize: mob?9:10, fontWeight:500, color:t.fg, letterSpacing:"-.01em", lineHeight:1.3 }}>{v.title}</span>
+                    <span style={{ fontSize: mob?7:7.5, color:t.fgMuted, fontFamily:"'JetBrains Mono',monospace", letterSpacing:.5, flexShrink:0, marginLeft:8 }}>{v.type}</span>
+                  </div>
                 </div>
               </Reveal>
             );
@@ -1657,7 +1676,7 @@ const VisualPage = ({ t, mob }) => {
         </div>
       </div>
 
-      {/* bottom commission strip */}
+      {/* commission strip */}
       <Reveal>
         <div style={{ margin: mob?"4vh 16px 6vh":"5vh 44px 8vh", maxWidth:1100, marginLeft:"auto", marginRight:"auto", padding:"24px 28px", border:`1px solid ${t.rule}`, borderRadius:8, display:"flex", flexDirection: mob?"column":"row", alignItems: mob?"flex-start":"center", justifyContent:"space-between", gap:16 }}>
           <div>
@@ -1665,7 +1684,7 @@ const VisualPage = ({ t, mob }) => {
             <div style={{ fontSize:11, color:t.fgMuted, lineHeight:1.5 }}>I take on illustration, branding, event stationery, and album art commissions. Let's talk.</div>
           </div>
           <a href="mailto:tanharchitecture@gmail.com" style={{ textDecoration:"none", flexShrink:0 }}>
-            <div style={{ padding:"10px 22px", background:t.accent, borderRadius:5, fontSize:10, fontWeight:600, color:"#fff", fontFamily:"'JetBrains Mono',monospace", letterSpacing:1.5, transition:"opacity .2s", whiteSpace:"nowrap" }}
+            <div style={{ padding:"10px 22px", background:t.accent, borderRadius:5, fontSize:10, fontWeight:600, color:"#fff", fontFamily:"'JetBrains Mono',monospace", letterSpacing:1.5, whiteSpace:"nowrap" }}
               onMouseEnter={e=>e.currentTarget.style.opacity=".85"}
               onMouseLeave={e=>e.currentTarget.style.opacity="1"}>
               GET IN TOUCH
@@ -1673,7 +1692,6 @@ const VisualPage = ({ t, mob }) => {
           </a>
         </div>
       </Reveal>
-
     </div>
   );
 };
@@ -1696,7 +1714,7 @@ export default function App() {
   }, [t.bg]);
 
   const bgStyle = bgAccent && page === "home"
-    ? { background: `linear-gradient(to bottom, ${t.bg} 0%, ${bgAccent}18 30%, ${bgAccent}22 60%, ${bgAccent}12 100%)` }
+    ? { background: `linear-gradient(to bottom, ${t.bg} 0%, ${bgAccent}45 35%, ${bgAccent}55 65%, ${bgAccent}35 100%)` }
     : {};
 
   return (
