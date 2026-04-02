@@ -79,13 +79,16 @@ const THEMES = {
 /* ── Scene 1: Floating paintings in museum space ── */
 const AuraScene1 = () => (
   <div style={{ width:"100%", height:"100%", background:"#080808", position:"relative", overflow:"hidden" }}>
-    <style>{`
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Amiri:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+      <style>{`
       @keyframes paintingFloat { 0%,100%{transform:translate(-50%,-54%) translateY(0)} 50%{transform:translate(-50%,-54%) translateY(-6px)} }
       @keyframes sideFloat { 0%,100%{transform:translateY(-50%) translateY(0)} 50%{transform:translateY(-50%) translateY(-4px)} }
       @keyframes fadeInUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     `}</style>
     {/* wordmark */}
-    <div style={{ position:"absolute", top:14, left:16, fontSize:10, fontWeight:600, color:"rgba(255,255,255,.5)", letterSpacing:4, fontFamily:"'DM Sans',sans-serif", animation:"fadeInUp .8s ease both" }}>AURA</div>
+    <div style={{ position:"absolute", top:14, left:16, fontSize:10, fontWeight:600, color:"rgba(255,255,255,.5)", letterSpacing:4, fontFamily:"'Space Grotesk',sans-serif", animation:"fadeInUp .8s ease both" }}>AURA</div>
     <div style={{ position:"absolute", top:14, right:16, display:"flex", gap:12 }}>
       {["EXPLORE","TIMELINE","VISION"].map((l,i) => (
         <span key={l} style={{ fontSize:5.5, color:"rgba(255,255,255,.2)", letterSpacing:1.5, fontFamily:"'JetBrains Mono',monospace", animation:`fadeInUp .8s ease ${.1+i*.08}s both` }}>{l}</span>
@@ -124,7 +127,7 @@ const AuraScene1 = () => (
 
 /* ── Scene 2: AR identification on phone camera ── */
 const AuraScene2 = () => (
-  <div style={{ width:"100%", height:"100%", background:"#0d0e0c", fontFamily:"'DM Sans',sans-serif", position:"relative", overflow:"hidden" }}>
+  <div style={{ width:"100%", height:"100%", background:"#0d0e0c", fontFamily:"'Space Grotesk',sans-serif", position:"relative", overflow:"hidden" }}>
     <style>{`
       @keyframes scanDown { 0%{top:12%} 100%{top:68%} }
       @keyframes cardUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
@@ -158,7 +161,7 @@ const AuraScene2 = () => (
 
 /* ── Scene 3: Wayfinding floor plan ── */
 const AuraScene3 = () => (
-  <div style={{ width:"100%", height:"100%", background:"#0a0b0a", fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+  <div style={{ width:"100%", height:"100%", background:"#0a0b0a", fontFamily:"'Space Grotesk',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
     <style>{`
       @keyframes youAreHere { 0%,100%{transform:scale(1);opacity:.9} 50%{transform:scale(1.35);opacity:.4} }
       @keyframes routeLine { from{stroke-dashoffset:120} to{stroke-dashoffset:0} }
@@ -219,7 +222,7 @@ const AuraScreen = AuraScene1;
    CUSTOM SCREENS
 ══════════════════════════════════════════════════ */
 const LatticeScreen = () => (
-  <div style={{ width:"100%", height:"100%", background:"#fafaf8", fontFamily:"'DM Sans',sans-serif", overflow:"hidden", position:"relative" }}>
+  <div style={{ width:"100%", height:"100%", background:"#fafaf8", fontFamily:"'Space Grotesk',sans-serif", overflow:"hidden", position:"relative" }}>
     <svg width="100%" height="100%" viewBox="0 0 560 360" style={{ position:"absolute", inset:0 }}>
       <defs>
         <radialGradient id="lat-glow" cx="50%" cy="48%"><stop offset="0%" stopColor="#c0392b" stopOpacity="0.07"/><stop offset="100%" stopColor="#c0392b" stopOpacity="0"/></radialGradient>
@@ -235,32 +238,32 @@ const LatticeScreen = () => (
       <line x1="282" y1="212" x2="408" y2="272" stroke="rgba(0,0,0,.1)" strokeWidth="1.5" markerEnd="url(#lat-arr)"/>
       <rect x="70" y="55" width="140" height="66" rx="8" fill="#fff" stroke="rgba(0,0,0,.1)" strokeWidth="1.5"/>
       <text x="140" y="77" textAnchor="middle" fill="rgba(0,0,0,.3)" fontSize="8" fontFamily="JetBrains Mono" letterSpacing="1.5">PAPER</text>
-      <text x="140" y="95" textAnchor="middle" fill="#1a1714" fontSize="12" fontFamily="DM Sans" fontWeight="600">arXiv:2301.07041</text>
-      <text x="140" y="111" textAnchor="middle" fill="rgba(0,0,0,.4)" fontSize="10" fontFamily="DM Sans">ViT fine-tuning survey</text>
+      <text x="140" y="95" textAnchor="middle" fill="#1a1714" fontSize="12" fontFamily="Space Grotesk" fontWeight="600">arXiv:2301.07041</text>
+      <text x="140" y="111" textAnchor="middle" fill="rgba(0,0,0,.4)" fontSize="10" fontFamily="Space Grotesk">ViT fine-tuning survey</text>
       <rect x="350" y="55" width="140" height="66" rx="8" fill="#fff" stroke="rgba(0,0,0,.1)" strokeWidth="1.5"/>
       <text x="420" y="77" textAnchor="middle" fill="rgba(0,0,0,.3)" fontSize="8" fontFamily="JetBrains Mono" letterSpacing="1.5">DATASET</text>
-      <text x="420" y="95" textAnchor="middle" fill="#1a1714" fontSize="12" fontFamily="DM Sans" fontWeight="600">ImageNet-1k</text>
-      <text x="420" y="111" textAnchor="middle" fill="rgba(0,0,0,.4)" fontSize="10" fontFamily="DM Sans">1.28M images</text>
+      <text x="420" y="95" textAnchor="middle" fill="#1a1714" fontSize="12" fontFamily="Space Grotesk" fontWeight="600">ImageNet-1k</text>
+      <text x="420" y="111" textAnchor="middle" fill="rgba(0,0,0,.4)" fontSize="10" fontFamily="Space Grotesk">1.28M images</text>
       <rect x="190" y="148" width="182" height="72" rx="10" fill="#fafaf8" stroke="#c0392b" strokeWidth="2" filter="url(#lat-shadow)"/>
       <circle cx="204" cy="164" r="4" fill="#c0392b"/>
       <text x="100" y="170" textAnchor="middle" fill="rgba(0,0,0,.35)" fontSize="8" fontFamily="JetBrains Mono" letterSpacing="1.5">EXPERIMENT</text>
-      <text x="100" y="192" textAnchor="middle" fill="#1a1714" fontSize="15" fontFamily="DM Sans" fontWeight="700">vit-finetune-042</text>
+      <text x="100" y="192" textAnchor="middle" fill="#1a1714" fontSize="15" fontFamily="Space Grotesk" fontWeight="700">vit-finetune-042</text>
       <circle cx="255" cy="208" r="4" fill="#16a34a"/>
-      <text x="264" y="211" fill="#16a34a" fontSize="10" fontFamily="DM Sans" fontWeight="500">Completed</text>
+      <text x="264" y="211" fill="#16a34a" fontSize="10" fontFamily="Space Grotesk" fontWeight="500">Completed</text>
       <rect x="78" y="258" width="148" height="60" rx="7" fill="#fff" stroke="rgba(0,0,0,.08)" strokeWidth="1.5"/>
       <text x="152" y="277" textAnchor="middle" fill="rgba(0,0,0,.3)" fontSize="7.5" fontFamily="JetBrains Mono" letterSpacing="1">EVALUATION</text>
-      <text x="152" y="296" textAnchor="middle" fill="#1a1714" fontSize="12" fontFamily="DM Sans" fontWeight="500">Safety v2.1</text>
-      <text x="152" y="311" textAnchor="middle" fill="#16a34a" fontSize="10" fontFamily="DM Sans">✓ Pass</text>
+      <text x="152" y="296" textAnchor="middle" fill="#1a1714" fontSize="12" fontFamily="Space Grotesk" fontWeight="500">Safety v2.1</text>
+      <text x="152" y="311" textAnchor="middle" fill="#16a34a" fontSize="10" fontFamily="Space Grotesk">✓ Pass</text>
       <rect x="206" y="258" width="148" height="60" rx="7" fill="#fff" stroke="rgba(0,0,0,.08)" strokeWidth="1.5"/>
       <text x="280" y="277" textAnchor="middle" fill="rgba(0,0,0,.3)" fontSize="7.5" fontFamily="JetBrains Mono" letterSpacing="1">MODEL</text>
-      <text x="280" y="296" textAnchor="middle" fill="#1a1714" fontSize="12" fontFamily="DM Sans">vit-prod-v2.1</text>
-      <text x="280" y="311" textAnchor="middle" fill="rgba(0,0,0,.35)" fontSize="10" fontFamily="DM Sans">deployed</text>
+      <text x="280" y="296" textAnchor="middle" fill="#1a1714" fontSize="12" fontFamily="Space Grotesk">vit-prod-v2.1</text>
+      <text x="280" y="311" textAnchor="middle" fill="rgba(0,0,0,.35)" fontSize="10" fontFamily="Space Grotesk">deployed</text>
       <rect x="334" y="258" width="148" height="60" rx="7" fill="#fff" stroke="rgba(245,158,11,.25)" strokeWidth="1.5"/>
       <circle cx="349" cy="274" r="4" fill="#f59e0b"/>
       <text x="408" y="277" textAnchor="middle" fill="rgba(0,0,0,.3)" fontSize="7.5" fontFamily="JetBrains Mono" letterSpacing="1">EXPERIMENT</text>
-      <text x="408" y="296" textAnchor="middle" fill="#1a1714" fontSize="12" fontFamily="DM Sans">vit-finetune-043</text>
+      <text x="408" y="296" textAnchor="middle" fill="#1a1714" fontSize="12" fontFamily="Space Grotesk">vit-finetune-043</text>
       <circle cx="378" cy="309" r="4" fill="#f59e0b"/>
-      <text x="388" y="312" fill="rgba(245,158,11,.8)" fontSize="10" fontFamily="DM Sans">Running</text>
+      <text x="388" y="312" fill="rgba(245,158,11,.8)" fontSize="10" fontFamily="Space Grotesk">Running</text>
     </svg>
     <div style={{ position:"absolute", top:14, left:16, display:"flex", alignItems:"center", gap:7 }}>
       <div style={{ width:20, height:20, background:"#c0392b", borderRadius:4, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, color:"#fff" }}>L</div>
@@ -283,7 +286,7 @@ const ClearExpScreen = () => (
 
 
 const MCPScreen = () => (
-  <div style={{ width:"100%", height:"100%", background:"#f9f8f5", fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+  <div style={{ width:"100%", height:"100%", background:"#f9f8f5", fontFamily:"'Space Grotesk',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
     {/* header */}
     <div style={{ padding:"9px 13px 7px", borderBottom:"1px solid rgba(26,23,20,.07)", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
       <div style={{ display:"flex", alignItems:"center", gap:7 }}>
@@ -301,7 +304,7 @@ const MCPScreen = () => (
     {/* human prompt */}
     <div style={{ padding:"8px 13px 7px", borderBottom:"1px solid rgba(26,23,20,.06)", background:"rgba(26,23,20,.02)" }}>
       <div style={{ fontSize:6.5, fontFamily:"'JetBrains Mono',monospace", color:"rgba(26,23,20,.3)", letterSpacing:2, marginBottom:4 }}>USER PROMPT</div>
-      <div style={{ fontSize:8.5, color:"rgba(26,23,20,.65)", lineHeight:1.55, fontStyle:"italic", fontFamily:"'EB Garamond',serif" }}>
+      <div style={{ fontSize:8.5, color:"rgba(26,23,20,.65)", lineHeight:1.55, fontStyle:"italic", fontFamily:"'Space Grotesk',sans-serif" }}>
         "we're onboarding 3 engineers next week — two are ml, one is infra. what should each of them read first?"
       </div>
     </div>
@@ -368,7 +371,7 @@ const MCPScreen = () => (
 
 
 const PlotmindScreen = () => (
-  <div style={{ width:"100%", height:"100%", background:"#fafaf8", fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+  <div style={{ width:"100%", height:"100%", background:"#fafaf8", fontFamily:"'Space Grotesk',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
     {/* header */}
     <div style={{ padding:"9px 13px 7px", borderBottom:"1px solid rgba(26,23,20,.07)", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
       <div style={{ display:"flex", alignItems:"center", gap:7 }}>
@@ -467,7 +470,7 @@ const ModelPulseScreen = () => (
 
 
 const TangentScreen = () => (
-  <div style={{ width:"100%", height:"100%", background:"#0a0a0a", fontFamily:"'DM Sans',sans-serif", display:"grid", gridTemplateColumns:"1fr 220px", overflow:"hidden" }}>
+  <div style={{ width:"100%", height:"100%", background:"#0a0a0a", fontFamily:"'Space Grotesk',sans-serif", display:"grid", gridTemplateColumns:"1fr 220px", overflow:"hidden" }}>
     <style>{`
       @keyframes tangRotate{from{transform:rotateY(0deg) rotateX(8deg)}to{transform:rotateY(360deg) rotateX(8deg)}}
       @keyframes tangCursor{0%,100%{opacity:1}50%{opacity:0}}
@@ -574,7 +577,7 @@ const GreenDivideScreen = () => {
   ];
   const max = 20;
   return (
-    <div style={{ width:"100%", height:"100%", background:"#0d0d0d", fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+    <div style={{ width:"100%", height:"100%", background:"#0d0d0d", fontFamily:"'Space Grotesk',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
       <style>{`@keyframes gdGrow{from{width:0}to{width:var(--w)}}`}</style>
       {/* header */}
       <div style={{ padding:"9px 14px 6px", borderBottom:"1px solid rgba(255,255,255,.07)" }}>
@@ -598,7 +601,7 @@ const GreenDivideScreen = () => {
           ].map(({path,color,opacity,label,lx,ly},i)=>(
             <g key={i}>
               <path d={path} fill={color} fillOpacity={opacity} stroke="#f0ede4" strokeWidth="1.5"/>
-              <text x={lx} y={ly} textAnchor="middle" fill="rgba(26,23,20,.7)" fontSize="5.5" fontFamily="DM Sans" fontWeight="600">{label}</text>
+              <text x={lx} y={ly} textAnchor="middle" fill="rgba(26,23,20,.7)" fontSize="5.5" fontFamily="Space Grotesk" fontWeight="600">{label}</text>
             </g>
           ))}
         </svg>
@@ -618,7 +621,7 @@ const GreenDivideScreen = () => {
       </div>
       {/* footer */}
       <div style={{ padding:"5px 12px 8px", borderTop:"1px solid rgba(255,255,255,.06)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-        <span style={{ fontSize:8, fontFamily:"'EB Garamond',serif", fontStyle:"italic", color:"rgba(255,255,255,.4)" }}>avg <span style={{ color:"#f59e0b" }}>5.4×</span> gap between high and low income</span>
+        <span style={{ fontSize:8, fontFamily:"'Space Grotesk',sans-serif", fontStyle:"italic", color:"rgba(255,255,255,.4)" }}>avg <span style={{ color:"#f59e0b" }}>5.4×</span> gap between high and low income</span>
         <span style={{ fontSize:6.5, fontFamily:"'JetBrains Mono',monospace", color:"rgba(255,255,255,.2)" }}>n=5 boroughs</span>
       </div>
     </div>
@@ -626,7 +629,7 @@ const GreenDivideScreen = () => {
 };
 
 const HeatingScreen = () => (
-  <div style={{ width:"100%", height:"100%", background:"#fafaf8", fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+  <div style={{ width:"100%", height:"100%", background:"#fafaf8", fontFamily:"'Space Grotesk',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
     <div style={{ padding:"9px 13px 7px", borderBottom:"1px solid rgba(26,23,20,.07)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
       <div>
         <div style={{ fontSize:6.5, fontFamily:"'JetBrains Mono',monospace", color:"rgba(26,23,20,.35)", letterSpacing:2 }}>ML RESEARCH · UC BERKELEY 2022</div>
@@ -677,7 +680,7 @@ const HeatingScreen = () => (
 );
 
 const BitLotScreen = () => (
-  <div style={{ width:"100%", height:"100%", background:"#f7f9f4", fontFamily:"'DM Sans',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
+  <div style={{ width:"100%", height:"100%", background:"#f7f9f4", fontFamily:"'Space Grotesk',sans-serif", display:"flex", flexDirection:"column", overflow:"hidden" }}>
     <div style={{ padding:"9px 13px 7px", borderBottom:"1px solid rgba(26,23,20,.07)", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
       <div style={{ display:"flex", alignItems:"center", gap:7 }}>
         <div style={{ width:15, height:15, background:"#16a34a", borderRadius:3, display:"flex", alignItems:"center", justifyContent:"center", fontSize:8, fontWeight:800, color:"#fff" }}>B</div>
@@ -709,7 +712,7 @@ const BitLotScreen = () => (
       </svg>
     </div>
     <div style={{ padding:"8px 13px 10px", flex:1, display:"flex", alignItems:"center" }}>
-      <p style={{ fontSize:9, fontFamily:"'EB Garamond',serif", fontStyle:"italic", color:"rgba(26,23,20,.6)", lineHeight:1.7, margin:0 }}>
+      <p style={{ fontSize:9, fontFamily:"'Space Grotesk',sans-serif", fontStyle:"italic", color:"rgba(26,23,20,.6)", lineHeight:1.7, margin:0 }}>
         "A community corporation aggregating air rights to develop affordable housing — promising <span style={{ color:"#16a34a", fontStyle:"normal", fontWeight:600 }}>$500M in community asset value</span> to legacy Harlem residents."
       </p>
     </div>
@@ -954,7 +957,7 @@ const CustomCursor = ({ hovered, t }) => {
           position:"absolute", top:28, left:20,
           background:hovered.color, color:"#fff",
           padding:"10px 18px", borderRadius:99,
-          fontFamily:"'DM Sans',sans-serif",
+          fontFamily:"'Space Grotesk',sans-serif",
           display:"flex", flexDirection:"column", alignItems:"flex-start", gap:2,
           boxShadow:`0 6px 32px ${hovered.color}50`,
           animation:"fadeUp .15s ease both",
@@ -1052,6 +1055,20 @@ const HoverPhrase = ({ text, tooltip, t, align="center" }) => {
   );
 };
 
+const TanhaGreetFlip = ({ t }) => {
+  const [showArabic, setShowArabic] = useState(false);
+  useEffect(() => {
+    const id = setInterval(() => setShowArabic(s => !s), 3600);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <span style={{ position:"relative", display:"inline-block" }}>
+      <span style={{ display:"inline-block", opacity: showArabic ? 0 : 1, transition:"opacity .25s ease" }}>Hi, I'm Tanha</span>
+      <span style={{ position:"absolute", right:0, top:0, whiteSpace:"nowrap", opacity: showArabic ? 1 : 0, transition: showArabic ? "opacity .3s ease .28s" : "opacity .2s ease", fontFamily:"'Amiri',serif", fontWeight:400, letterSpacing:"0em" }}>مرحباً، أنا تنحى</span>
+    </span>
+  );
+};
+
 const TanhaFlip = ({ t, interval=3600 }) => {
   const [showArabic, setShowArabic] = useState(false);
   const [started, setStarted]       = useState(false);
@@ -1074,7 +1091,7 @@ const TanhaFlip = ({ t, interval=3600 }) => {
       onMouseLeave={() => setHovered(false)}
       onTouchStart={e => { e.preventDefault(); setHovered(v => !v); }}
     >
-      <span style={{ display:"inline-block", opacity: showArabic ? 0 : 1, transition:"opacity .25s ease", fontFamily:"'DM Sans',sans-serif", fontWeight:800, letterSpacing:"-.05em" }}>Tanha</span>
+      <span style={{ display:"inline-block", opacity: showArabic ? 0 : 1, transition:"opacity .25s ease", fontFamily:"'Space Grotesk',sans-serif", fontWeight:800, letterSpacing:"-.05em" }}>Tanha</span>
       <span style={{ position:"absolute", right:0, top:0, display:"inline-block", opacity: showArabic ? 1 : 0, transition: showArabic ? "opacity .3s ease .28s" : "opacity .2s ease", fontFamily:"'Amiri',serif", fontWeight:400, letterSpacing:"0em", whiteSpace:"nowrap" }}>{"\u062a\u0646\u062d\u0649"}</span>
       {hovered && (
         <span style={{
@@ -1109,11 +1126,11 @@ const Nav = ({ page, go, dark, setDark, t, mob }) => (
       <img src="/images/profilepic.png" alt="tanha" style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}
         onError={e => { e.target.style.display="none"; e.target.nextSibling.style.display="flex"; }} />
       <div style={{ display:"none", width:"100%", height:"100%", background:`${t.accent}18`, alignItems:"center", justifyContent:"center", position:"absolute", inset:0 }}>
-        <span style={{ fontSize:12, fontWeight:800, color:t.accent, fontFamily:"'DM Sans',sans-serif" }}>T</span>
+        <span style={{ fontSize:12, fontWeight:800, color:t.accent, fontFamily:"'Space Grotesk',sans-serif" }}>T</span>
       </div>
     </button>
     <div style={{ display:"flex", alignItems:"center", gap: mob?0:2 }}>
-      {["about","work","play"].map(id => (
+      {["about","work","play","writing"].map(id => (
         <button key={id} onClick={() => go(id)} style={{ background:"none", border:"none", cursor:"none", padding: mob?"5px 8px":"5px 14px", fontSize: mob?11:12, fontFamily:"'JetBrains Mono',monospace", color: page===id ? t.fg : t.fgMuted, letterSpacing:".05em", textTransform:"lowercase", transition:"color .2s", borderBottom: page===id ? `1px solid ${t.accent}` : "1px solid transparent", position:"relative" }}>{id}</button>
       ))}
       <button onClick={() => setDark(d => !d)} style={{ width:30, height:30, borderRadius:"50%", background:"transparent", border:`1px solid ${t.rule}`, cursor:"none", marginLeft: mob?4:8, display:"flex", alignItems:"center", justifyContent:"center", transition:"all .25s" }} aria-label="toggle">
@@ -1185,8 +1202,8 @@ const ProjectRow = ({ p, index, onEnter, onLeave, t, mob, onAccentChange }) => {
             transition:"opacity .45s cubic-bezier(.4,0,.2,1), transform .45s cubic-bezier(.4,0,.2,1)",
           }}>
             <div style={{ display:"flex", alignItems:"baseline", gap:10 }}>
-              <span style={{ fontSize: mob?14:16, fontWeight:700, color:t.fg, letterSpacing:"-.03em", fontFamily:"'DM Sans',sans-serif" }}>{p.title}</span>
-              <span style={{ fontSize: mob?10:11, color:t.fgMuted, fontFamily:"'EB Garamond',serif", fontStyle:"italic" }}>{p.sub}</span>
+              <span style={{ fontSize: mob?14:16, fontWeight:700, color:t.fg, letterSpacing:"-.03em", fontFamily:"'Space Grotesk',sans-serif" }}>{p.title}</span>
+              <span style={{ fontSize: mob?10:11, color:t.fgMuted, fontFamily:"'Space Grotesk',sans-serif", fontStyle:"italic" }}>{p.sub}</span>
             </div>
             <div style={{ display:"flex", alignItems:"center", gap:8, flexShrink:0 }}>
               <span style={{ fontSize:9, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, opacity:.5 }}>{p.year}</span>
@@ -1224,7 +1241,7 @@ const AboutTeaser = ({ t, go, mob }) => {
               style={{ transition:"stroke-dashoffset 2s cubic-bezier(.4,0,.2,1)" }} />
           </svg>
           <div>
-            <div style={{ fontSize:14, fontFamily:"'EB Garamond',serif", fontStyle:"italic", color:t.fg, marginBottom:3 }}>tanh(x) = tanha</div>
+            <div style={{ fontSize:14, fontFamily:"'Space Grotesk',sans-serif", fontStyle:"italic", color:t.fg, marginBottom:3 }}>tanh(x) = tanha</div>
           </div>
         </div>
         <button onClick={() => go("about")} style={{ background:"none", border:`1px solid ${t.rule}`, cursor:"none", borderRadius:99, padding:"8px 20px", fontSize:11, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, letterSpacing:2, transition:"all .25s", whiteSpace:"nowrap", flexShrink:0 }}
@@ -1267,20 +1284,18 @@ const HomePage = ({ t, mob, setCursorHovered, go, onAccentChange }) => {
       {/* hero */}
       <div style={{ padding: mob?"88px 24px 0":"100px 52px 0", position:"relative", flexShrink:0, display:"flex", justifyContent:"center", textAlign:"center" }}>
         <div style={{ position:"absolute", inset:0, pointerEvents:"none", backgroundImage:`radial-gradient(circle, ${t.fg}0d 1px, transparent 1px)`, backgroundSize:"28px 28px", WebkitMaskImage:"radial-gradient(ellipse 90% 60% at 50% 0%, black 20%, transparent 100%)", maskImage:"radial-gradient(ellipse 90% 60% at 50% 0%, black 20%, transparent 100%)", animation:"particleDrift 18s ease-in-out infinite" }} />
-        <h1 style={{ fontSize: mob?"clamp(22px,5vw,32px)":"clamp(24px,2.6vw,40px)", fontFamily:"'DM Sans',sans-serif", fontWeight:800, letterSpacing:"-.05em", lineHeight:1.05, color:t.fg, position:"relative", zIndex:1, maxWidth:900 }}>
-          <span style={{ display:"inline-block", animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .05s both", opacity:0 }}><TanhaFlip t={t} /></span>
-          {" "}
-          <span style={{ display:"inline-block", animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .18s both", opacity:0 }}>turns</span>
-          {" "}
-          <span style={{ display:"inline-block", animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .28s both", opacity:0 }}>
+        <h1 style={{ fontSize: mob?"clamp(22px,5vw,32px)":"clamp(24px,2.6vw,40px)", fontFamily:"'Space Grotesk',sans-serif", fontWeight:800, letterSpacing:"-.05em", lineHeight:1.2, color:t.fg, position:"relative", zIndex:1, maxWidth:900 }}>
+          {/* line 1 — flips between english and arabic */}
+          <div style={{ animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .05s both", opacity:0 }}>
+            <TanhaGreetFlip t={t} />
+          </div>
+          {/* line 2 — cycling phrases */}
+          <div style={{ animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .3s both", opacity:0 }}>
+            <span>I love turning </span>
             <CyclingPhrase t={t} interval={3200} phrases={["model weights","training data","raw outputs","latent space","evaluation scores"]} />
-          </span>
-          {" "}
-          <span style={{ display:"inline-block", animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .38s both", opacity:0 }}>into</span>
-          {" "}
-          <span style={{ display:"inline-block", animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .48s both", opacity:0 }}>
+            <span> into </span>
             <CyclingPhrase t={t} interval={4100} phrases={["things people actually want to use","products people trust","interfaces that make sense"]} />
-          </span>
+          </div>
         </h1>
       </div>
       {/* horizontal scroll */}
@@ -1301,7 +1316,7 @@ const HomePage = ({ t, mob, setCursorHovered, go, onAccentChange }) => {
                 <div style={{ display:"flex", alignItems:"baseline", justifyContent:"space-between", padding:"10px 2px 0", opacity:1, transform:"translateY(0)" }}>
                   <div style={{ display:"flex", alignItems:"baseline", gap:10 }}>
                     <span style={{ fontSize:15, fontWeight:700, color:t.fg, letterSpacing:"-.02em" }}>{p.title}</span>
-                    <span style={{ fontSize:11, color:t.fgMuted, fontFamily:"'EB Garamond',serif", fontStyle:"italic" }}>{p.sub}</span>
+                    <span style={{ fontSize:11, color:t.fgMuted, fontFamily:"'Space Grotesk',sans-serif", fontWeight:400, opacity:.6 }}>{p.sub}</span>
                   </div>
                   <div style={{ display:"flex", alignItems:"center", gap:7 }}>
                     <span style={{ fontSize:9, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, opacity:.5 }}>{p.year}</span>
@@ -1450,7 +1465,7 @@ const TanhTimeline = ({ t }) => {
           <div style={{ maxWidth:460, margin:active<=2?"0":active===4?"0 auto":"0 0 0 auto", animation:"fadeUp .4s ease both" }}>
             <div style={{ display:"flex", gap:10, marginBottom:6, alignItems:"baseline", justifyContent:LIFE[active].inflection?"center":"flex-start" }}>
               <span style={{ fontSize:9, fontFamily:"monospace", color:t.accent, letterSpacing:2.5 }}>{String(active+1).padStart(2,"0")}</span>
-              <span style={{ fontSize:16, fontFamily:"'EB Garamond',serif", fontStyle:"italic", color:t.fgMuted }}>{LIFE[active].kicker}</span>
+              <span style={{ fontSize:16, fontFamily:"'Space Grotesk',sans-serif", fontStyle:"italic", color:t.fgMuted }}>{LIFE[active].kicker}</span>
             </div>
             <p style={{ fontSize:14, lineHeight:1.75, color:t.fgMuted, textAlign:LIFE[active].inflection?"center":"left" }}>{LIFE[active].body}</p>
           </div>
@@ -1499,15 +1514,15 @@ const AboutPage = ({ t, mob }) => {
           </Reveal>
           {/* name + definitions — right */}
           <Reveal y={24} delay={120}>
-            <p style={{ fontSize: mob?"clamp(56px,14vw,90px)":"clamp(52px,6vw,96px)", fontFamily:"'DM Sans',sans-serif", fontWeight:800, letterSpacing:"-.06em", lineHeight:.88, color:t.fg, marginBottom:16 }}>
+            <p style={{ fontSize: mob?"clamp(56px,14vw,90px)":"clamp(52px,6vw,96px)", fontFamily:"'Space Grotesk',sans-serif", fontWeight:800, letterSpacing:"-.06em", lineHeight:.88, color:t.fg, marginBottom:16 }}>
               <TanhaFlip t={t} interval={1800} />
             </p>
-            <div style={{ fontSize: mob?13:15, fontFamily:"'EB Garamond',serif", fontStyle:"italic", color:t.fgMuted, marginBottom:28 }}>/taan·haa/</div>
+            <div style={{ fontSize: mob?13:15, fontFamily:"'Space Grotesk',sans-serif", fontStyle:"italic", color:t.fgMuted, marginBottom:28 }}>/taan·haa/</div>
             <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
               {[["Arabic","carving, etching — to shape by removing"],["Math","tanh(x) — maps any input to −1 and 1"]].map(([tag, def]) => (
                 <div key={tag}>
                   <div style={{ fontSize:7.5, fontFamily:"'JetBrains Mono',monospace", color:t.accent, letterSpacing:2, marginBottom:4 }}>{tag.toUpperCase()}</div>
-                  <div style={{ fontSize: mob?12:13, color:t.fgMuted, fontFamily:"'EB Garamond',serif", fontStyle:"italic", lineHeight:1.5 }}>{def}</div>
+                  <div style={{ fontSize: mob?12:13, color:t.fgMuted, fontFamily:"'Space Grotesk',sans-serif", fontStyle:"italic", lineHeight:1.5 }}>{def}</div>
                 </div>
               ))}
             </div>
@@ -1519,7 +1534,7 @@ const AboutPage = ({ t, mob }) => {
       <div style={{ padding: mob?"8vh 20px":"10vh 44px", maxWidth:680, margin:"0 auto" }}>
         <Reveal y={32}>
           <div style={{ display:"flex", flexDirection:"column", gap:22 }}>
-            <p style={{ fontSize: mob?15:17, fontFamily:"'EB Garamond',serif", fontWeight:400, lineHeight:1.85, color:t.fg, margin:0 }}>
+            <p style={{ fontSize: mob?15:17, fontFamily:"'Space Grotesk',sans-serif", fontWeight:400, lineHeight:1.85, color:t.fg, margin:0 }}>
               Hi, I'm Tanha — a designer and researcher who started in architecture, which turned out to be less about buildings and more about learning how to move between disciplines without losing the thread. I've since spent time with interdisciplinary AI teams at{" "}
               <a href="https://www.archleague.org/article/j-max-bond-center/" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>The J Max Bond Center</a>,{" "}
               <a href="https://www.flad.com" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>Flad</a>,{" "}
@@ -1527,15 +1542,12 @@ const AboutPage = ({ t, mob }) => {
               <a href="https://jpmorganchase.com" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>Chase</a>.{" "}
               I'm drawn to the hard problems around <span style={{ color:t.accent, fontWeight:700 }}>interpretability and trust</span> and how to design for them.
             </p>
-            <p style={{ fontSize: mob?15:17, fontFamily:"'EB Garamond',serif", fontWeight:400, lineHeight:1.85, color:t.fg, margin:0 }}>
-              I love side projects to explore what I'm sitting with at the moment.{" "}
+            <p style={{ fontSize: mob?15:17, fontFamily:"'Space Grotesk',sans-serif", fontWeight:400, lineHeight:1.85, color:t.fg, margin:0 }}>
+              I tend to make things out of whatever I'm sitting with —{" "}
               <a href="https://tanhata.github.io/clear-expression/" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>Clear Expression</a>
-              {" "}came from spending a lot of time with Classical Arabic texts and the preservation of reading techniques;{" "}
+              {" "}came from Classical Arabic texts,{" "}
               <a href="https://tanhata.github.io/recursive-orbit/" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>Recursive Orbit</a>
-              {" "}came from the grief I was trying to make sense of after losing my mom.
-            </p>
-            <p style={{ fontSize: mob?15:17, fontFamily:"'EB Garamond',serif", fontStyle:"italic", fontWeight:400, lineHeight:1.85, color:t.fgMuted, margin:0 }}>
-              Outside of work, I love fashion and outfit coordination, coffee brewing and photography.
+              {" "}from grief. Outside of that I love fashion, coffee, and museums. Recent favorites: Ahmed Matar at the Brooklyn Museum, Monet and Sol LeWitt at MoMA.
             </p>
           </div>
         </Reveal>
@@ -1589,7 +1601,7 @@ const AboutPage = ({ t, mob }) => {
                 <div style={{ maxWidth:500, margin:active<=2?"0":active===4?"0 auto":"0 0 0 auto", animation:"fadeUp .35s ease both" }}>
                   <div style={{ display:"flex", gap:10, marginBottom:6, alignItems:"baseline", justifyContent:LIFE[active].inflection?"center":"flex-start" }}>
                     <span style={{ fontSize:9, fontFamily:"monospace", color:t.accent, letterSpacing:2.5 }}>{String(active+1).padStart(2,"0")}</span>
-                    <span style={{ fontSize:18, fontFamily:"'EB Garamond',serif", fontStyle:"italic", color:t.fgMuted }}>{LIFE[active].kicker}</span>
+                    <span style={{ fontSize:18, fontFamily:"'Space Grotesk',sans-serif", fontStyle:"italic", color:t.fgMuted }}>{LIFE[active].kicker}</span>
                   </div>
                   <p style={{ fontSize:14, lineHeight:1.8, color:t.fgMuted, textAlign:LIFE[active].inflection?"center":"left" }}>{LIFE[active].body}</p>
                 </div>
@@ -1626,6 +1638,89 @@ const AboutPage = ({ t, mob }) => {
 /* ══════════════════════════════════════════════════
    VISUAL PAGE
 ══════════════════════════════════════════════════ */
+const WRITINGS = [
+  {
+    title: "The Designer as Operator: Design Systems in the Agentic Stack",
+    date: "Apr 2026",
+    desc: "What happens to design systems when the interface is an agent? On the role of designers in the emerging agentic stack.",
+    url: "https://open.substack.com/pub/talshe/p/the-designer-as-operator?r=2iqmd4&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true",
+    tag: "thoughts",
+  },
+  {
+    title: "From \"Hand Me That Thing\" to Trust: Why Intention Grounding Changes Everything",
+    date: "Aug 2025",
+    desc: "Reflections on Visual Intention Grounding for Egocentric Assistants (ICCV 2025) — and what it means for designing trustworthy AI interfaces.",
+    url: "https://talshe.substack.com/p/from-hand-me-that-thing-to-trust",
+    tag: "thoughts",
+  },
+  {
+    title: "Thermodynamic Considerations in Heating Load Analysis Using Machine Learning",
+    date: "Feb 2022",
+    desc: "Random Forest, entropy generation, and CFD simulation for building energy optimization. R² = 0.997.",
+    url: "https://drive.google.com/file/d/1FHQsm3s1dJWWMKKBy-QRjClEO3rS2OZ8/view",
+    tag: "paper",
+  },
+  {
+    title: "Leveraging Air Rights for Reparative Development in Harlem",
+    date: "May 2021",
+    desc: "A policy proposal combining parametric design and community finance to unlock 70M sq ft of unused air rights for affordable housing.",
+    url: "https://drive.google.com/file/d/1tAwTFKHjWch9u-SEe0oKMHvTClIR3FT8/view",
+    tag: "paper",
+  },
+];
+
+const WritingPage = ({ t, mob }) => (
+  <div style={{ paddingTop:80, position:"relative", zIndex:1, minHeight:"100vh" }}>
+    <div style={{ maxWidth:720, margin:"0 auto", padding: mob?"6vh 20px 12vh":"10vh 44px 16vh" }}>
+
+      {/* list */}
+      <div style={{ display:"flex", flexDirection:"column" }}>
+        {WRITINGS.map((w, i) => (
+          <Reveal key={i} delay={i * 80}>
+            <a href={w.url} target="_blank" rel="noopener noreferrer"
+              style={{ textDecoration:"none", display:"block", cursor:"none" }}
+            >
+              <div style={{ padding:"28px 0", borderTop:`1px solid ${t.rule}`, display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:20 }}
+                onMouseEnter={e => e.currentTarget.style.opacity=".6"}
+                onMouseLeave={e => e.currentTarget.style.opacity="1"}
+              >
+                <div style={{ flex:1 }}>
+                  {/* tag + date */}
+                  <div style={{ display:"flex", gap:10, alignItems:"center", marginBottom:10 }}>
+                    <span style={{ fontSize:7.5, fontFamily:"'JetBrains Mono',monospace", color:t.accent, letterSpacing:2 }}>{w.tag.toUpperCase()}</span>
+                    <span style={{ fontSize:7.5, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, opacity:.45 }}>{w.date}</span>
+                  </div>
+                  {/* big title */}
+                  <p style={{ fontSize: mob?18:22, fontFamily:"'Space Grotesk',sans-serif", fontWeight:600, color:t.fg, lineHeight:1.2, letterSpacing:"-.02em", marginBottom:10 }}>{w.title}</p>
+                  {/* desc */}
+                  <p style={{ fontSize: mob?13:14, color:t.fgMuted, lineHeight:1.7 }}>{w.desc}</p>
+                </div>
+                {/* arrow */}
+                <span style={{ fontSize:20, color:t.fgMuted, opacity:.35, flexShrink:0, marginTop:4 }}>↗</span>
+              </div>
+            </a>
+          </Reveal>
+        ))}
+        <div style={{ borderTop:`1px solid ${t.rule}` }} />
+      </div>
+
+      {/* substack cta */}
+      <Reveal delay={200}>
+        <div style={{ marginTop:44, display:"flex", alignItems:"center", gap:12 }}>
+          <span style={{ fontSize:13, color:t.fgMuted, fontFamily:"'Space Grotesk',sans-serif" }}>More on Substack</span>
+          <a href="https://talshe.substack.com" target="_blank" rel="noopener noreferrer"
+            style={{ fontSize:9, fontFamily:"'JetBrains Mono',monospace", color:t.accent, letterSpacing:2, textDecoration:"none", cursor:"none" }}
+            onMouseEnter={e=>e.target.style.opacity=".6"}
+            onMouseLeave={e=>e.target.style.opacity="1"}>
+            FOLLOW →
+          </a>
+        </div>
+      </Reveal>
+
+    </div>
+  </div>
+);
+
 const VisualPage = ({ t, mob }) => {
   const [hoveredId, setHoveredId] = useState(null);
   return (
@@ -1680,7 +1775,7 @@ const VisualPage = ({ t, mob }) => {
       <Reveal>
         <div style={{ margin: mob?"4vh 16px 6vh":"5vh 44px 8vh", maxWidth:1100, marginLeft:"auto", marginRight:"auto", padding:"24px 28px", border:`1px solid ${t.rule}`, borderRadius:8, display:"flex", flexDirection: mob?"column":"row", alignItems: mob?"flex-start":"center", justifyContent:"space-between", gap:16 }}>
           <div>
-            <div style={{ fontSize: mob?18:22, fontFamily:"'EB Garamond',serif", fontStyle:"italic", color:t.fg, marginBottom:5 }}>Want something made?</div>
+            <div style={{ fontSize: mob?18:22, fontFamily:"'Space Grotesk',sans-serif", fontWeight:600, color:t.fg, marginBottom:5, letterSpacing:"-.02em" }}>Want something made?</div>
             <div style={{ fontSize:11, color:t.fgMuted, lineHeight:1.5 }}>I take on illustration, branding, event stationery, and album art commissions. Let's talk.</div>
           </div>
           <a href="mailto:tanharchitecture@gmail.com" style={{ textDecoration:"none", flexShrink:0 }}>
@@ -1718,9 +1813,9 @@ export default function App() {
     : {};
 
   return (
-    <div style={{ minHeight:"100vh", background:t.bg, color:t.fg, fontFamily:"'DM Sans','Helvetica Neue',sans-serif", transition:"background .8s ease, color .4s", ...bgStyle }}>
+    <div style={{ minHeight:"100vh", background:t.bg, color:t.fg, fontFamily:"'Space Grotesk','Helvetica Neue',sans-serif", transition:"background .8s ease, color .4s", ...bgStyle }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Amiri:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap');
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
         html{scroll-behavior:smooth;}
         @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
@@ -1733,6 +1828,7 @@ export default function App() {
         a{cursor:none!important;}
         button{cursor:none!important;}
         *{cursor:none!important;}
+        a:hover,a:focus,button:hover,button:focus,[role="button"]{cursor:none!important;}
         .char-reveal span{display:inline-block;animation:charReveal .5s cubic-bezier(.4,0,.2,1) both;}
         ::-webkit-scrollbar{width:3px;}
         ::-webkit-scrollbar-thumb{background:${t.accent}28;border-radius:99px;}
@@ -1745,6 +1841,7 @@ export default function App() {
       {page==="work"   && <WorkPage   t={t} mob={mob} setCursorHovered={setCursorHovered} />}
       {page==="about"  && <AboutPage  t={t} mob={mob} />}
       {page==="play" && <VisualPage t={t} mob={mob} />}
+      {page==="writing" && <WritingPage t={t} mob={mob} />}
     </div>
   );
 }
