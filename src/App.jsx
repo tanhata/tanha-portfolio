@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, Fragment } from "react";
 
 const useMobile = (bp = 768) => {
   const [m, setM] = useState(typeof window !== "undefined" ? window.innerWidth < bp : false);
@@ -1055,6 +1055,38 @@ const HoverPhrase = ({ text, tooltip, t, align="center" }) => {
   );
 };
 
+const AnnotatedLink = ({ href, children, note, t }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  return (
+    <span ref={ref} style={{ position:"relative", display:"inline" }}>
+      <a
+        href={href} target="_blank" rel="noopener noreferrer"
+        style={{ color:t.accent, textDecoration:"none", fontWeight:700, cursor:"none", borderBottom:`1.5px solid ${t.accent}40`, paddingBottom:1 }}
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+      >
+        {children}
+      </a>
+      {open && (
+        <span style={{
+          position:"absolute", bottom:"calc(100% + 10px)", left:"50%", transform:"translateX(-50%)",
+          background:t.fg, color:t.bg,
+          fontSize:11, fontFamily:"'Space Grotesk',sans-serif", fontWeight:400,
+          lineHeight:1.55, padding:"8px 12px", borderRadius:6,
+          whiteSpace:"normal", width:220, zIndex:9999,
+          animation:"fadeUp .15s ease both",
+          pointerEvents:"none", textAlign:"left",
+          boxShadow:"0 4px 20px rgba(0,0,0,.15)",
+        }}>
+          {note}
+          <span style={{ position:"absolute", bottom:-4, left:"50%", transform:"translateX(-50%)", width:0, height:0, borderLeft:"4px solid transparent", borderRight:"4px solid transparent", borderTop:`4px solid ${t.fg}` }} />
+        </span>
+      )}
+    </span>
+  );
+};
+
 const TanhaGreetFlip = ({ t }) => {
   const [showArabic, setShowArabic] = useState(false);
   useEffect(() => {
@@ -1120,8 +1152,8 @@ const TanhaFlip = ({ t, interval=3600 }) => {
 /* ══════════════════════════════════════════════════
    NAV
 ══════════════════════════════════════════════════ */
-const Nav = ({ page, go, dark, setDark, t, mob }) => (
-  <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, display:"flex", justifyContent:"space-between", alignItems:"center", padding: mob?"16px 20px":"20px 44px", background:t.navBg, backdropFilter:"blur(18px)", WebkitBackdropFilter:"blur(18px)", borderBottom:`1px solid ${t.rule}`, transition:"background .4s" }}>
+const Nav = ({ page, go, dark, setDark, t, mob, navHidden }) => (
+  <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, display:"flex", justifyContent:"space-between", alignItems:"center", padding: mob?"16px 20px":"20px 44px", background:t.navBg, backdropFilter:"blur(18px)", WebkitBackdropFilter:"blur(18px)", borderBottom:`1px solid ${t.rule}`, transition:"background .4s, transform .35s cubic-bezier(.4,0,.2,1)", transform: navHidden ? "translateY(-100%)" : "translateY(0)" }}>
     <button onClick={() => go("home")} style={{ background:"#f7f4ee", border:"1.5px solid rgba(26,23,20,.12)", cursor:"none", padding:0, borderRadius:"50%", overflow:"hidden", width:32, height:32, flexShrink:0, transition:"border-color .2s", position:"relative" }}>
       <img src="/images/profilepic.png" alt="tanha" style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}
         onError={e => { e.target.style.display="none"; e.target.nextSibling.style.display="flex"; }} />
@@ -1130,15 +1162,15 @@ const Nav = ({ page, go, dark, setDark, t, mob }) => (
       </div>
     </button>
     <div style={{ display:"flex", alignItems:"center", gap: mob?0:2 }}>
-      {["about","work","play","writing"].map(id => (
+      {["about","work","writing"].map(id => (
         <button key={id} onClick={() => go(id)} style={{ background:"none", border:"none", cursor:"none", padding: mob?"5px 8px":"5px 14px", fontSize: mob?11:12, fontFamily:"'JetBrains Mono',monospace", color: page===id ? t.fg : t.fgMuted, letterSpacing:".05em", textTransform:"lowercase", transition:"color .2s", borderBottom: page===id ? `1px solid ${t.accent}` : "1px solid transparent", position:"relative" }}>{id}</button>
       ))}
       <button onClick={() => setDark(d => !d)} style={{ width:30, height:30, borderRadius:"50%", background:"transparent", border:`1px solid ${t.rule}`, cursor:"none", marginLeft: mob?4:8, display:"flex", alignItems:"center", justifyContent:"center", transition:"all .25s" }} aria-label="toggle">
-        {dark
-          ? <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={t.fgMuted} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-          : <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={t.fgMuted} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        }
-      </button>
+          {dark
+            ? <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={t.fgMuted} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            : <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={t.fgMuted} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          }
+        </button>
     </div>
   </nav>
 );
@@ -1480,157 +1512,613 @@ const TanhTimeline = ({ t }) => {
 /* ══════════════════════════════════════════════════
    ABOUT
 ══════════════════════════════════════════════════ */
-const AboutPage = ({ t, mob }) => {
-  const [drawn, setDrawn] = useState(false);
-  const [active, setActive] = useState(null);
-  const curveRef = useRef(null);
+const DeskScene = ({ t }) => {
+  const [hoveredItem, setHoveredItem] = useState(null);
+  const sceneW = 3200;
+  const sceneH = 480;
 
-  useEffect(() => {
-    const el = curveRef.current; if (!el) return;
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setDrawn(true); io.unobserve(el); } }, { threshold:.15 });
-    io.observe(el); return () => io.disconnect();
-  }, []);
-
-  const W=900,H=340,pad={l:60,r:60,t:70,b:100};
-  const pw=W-pad.l-pad.r, ph=H-pad.t-pad.b;
-  const mapX=x=>pad.l+((x+3)/6)*pw;
-  const mapY=y=>pad.t+((1-y)/2)*ph;
-  const pathD = Array.from({length:201},(_,i)=>{ const x=-3+(6*i)/200; return `${i===0?"M":"L"}${mapX(x).toFixed(1)},${mapY(tanh(x)).toFixed(1)}`; }).join(" ");
-  const pts = LIFE.map(ch => ({ cx:mapX(ch.x), cy:mapY(tanh(ch.x)), ...ch }));
+  const items = [
+    { id:'espresso', x:160, y:200, label:'6am ritual', sublabel:'la marzocco', w:90, h:160 },
+    { id:'sketchbook', x:360, y:260, label:'always open', sublabel:'sketchbook', w:160, h:120 },
+    { id:'books', x:620, y:220, label:'currently reading', sublabel:null, w:140, h:200 },
+    { id:'arch', x:820, y:250, label:'where I started', sublabel:'architecture', w:120, h:180 },
+    { id:'prints', x:1060, y:280, label:'from somewhere', sublabel:'photo prints', w:200, h:140 },
+    { id:'mom', x:1340, y:230, label:'مبشرة', sublabel:'1957 — 2023', w:100, h:130 },
+    { id:'math', x:1560, y:260, label:'the other language', sublabel:'probability', w:160, h:120 },
+    { id:'arabic', x:1820, y:245, label:'من ديوان المتنبي', sublabel:'arabic poetry', w:150, h:170 },
+  ];
 
   return (
-    <div style={{ paddingTop:0, position:"relative", zIndex:1 }}>
+    <div style={{ position:'relative', width:'100%', overflow:'hidden' }}>
+      <svg
+        viewBox={`0 0 ${sceneW} ${sceneH}`}
+        style={{ width:'100%', height:'auto', display:'block', cursor:'none' }}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <radialGradient id="warmLight" cx="35%" cy="0%" r="70%">
+            <stop offset="0%" stopColor="#c8822a" stopOpacity="0.35"/>
+            <stop offset="100%" stopColor="#1a0f05" stopOpacity="0"/>
+          </radialGradient>
+          <radialGradient id="warmLight2" cx="75%" cy="0%" r="50%">
+            <stop offset="0%" stopColor="#c8822a" stopOpacity="0.2"/>
+            <stop offset="100%" stopColor="#1a0f05" stopOpacity="0"/>
+          </radialGradient>
+          <filter id="softShadow">
+            <feDropShadow dx="0" dy="4" stdDeviation="8" floodColor="#000" floodOpacity="0.4"/>
+          </filter>
+          <filter id="pageShadow">
+            <feDropShadow dx="2" dy="2" stdDeviation="4" floodColor="#000" floodOpacity="0.3"/>
+          </filter>
+          <pattern id="woodGrain" patternUnits="userSpaceOnUse" width="200" height="200">
+            <rect width="200" height="200" fill="#3d2410"/>
+            {[0,20,40,60,80,100,120,140,160,180].map(y=>(
+              <line key={y} x1="0" y1={y+Math.sin(y)*5} x2="200" y2={y+Math.cos(y*0.5)*3} stroke="#2d1a0a" strokeWidth="0.8" opacity="0.4"/>
+            ))}
+          </pattern>
+        </defs>
 
-      {/* ── SECTION 1: Hero — name + photo together ── */}
-      <div style={{ minHeight:"85vh", display:"flex", alignItems:"center", padding: mob?"100px 20px 40px":"120px 44px 40px", maxWidth:1100, margin:"0 auto", position:"relative" }}>
-        <div style={{ position:"absolute", inset:0, backgroundImage:`radial-gradient(circle, ${t.fg}08 1px, transparent 1px)`, backgroundSize:"28px 28px", WebkitMaskImage:"radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%)", maskImage:"radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%)", pointerEvents:"none" }} />
-        <div style={{ display:"grid", gridTemplateColumns: mob?"1fr":"1fr 1fr", gap: mob?32:72, alignItems:"center", width:"100%", position:"relative", zIndex:1 }}>
-          {/* photo — left */}
-          <Reveal y={24}>
-            <div style={{ aspectRatio:"4/5", borderRadius:4, overflow:"hidden", border:`1px solid ${t.rule}`, maxWidth: mob?260:420, marginLeft: mob?0:"auto" }}>
-              <img src="/images/tanha.jpg" alt="tanha" style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}
-                onError={e=>{ e.target.style.display="none"; e.target.parentNode.style.background=`${t.accent}10`; }}/>
-            </div>
-          </Reveal>
-          {/* name + definitions — right */}
-          <Reveal y={24} delay={120}>
-            <p style={{ fontSize: mob?"clamp(56px,14vw,90px)":"clamp(52px,6vw,96px)", fontFamily:"'Space Grotesk',sans-serif", fontWeight:800, letterSpacing:"-.06em", lineHeight:.88, color:t.fg, marginBottom:16 }}>
-              <TanhaFlip t={t} interval={1800} />
-            </p>
-            <div style={{ fontSize: mob?13:15, fontFamily:"'Space Grotesk',sans-serif", fontStyle:"italic", color:t.fgMuted, marginBottom:28 }}>/taan·haa/</div>
-            <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-              {[["Arabic","carving, etching — to shape by removing"],["Math","tanh(x) — maps any input to −1 and 1"]].map(([tag, def]) => (
-                <div key={tag}>
-                  <div style={{ fontSize:7.5, fontFamily:"'JetBrains Mono',monospace", color:t.accent, letterSpacing:2, marginBottom:4 }}>{tag.toUpperCase()}</div>
-                  <div style={{ fontSize: mob?12:13, color:t.fgMuted, fontFamily:"'Space Grotesk',sans-serif", fontStyle:"italic", lineHeight:1.5 }}>{def}</div>
-                </div>
-              ))}
-            </div>
-          </Reveal>
+        {/* desk surface */}
+        <rect width={sceneW} height={sceneH} fill="url(#woodGrain)"/>
+        <rect width={sceneW} height={sceneH} fill="url(#warmLight)"/>
+        <rect width={sceneW} height={sceneH} fill="url(#warmLight2)"/>
+        {/* desk edge highlight */}
+        <rect x="0" y={sceneH-40} width={sceneW} height="40" fill="#2a1608" opacity="0.6"/>
+        <line x1="0" y1={sceneH-40} x2={sceneW} y2={sceneH-40} stroke="#6b3d1a" strokeWidth="1" opacity="0.4"/>
+
+        {/* ── ESPRESSO MACHINE ── */}
+        <g filter="url(#softShadow)"
+          onMouseEnter={()=>setHoveredItem('espresso')} onMouseLeave={()=>setHoveredItem(null)}>
+          {/* body */}
+          <rect x="115" y="220" width="90" height="140" rx="8" fill="#1a1a1a"/>
+          <rect x="118" y="223" width="84" height="134" rx="6" fill="#222"/>
+          {/* chrome front panel */}
+          <rect x="125" y="235" width="70" height="80" rx="4" fill="#2a2a2a"/>
+          <rect x="128" y="238" width="64" height="74" rx="3" fill="#333" opacity="0.8"/>
+          {/* group head */}
+          <ellipse cx="160" cy="295" rx="18" ry="8" fill="#111"/>
+          <ellipse cx="160" cy="293" rx="16" ry="6" fill="#1a1a1a"/>
+          {/* portafilter */}
+          <rect x="150" y="293" width="20" height="30" rx="2" fill="#111"/>
+          <path d="M150,320 Q160,335 170,320" fill="none" stroke="#0a0a0a" strokeWidth="3"/>
+          {/* steam wand */}
+          <line x1="195" y1="240" x2="195" y2="310" stroke="#888" strokeWidth="3"/>
+          <ellipse cx="195" cy="313" rx="4" ry="3" fill="#666"/>
+          {/* buttons */}
+          {[0,1,2].map(i=>(
+            <circle key={i} cx={136+i*14} cy="255" r="4" fill="#c8822a" opacity={0.6+i*0.15}/>
+          ))}
+          {/* cup */}
+          <rect x="143" y="320" width="34" height="28" rx="3" fill="#f5f0e8"/>
+          <ellipse cx="160" cy="320" rx="17" ry="4" fill="#ede8df"/>
+          <path d="M177,328 Q185,332 177,336" fill="none" stroke="#e0d8cc" strokeWidth="2"/>
+          {/* steam */}
+          {[0,1,2].map(i=>(
+            <path key={i} d={`M${152+i*8},318 Q${150+i*8},308 ${154+i*8},298`} fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="1.5"/>
+          ))}
+          {/* brand label */}
+          <text x="160" y="278" textAnchor="middle" fill="#666" fontSize="7" fontFamily="JetBrains Mono" letterSpacing="2">LA MARZOCCO</text>
+        </g>
+
+        {/* ── SKETCHBOOK ── */}
+        <g filter="url(#pageShadow)"
+          onMouseEnter={()=>setHoveredItem('sketchbook')} onMouseLeave={()=>setHoveredItem(null)}>
+          {/* cover */}
+          <rect x="340" y="265" width="170" height="130" rx="3" fill="#8b6914" transform="rotate(-2,425,330)"/>
+          {/* pages */}
+          <rect x="342" y="267" width="166" height="126" rx="2" fill="#f5f0e6" transform="rotate(-2,425,330)"/>
+          {/* binding */}
+          <rect x="340" y="265" width="10" height="130" rx="2" fill="#6b500f" transform="rotate(-2,425,330)"/>
+          {/* sketch lines — loose gesture drawings */}
+          {[
+            "M390,290 Q410,275 430,285 Q445,295 440,310",
+            "M395,310 Q420,295 445,305",
+            "M385,325 L445,320",
+            "M390,335 Q415,328 440,332",
+            "M408,278 L412,345",
+          ].map((d,i)=>(
+            <path key={i} d={d} fill="none" stroke="#2a1f0e" strokeWidth="1" opacity="0.5" transform="rotate(-2,425,330)"/>
+          ))}
+          {/* small figure sketch */}
+          <circle cx="422" cy="283" r="6" fill="none" stroke="#2a1f0e" strokeWidth="0.8" opacity="0.4" transform="rotate(-2,425,330)"/>
+          <line x1="422" y1="289" x2="422" y2="305" stroke="#2a1f0e" strokeWidth="0.8" opacity="0.4" transform="rotate(-2,425,330)"/>
+          {/* pencil */}
+          <rect x="495" y="278" width="8" height="90" rx="2" fill="#f5c842" transform="rotate(15,499,323)"/>
+          <polygon points="499,368 495,380 503,380" fill="#e8b820" transform="rotate(15,499,323)"/>
+          <rect x="495" y="275" width="8" height="6" fill="#ddd" transform="rotate(15,499,323)"/>
+        </g>
+
+        {/* ── BOOK STACK ── */}
+        <g filter="url(#softShadow)"
+          onMouseEnter={()=>setHoveredItem('books')} onMouseLeave={()=>setHoveredItem(null)}>
+          {[
+            { color:"#c4523a", title:"INVISIBLE WOMEN", h:38, y:340 },
+            { color:"#2d6e9e", title:"CRYING IN H MART", h:38, y:302 },
+            { color:"#8b5e3c", title:"THE ARTIST'S WAY", h:38, y:264 },
+            { color:"#4a7c59", title:"SECRETS OF THE DIVINE", h:44, y:220 },
+          ].map((b,i)=>(
+            <g key={i}>
+              <rect x={595+i*1.5} y={b.y} width="130" height={b.h} rx="2" fill={b.color} transform={`rotate(${i*0.5-0.5},660,${b.y+b.h/2})`}/>
+              <rect x={597+i*1.5} y={b.y+2} width="126" height={b.h-4} rx="1" fill={b.color} opacity="0.7" transform={`rotate(${i*0.5-0.5},660,${b.y+b.h/2})`}/>
+              <text x={660+i} y={b.y+b.h/2+4} textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="6" fontFamily="JetBrains Mono" letterSpacing="1" transform={`rotate(${i*0.5-0.5},660,${b.y+b.h/2})`}>{b.title}</text>
+              {/* page edges */}
+              <rect x={724+i*1.5} y={b.y+1} width="4" height={b.h-2} fill="#f0ece0" opacity="0.6" transform={`rotate(${i*0.5-0.5},660,${b.y+b.h/2})`}/>
+            </g>
+          ))}
+        </g>
+
+        {/* ── ARCHITECTURE BOOK ── */}
+        <g filter="url(#pageShadow)"
+          onMouseEnter={()=>setHoveredItem('arch')} onMouseLeave={()=>setHoveredItem(null)}>
+          {/* large format book lying flat */}
+          <rect x="800" y="255" width="160" height="210" rx="3" fill="#1a1a2e" transform="rotate(3,880,360)"/>
+          <rect x="803" y="258" width="154" height="204" rx="2" fill="#f0ede5" transform="rotate(3,880,360)"/>
+          {/* architectural drawing on cover */}
+          {/* grid lines */}
+          {[0,1,2,3].map(i=>(
+            <line key={`h${i}`} x1="808" y1={275+i*35} x2="955" y2={275+i*35} stroke="#1a1a2e" strokeWidth="0.5" opacity="0.3" transform="rotate(3,880,360)"/>
+          ))}
+          {[0,1,2,3].map(i=>(
+            <line key={`v${i}`} x1={830+i*35} y1="262" x2={830+i*35} y2="455" stroke="#1a1a2e" strokeWidth="0.5" opacity="0.3" transform="rotate(3,880,360)"/>
+          ))}
+          {/* floor plan outline */}
+          <path d="M830,300 L930,300 L930,400 L880,400 L880,370 L830,370 Z" fill="none" stroke="#1a1a2e" strokeWidth="1.5" opacity="0.6" transform="rotate(3,880,360)"/>
+          <path d="M880,300 L880,340" fill="none" stroke="#1a1a2e" strokeWidth="1" opacity="0.4" transform="rotate(3,880,360)"/>
+          {/* title */}
+          <text x="880" y="418" textAnchor="middle" fill="#1a1a2e" fontSize="7" fontFamily="JetBrains Mono" letterSpacing="1.5" opacity="0.6" transform="rotate(3,880,360)">ARCHITECTURE</text>
+          <text x="880" y="428" textAnchor="middle" fill="#1a1a2e" fontSize="5.5" fontFamily="JetBrains Mono" letterSpacing="1" opacity="0.4" transform="rotate(3,880,360)">FORM & SPACE</text>
+          {/* spine */}
+          <rect x="800" y="255" width="12" height="210" rx="2" fill="#111122" transform="rotate(3,880,360)"/>
+        </g>
+
+        {/* ── PHOTO PRINTS ── */}
+        <g onMouseEnter={()=>setHoveredItem('prints')} onMouseLeave={()=>setHoveredItem(null)}>
+          {[
+            { x:1040, y:275, r:-5, shade:"#8b9e8c", label:"istanbul" },
+            { x:1090, y:260, r:3, shade:"#9e8b7a", label:"marrakech" },
+            { x:1150, y:280, r:-2, shade:"#7a8b9e", label:"new york" },
+            { x:1200, y:268, r:6, shade:"#9e9a7a", label:"cairo" },
+          ].map((p,i)=>(
+            <g key={i} filter="url(#pageShadow)">
+              <rect x={p.x} y={p.y} width="110" height="85" rx="2" fill="#f5f0e8" transform={`rotate(${p.r},${p.x+55},${p.y+42})`}/>
+              <rect x={p.x+5} y={p.y+5} width="100" height="68" fill={p.shade} opacity="0.7" transform={`rotate(${p.r},${p.x+55},${p.y+42})`}/>
+              {/* grain overlay */}
+              <rect x={p.x+5} y={p.y+5} width="100" height="68" fill="url(#woodGrain)" opacity="0.05" transform={`rotate(${p.r},${p.x+55},${p.y+42})`}/>
+              <text x={p.x+55} y={p.y+82} textAnchor="middle" fill="#8b7355" fontSize="6" fontFamily="JetBrains Mono" transform={`rotate(${p.r},${p.x+55},${p.y+42})`}>{p.label}</text>
+            </g>
+          ))}
+        </g>
+
+        {/* ── MOM'S PHOTO — مبشرة ── */}
+        <g filter="url(#softShadow)"
+          onMouseEnter={()=>setHoveredItem('mom')} onMouseLeave={()=>setHoveredItem(null)}>
+          {/* frame */}
+          <rect x="1330" y="225" width="110" height="140" rx="3" fill="#c8a87a"/>
+          <rect x="1335" y="230" width="100" height="130" rx="2" fill="#f5f0e8"/>
+          {/* photo area — warm sepia */}
+          <rect x="1340" y="235" width="90" height="100" fill="#d4b896" opacity="0.6"/>
+          {/* Arabic name — مبشرة — centered, large */}
+          <text x="1385" y="292" textAnchor="middle" fill="#2a1508" fontSize="22" fontFamily="Amiri" fontWeight="700" opacity="0.85">مبشرة</text>
+          {/* small date below */}
+          <text x="1385" y="320" textAnchor="middle" fill="#6b4a2a" fontSize="6.5" fontFamily="JetBrains Mono" opacity="0.6">1957 — 2023</text>
+          {/* frame shadow line */}
+          <rect x="1333" y="228" width="104" height="134" rx="3" fill="none" stroke="#a07840" strokeWidth="1.5" opacity="0.5"/>
+        </g>
+
+        {/* ── MATH BOOK ── */}
+        <g filter="url(#pageShadow)"
+          onMouseEnter={()=>setHoveredItem('math')} onMouseLeave={()=>setHoveredItem(null)}>
+          {/* open book */}
+          <path d="M1530,265 Q1620,258 1710,265 L1710,385 Q1620,378 1530,385 Z" fill="#f5f0e6"/>
+          {/* spine crease */}
+          <line x1="1620" y1="258" x2="1620" y2="385" stroke="#d4c9b0" strokeWidth="2"/>
+          {/* left page — equations */}
+          {["P(A|B) = P(B|A)·P(A)", "          P(B)", "E[X] = Σ xᵢ·P(xᵢ)", "σ² = E[(X-μ)²]", "f(x) = 1/σ√2π · e^..."].map((eq,i)=>(
+            <text key={i} x={1545} y={285+i*18} fill="#2a1f0e" fontSize="7.5" fontFamily="JetBrains Mono" opacity="0.55">{eq}</text>
+          ))}
+          {/* right page — handwritten notes */}
+          {["→ relates to model", "   uncertainty!", "connect w/ KL div?", "see Ch.7", "★ important"].map((note,i)=>(
+            <text key={i} x={1635} y={285+i*18} fill="#c8822a" fontSize="7" fontFamily="JetBrains Mono" opacity="0.65" fontStyle="italic">{note}</text>
+          ))}
+          {/* page lines */}
+          {[0,1,2,3,4,5,6].map(i=>(
+            <line key={i} x1="1532" y1={282+i*16} x2="1618" y2={280+i*16} stroke="#d4c9b0" strokeWidth="0.5" opacity="0.4"/>
+          ))}
+          {[0,1,2,3,4,5,6].map(i=>(
+            <line key={i} x1="1625" y1={282+i*16} x2="1708" y2={280+i*16} stroke="#d4c9b0" strokeWidth="0.5" opacity="0.4"/>
+          ))}
+        </g>
+
+        {/* ── ARABIC POETRY BOOK ── */}
+        <g filter="url(#softShadow)"
+          onMouseEnter={()=>setHoveredItem('arabic')} onMouseLeave={()=>setHoveredItem(null)}>
+          {/* open book */}
+          <path d="M1790,248 Q1880,240 1970,248 L1970,390 Q1880,382 1790,390 Z" fill="#f0ebe0"/>
+          <line x1="1880" y1="240" x2="1880" y2="390" stroke="#c9b99a" strokeWidth="2.5"/>
+          {/* right-to-left Arabic text on right page */}
+          {[
+            "وَما نَيلُ المَطالِبِ بِالتَّمَنّي",
+            "وَلكِن تُؤخَذُ الدُّنيا غِلابا",
+            "وَما استَعصى عَلى قَومٍ مَنالُهُ",
+            "إِذا الإِقدامُ كانَ لَهُم رِكابا",
+            "يَقولُ الجاهِلونَ لِما جَهِلناهُ",
+          ].map((line,i)=>(
+            <text key={i} x={1960} y={268+i*22} textAnchor="end" fill="#2a1f0e" fontSize="9.5" fontFamily="Amiri" opacity="0.7" direction="rtl">{line}</text>
+          ))}
+          {/* left page — title */}
+          <text x="1835" y="275" textAnchor="middle" fill="#6b4a2a" fontSize="8" fontFamily="JetBrains Mono" letterSpacing="1" opacity="0.5">AL-MUTANABBI</text>
+          <line x1="1800" y1="280" x2="1870" y2="280" stroke="#c9b99a" strokeWidth="0.5" opacity="0.5"/>
+          {[0,1,2,3,4,5].map(i=>(
+            <line key={i} x1="1795" y1={290+i*16} x2="1875" y2={290+i*16} stroke="#d4c9b0" strokeWidth="0.5" opacity="0.3"/>
+          ))}
+          {/* cover partially visible */}
+          <rect x="1786" y="245" width="12" height="148" rx="2" fill="#8b3a1a"/>
+        </g>
+
+        {/* ambient light pools */}
+        <ellipse cx="200" cy="200" rx="120" ry="80" fill="#c8822a" opacity="0.08"/>
+        <ellipse cx="1380" cy="230" rx="100" ry="70" fill="#c8822a" opacity="0.06"/>
+        <ellipse cx="900" cy="260" rx="90" ry="60" fill="#c8822a" opacity="0.05"/>
+
+        {/* hover labels */}
+        {hoveredItem && (() => {
+          const item = items.find(it => it.id === hoveredItem);
+          if (!item) return null;
+          return (
+            <g>
+              <rect x={item.x + item.w/2 - 60} y={item.y - 52} width="120" height="40" rx="5" fill="rgba(0,0,0,0.8)"/>
+              <text x={item.x + item.w/2} y={item.y - 34} textAnchor="middle" fill="#f5f0e8" fontSize="10" fontFamily="Space Grotesk" fontWeight="600">{item.label}</text>
+              {item.sublabel && <text x={item.x + item.w/2} y={item.y - 20} textAnchor="middle" fill="rgba(245,240,232,0.5)" fontSize="7.5" fontFamily="JetBrains Mono" letterSpacing="1">{item.sublabel}</text>}
+              <polygon points={`${item.x+item.w/2-5},${item.y-14} ${item.x+item.w/2+5},${item.y-14} ${item.x+item.w/2},${item.y-8}`} fill="rgba(0,0,0,0.8)"/>
+            </g>
+          );
+        })()}
+      </svg>
+    </div>
+  );
+};
+
+const th2 = x => (Math.exp(x) - Math.exp(-x)) / (Math.exp(x) + Math.exp(-x));
+const BW2 = 520, BH2 = 60;
+const bx2 = x => 16 + ((x + 2.8) / 5.6) * (BW2 - 32);
+const by2 = y => 20 + ((1 - y) / 2) * (BH2 - 40);
+const BAR_CURVE2 = (() => {
+  const pts = [];
+  for (let x = -2.8; x <= 2.81; x += 0.04)
+    pts.push(`${bx2(x).toFixed(1)},${by2(th2(x)).toFixed(1)}`);
+  return `M ${pts.join(' L ')}`;
+})();
+
+const ILLOS = {
+  laptop: (
+    <svg viewBox="0 0 200 160" style={{ width:'100%', height:'100%' }}>
+      <g stroke="currentColor" fill="none" opacity="0.75" strokeLinecap="round" strokeLinejoin="round">
+        {/* screen */}
+        <rect x="58" y="44" width="84" height="60" rx="2" strokeWidth="1.4"/>
+        {/* code lines on screen */}
+        <line x1="68" y1="58" x2="104" y2="58" strokeWidth="1" opacity="0.55"/>
+        <line x1="68" y1="66" x2="116" y2="66" strokeWidth="1" opacity="0.35"/>
+        <line x1="68" y1="74" x2="98"  y2="74" strokeWidth="1" opacity="0.45"/>
+        <line x1="68" y1="82" x2="112" y2="82" strokeWidth="1" opacity="0.3"/>
+        <line x1="68" y1="90" x2="94"  y2="90" strokeWidth="1" opacity="0.4"/>
+        {/* cursor */}
+        <rect x="68" y="95" width="5" height="1.5" strokeWidth="0" fill="currentColor" opacity="0.5"/>
+        {/* base — drawn separately so no overlap with screen */}
+        <path d="M58,104 L48,120 L152,120 L142,104 Z" strokeWidth="1.4"/>
+        {/* trackpad */}
+        <rect x="88" y="110" width="24" height="6" rx="1" strokeWidth="0.8" opacity="0.4"/>
+      </g>
+    </svg>
+  ),
+  arch: (
+    <svg viewBox="0 0 200 160" style={{ width:'100%', height:'100%' }}>
+      <g stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M 50,148 L 50,82 Q 50,28 100,28 Q 150,28 150,82 L 150,148"/>
+        <line x1="28" y1="148" x2="172" y2="148"/>
+        <path d="M 72,148 L 72,92 Q 72,54 100,54 Q 128,54 128,92 L 128,148" opacity="0.45"/>
+        <rect x="42" y="142" width="14" height="6" opacity="0.35"/>
+        <rect x="144" y="142" width="14" height="6" opacity="0.35"/>
+        <line x1="100" y1="28" x2="12" y2="8" strokeDasharray="3 4" opacity="0.18"/>
+        <line x1="100" y1="28" x2="188" y2="8" strokeDasharray="3 4" opacity="0.18"/>
+      </g>
+    </svg>
+  ),
+  network: (
+    <svg viewBox="0 0 200 160" style={{ width:'100%', height:'100%' }}>
+      <g stroke="currentColor" fill="none" strokeLinecap="round">
+        {/* edges — drawn first so nodes sit cleanly on top */}
+        <line x1="100" y1="80" x2="100" y2="28" strokeWidth="0.8" opacity="0.3"/>
+        <line x1="100" y1="80" x2="52"  y2="50" strokeWidth="0.8" opacity="0.3"/>
+        <line x1="100" y1="80" x2="148" y2="50" strokeWidth="0.8" opacity="0.3"/>
+        <line x1="100" y1="80" x2="52"  y2="110" strokeWidth="0.8" opacity="0.3"/>
+        <line x1="100" y1="80" x2="148" y2="110" strokeWidth="0.8" opacity="0.3"/>
+        <line x1="100" y1="80" x2="100" y2="132" strokeWidth="0.8" opacity="0.3"/>
+        {/* outer ring connections */}
+        <line x1="100" y1="28" x2="52"  y2="50"  strokeWidth="0.6" opacity="0.18"/>
+        <line x1="100" y1="28" x2="148" y2="50"  strokeWidth="0.6" opacity="0.18"/>
+        <line x1="52"  y1="50" x2="52"  y2="110" strokeWidth="0.6" opacity="0.18"/>
+        <line x1="148" y1="50" x2="148" y2="110" strokeWidth="0.6" opacity="0.18"/>
+        <line x1="52"  y1="110" x2="100" y2="132" strokeWidth="0.6" opacity="0.18"/>
+        <line x1="148" y1="110" x2="100" y2="132" strokeWidth="0.6" opacity="0.18"/>
+        {/* outer nodes */}
+        {[[100,28],[52,50],[148,50],[52,110],[148,110],[100,132]].map(([cx,cy],i)=>(
+          <circle key={i} cx={cx} cy={cy} r="5" strokeWidth="1.2" opacity="0.55" fill="currentColor" fillOpacity="0.08"/>
+        ))}
+        {/* center node */}
+        <circle cx="100" cy="80" r="10" strokeWidth="1.4" opacity="0.8" fill="currentColor" fillOpacity="0.06"/>
+        <circle cx="100" cy="80" r="3.5" fill="currentColor" stroke="none" opacity="0.6"/>
+      </g>
+    </svg>
+  ),
+  flower: (
+    <svg viewBox="0 0 200 160" style={{ width:'100%', height:'100%' }}>
+      <g stroke="currentColor" fill="none" opacity="0.75" strokeLinecap="round" strokeLinejoin="round">
+        {/* stem */}
+        <path d="M100,148 Q97,126 100,96" strokeWidth="1.2"/>
+        {/* leaves */}
+        <path d="M100,130 Q84,120 80,108 Q94,110 100,130Z" strokeWidth="1" opacity="0.45"/>
+        <path d="M100,118 Q116,108 120,96 Q106,98 100,118Z" strokeWidth="1" opacity="0.38"/>
+        {/* 5 petals — each offset from center and rotated around its own axis */}
+        {[0,72,144,216,288].map((deg, i) => {
+          const r = deg * Math.PI / 180;
+          const px = +(100 + 20 * Math.sin(r)).toFixed(1);
+          const py = +(78  - 20 * Math.cos(r)).toFixed(1);
+          return <ellipse key={i} cx={px} cy={py} rx="9" ry="15"
+            transform={`rotate(${deg},${px},${py})`}
+            strokeWidth="1.1" fill="currentColor" fillOpacity="0.05" opacity="0.7"/>;
+        })}
+        {/* center */}
+        <circle cx="100" cy="78" r="7" strokeWidth="1.3" opacity="0.9" fill="currentColor" fillOpacity="0.1"/>
+        <circle cx="100" cy="78" r="2.5" fill="currentColor" stroke="none" opacity="0.5"/>
+      </g>
+    </svg>
+  ),
+  tanh_graph: (
+    <svg viewBox="0 0 200 160" style={{width:'100%',height:'100%'}}>
+      <g opacity="0.85">
+        <line x1={20} y1={80} x2={184} y2={80} stroke="currentColor" strokeWidth="0.8" opacity="0.4"/>
+        <line x1={100} y1={8} x2={100} y2={152} stroke="currentColor" strokeWidth="0.8" opacity="0.4"/>
+        {(()=>{
+          const pts=[];
+          for(let x=-3;x<=3.01;x+=0.06){ const sx=100+x*26.7; const sy=80-(th2(x)*60); pts.push(`${sx.toFixed(1)},${sy.toFixed(1)}`); }
+          return <path d={`M ${pts.join(' L ')}`} fill="none" stroke="#c0392b" strokeWidth="2" strokeLinecap="round"/>;
+        })()}
+        <circle cx={100} cy={80} r="3" fill="#c0392b" opacity="0.9"/>
+        <line x1={24} y1={20} x2={176} y2={20} stroke="currentColor" strokeWidth="0.6" strokeDasharray="3 4" opacity="0.2"/>
+        <line x1={24} y1={140} x2={176} y2={140} stroke="currentColor" strokeWidth="0.6" strokeDasharray="3 4" opacity="0.2"/>
+      </g>
+    </svg>
+  ),
+};
+
+const CHAPTERS2 = [
+  {
+    id:"early-life", label:"New York City", cx:-1.47, illo:"laptop",
+    heading:"A Math Kid",
+    teaser:"I used to stay up late doing math problems and coding Tumblr themes. Those were my favorite pastimes. Looking back, they were both the same impulse — find a system, understand it, then make it yours. That instinct never really left.",
+    cells:[{t:"photo",s:"#202020",n:3},{t:"photo",s:"#1d1d1b",n:4},{t:"card"}],
+  },
+  {
+    id:"education", label:"Education", cx:-0.5, illo:"arch",
+    heading:"Education",
+    teaser:"Architecture school taught me to think across disciplines — physics, math, form, all in conversation. When transformers dropped mid-degree, it felt like a natural extension: AI as the new integrative layer. Berkeley allowed me to get rigorous about the ML side of things, and fellowships in Europe allowed me to really build at the intersection of spatial design and technology.",
+    cells:[{t:"card"},{t:"photo",s:"#1c1c1a",n:5},{t:"photo",s:"#222220",n:6,ext:"gif"}],
+  },
+  {
+    id:"work", label:"Work", cx:0.3, illo:"network",
+    heading:"Work",
+    teaser:"I've spent time at the Bond Center, CUNY, Flad, Google, and JPMorgan Chase — always at the intersection of ML, data, and design. Interdisciplinary AI teams working on problems that don't fit neatly into one discipline. I'm drawn to the hard ones: interpretability, trust, what it means to design for systems people can't fully see.",
+    cells:[{t:"photo",s:"#1f1f1e",n:7,ext:"gif"},{t:"card"},{t:"photo",s:"#1b1b19",n:8}],
+  },
+  {
+    id:"loss", label:"Loss", cx:0.9, illo:null,
+    heading:"Loss",
+    teaser:"A sudden cancer diagnosis and ultimately losing my mom shattered my entire world. I took some time off to heal.",
+    cells:[],
+  },
+  {
+    id:"now", label:"Now", cx:1.47, illo:"flower",
+    heading:"Now",
+    teaser:"I've fully leaned into what I do best — crafting intuitive ML systems for technical and non-technical people alike. Turning model weights into usable interfaces. My mother's intelligence, ambition, and kindness continue to inspire my work.",
+    cells:[],
+  },
+];
+
+const aboutGridCSS = t => `
+.tanha-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+.tanha-card {
+  aspect-ratio: 3/4;
+}
+.tanha-photo {
+  aspect-ratio: 3/4;
+}
+.tanha-illo {
+  display: flex;
+}
+@media (max-width: 640px) {
+  .tanha-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .tanha-illo {
+    display: none;
+  }
+}
+`;
+
+const AboutTopBar = ({ activeCh, navHidden, t }) => {
+  const val = th2(activeCh?.cx ?? -2.5);
+  const ax = bx2(activeCh?.cx ?? -2.5);
+  const ay = by2(th2(activeCh?.cx ?? -2.5));
+  return (
+    <div style={{ position:'sticky', top: navHidden ? 0 : 60, zIndex:50, background:t.bg, borderBottom:`1px solid ${t.rule}`, display:'flex', alignItems:'center', height:60, padding:'0 20px', gap:16, transition:'top .35s cubic-bezier(.4,0,.2,1)' }}>
+      <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', minWidth:0 }}>
+        <svg viewBox={`0 0 ${BW2} ${BH2}`} style={{ width:'100%', maxWidth:520, height:BH2 }}>
+          <path d={BAR_CURVE2} fill="none" stroke={t.fg} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.6"/>
+          <circle cx={ax} cy={ay} r={5} fill={t.accent}
+            style={{transition:'cx 0.5s cubic-bezier(.4,0,.2,1), cy 0.5s cubic-bezier(.4,0,.2,1)'}}/>
+        </svg>
+      </div>
+      <div style={{ flexShrink:0, textAlign:'right' }}>
+        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:15, fontWeight:500, color:t.fg, lineHeight:1, transition:'all 0.3s' }}>{val.toFixed(3)}</div>
+        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:t.fgMuted, marginTop:3, letterSpacing:0.5 }}>toward 1.000</div>
+      </div>
+    </div>
+  );
+};
+
+const AboutGridCell = ({ cell, ch, cardRef, t, mob }) => {
+  if (cell.t === "fill") {
+    return <div className="tanha-fill" />;
+  }
+  if (cell.t === "card") {
+    return (
+      <div className="tanha-card" ref={cardRef} data-id={ch.id} style={{
+        background:t.frameBg, display:"flex", flexDirection:"column",
+        padding:"clamp(10px,1.6vw,22px)", overflow:"hidden", border:`1px solid ${t.rule}`,
+        aspectRatio: "3/4",
+      }}>
+        <div style={{ display:"inline-block", background:t.fg, padding:"2px 7px", marginBottom:"clamp(6px,1vw,14px)", flexShrink:0, alignSelf:"flex-start" }}>
+          <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"clamp(8px,0.85vw,11px)", fontWeight:600, color:t.bg, letterSpacing:1.5 }}>
+            {ch.heading.toUpperCase()}
+          </span>
         </div>
-      </div>
-
-      {/* ── SECTION 2: Bio ── */}
-      <div style={{ padding: mob?"8vh 20px":"10vh 44px", maxWidth:680, margin:"0 auto" }}>
-        <Reveal y={32}>
-          <div style={{ display:"flex", flexDirection:"column", gap:22 }}>
-            <p style={{ fontSize: mob?15:17, fontFamily:"'Space Grotesk',sans-serif", fontWeight:400, lineHeight:1.85, color:t.fg, margin:0 }}>
-              Hi, I'm Tanha — a designer and researcher who started in architecture, which turned out to be less about buildings and more about learning how to move between disciplines without losing the thread. I've since spent time with interdisciplinary AI teams at{" "}
-              <a href="https://www.archleague.org/article/j-max-bond-center/" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>The J Max Bond Center</a>,{" "}
-              <a href="https://www.flad.com" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>Flad</a>,{" "}
-              <a href="https://google.com" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>Google</a>, and{" "}
-              <a href="https://jpmorganchase.com" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>Chase</a>.{" "}
-              I'm drawn to the hard problems around <span style={{ color:t.accent, fontWeight:700 }}>interpretability and trust</span> and how to design for them.
-            </p>
-            <p style={{ fontSize: mob?15:17, fontFamily:"'Space Grotesk',sans-serif", fontWeight:400, lineHeight:1.85, color:t.fg, margin:0 }}>
-              I tend to make things out of whatever I'm sitting with —{" "}
-              <a href="https://tanhata.github.io/clear-expression/" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>Clear Expression</a>
-              {" "}came from Classical Arabic texts,{" "}
-              <a href="https://tanhata.github.io/recursive-orbit/" target="_blank" rel="noopener noreferrer" style={{ color:t.accent, textDecoration:"none", fontWeight:700 }}>Recursive Orbit</a>
-              {" "}from grief. Outside of that I love fashion, coffee, and museums. Recent favorites: Ahmed Matar at the Brooklyn Museum, Monet and Sol LeWitt at MoMA.
-            </p>
+        <p style={{ fontFamily:"'Space Grotesk',sans-serif", fontSize:"clamp(11px,1.25vw,17px)", fontWeight:400, color:t.fg, lineHeight:1.55, overflow:"hidden", flex:ch.illo ? 1 : undefined }}>
+          {ch.teaser}
+        </p>
+        {ch.illo && (
+          <div className="tanha-illo" style={{ flexShrink:0, alignItems:"flex-end", justifyContent:"center", flex:"0 0 40%", paddingTop:8, color:t.fgMuted }}>
+            <div style={{ width:"80%", height:"100%" }}>{ILLOS[ch.illo]}</div>
           </div>
-        </Reveal>
+        )}
       </div>
+    );
+  }
+  const pad = String(cell.n).padStart(2, "0");
+  const ext = cell.ext || "jpg";
+  return (
+    <div className="tanha-photo" style={{ background:cell.s, aspectRatio:"3/4", overflow:"hidden", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
+      <img src={`/images/pic${pad}.${ext}`} alt="" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block", filter:"grayscale(100%)" }}
+        onError={e => { e.target.style.display="none"; }} />
+      <svg style={{ position:"absolute", opacity:.08, pointerEvents:"none" }} width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={t.fg} strokeWidth="1.5">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+      </svg>
+    </div>
+  );
+};
 
-      {/* ── SECTION 3: tanh curve — full width ── */}
-      <div ref={curveRef} style={{ padding: mob?"8vh 0 4vh":"10vh 0 6vh", borderTop:`1px solid ${t.rule}`, borderBottom:`1px solid ${t.rule}` }}>
-        <div style={{ maxWidth:960, margin:"0 auto", padding: mob?"0 20px":"0 44px" }}>
-          <Reveal>
-            <div style={{ fontSize:9, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, letterSpacing:3, marginBottom:20, opacity:.6 }}>life as tanh(x)</div>
-          </Reveal>
-          <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto", overflow:"visible", cursor:"none" }}>
-            <defs><filter id="sg2"><feGaussianBlur stdDeviation="5"/></filter></defs>
-            <line x1={pad.l} y1={mapY(0)} x2={W-pad.r} y2={mapY(0)} stroke={t.rule} strokeWidth="1" strokeDasharray="3 7"/>
-            <text x={pad.l-10} y={mapY(1)}  textAnchor="end" fill={t.fgGhost} fontSize="8" fontFamily="monospace" dominantBaseline="middle">+1</text>
-            <text x={pad.l-10} y={mapY(-1)} textAnchor="end" fill={t.fgGhost} fontSize="8" fontFamily="monospace" dominantBaseline="middle">−1</text>
-            <path d={pathD} fill="none" stroke={t.accent} strokeWidth="7" opacity=".04" filter="url(#sg2)"/>
-            <path d={pathD} fill="none" stroke={t.rule} strokeWidth="1.5"/>
-            <path d={pathD} fill="none" stroke={t.accent} strokeWidth="1.5" opacity=".55"
-              strokeDasharray="2000" strokeDashoffset={drawn?0:2000}
-              style={{ transition:"stroke-dashoffset 2.8s cubic-bezier(.4,0,.2,1)" }}/>
-            {pts.map((p,i) => {
-              const isA=active===i, delay=`${.8+i*.28}s`;
-              return (
-                <g key={i} style={{ cursor:"none" }} onMouseEnter={() => setActive(i)} onMouseLeave={() => setActive(null)}>
-                  {isA&&!p.inflection&&(
-                    <circle cx={p.cx} cy={p.cy} r={p.r+8} fill="none" stroke={t.accent} strokeWidth="1" opacity=".12">
-                      <animate attributeName="r" values={`${p.r};${p.r+16}`} dur="1.5s" repeatCount="indefinite"/>
-                      <animate attributeName="opacity" values=".18;0" dur="1.5s" repeatCount="indefinite"/>
-                    </circle>
-                  )}
-                  <circle cx={p.cx} cy={p.cy} r={drawn?(isA?p.r+3:p.r):0}
-                    fill={p.inflection?"transparent":`${t.accent}${isA?"12":"05"}`}
-                    stroke={p.inflection?(isA?t.fg:t.rule):(isA?t.accent:`${t.accent}30`)}
-                    strokeWidth={p.inflection?1.5:1}
-                    style={{ transition:`all .55s cubic-bezier(.4,0,.2,1) ${drawn?delay:"0s"}` }}/>
-                  <circle cx={p.cx} cy={p.cy} r={drawn?(isA?5:3):0}
-                    fill={p.inflection?(isA?t.fg:t.fgMuted):t.accent}
-                    style={{ transition:`all .5s cubic-bezier(.4,0,.2,1) ${drawn?delay:"0s"}` }}/>
-                  <text x={p.cx} y={p.cy-p.r-10} textAnchor="middle"
-                    fill={isA?t.fg:t.fgMuted} fontSize={isA?"12":"10"} fontWeight={isA?"600":"400"}
-                    fontFamily="'JetBrains Mono',monospace" style={{ transition:"all .3s" }}>{p.title}</text>
-                </g>
-              );
-            })}
+const AboutPage = ({ t, mob, navHidden }) => {
+  const [activeCh, setActiveCh] = useState(CHAPTERS2[0]);
+  const cardRefs = useRef({});
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const ch = CHAPTERS2.find(c => c.id === e.target.dataset.id);
+          if (ch) setActiveCh(ch);
+        }
+      });
+    }, { threshold: 0.2 });
+    Object.values(cardRefs.current).forEach(el => el && obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <div style={{ paddingTop:60, position:"relative", zIndex:1, background:t.bg, minHeight:"100vh" }}>
+      <style>{aboutGridCSS(t)}</style>
+      <AboutTopBar activeCh={activeCh} navHidden={navHidden} t={t} />
+
+      <div className="tanha-grid">
+
+        {/* photo01 — left of def card */}
+        <div className="tanha-photo" style={{ background:"#1c1c1a", aspectRatio:"3/4", overflow:"hidden", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <img src="/images/pic01.jpg" alt="" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block", filter:"grayscale(100%)" }}
+            onError={e => { e.target.style.display="none"; }} />
+          <svg style={{ position:"absolute", opacity:.08, pointerEvents:"none" }} width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={t.fg} strokeWidth="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
           </svg>
-          {/* chapter text */}
-          <div style={{ minHeight:80, padding:"8px 0 4px" }}>
-            {active!==null ? (
-              <Reveal>
-                <div style={{ maxWidth:500, margin:active<=2?"0":active===4?"0 auto":"0 0 0 auto", animation:"fadeUp .35s ease both" }}>
-                  <div style={{ display:"flex", gap:10, marginBottom:6, alignItems:"baseline", justifyContent:LIFE[active].inflection?"center":"flex-start" }}>
-                    <span style={{ fontSize:9, fontFamily:"monospace", color:t.accent, letterSpacing:2.5 }}>{String(active+1).padStart(2,"0")}</span>
-                    <span style={{ fontSize:18, fontFamily:"'Space Grotesk',sans-serif", fontStyle:"italic", color:t.fgMuted }}>{LIFE[active].kicker}</span>
-                  </div>
-                  <p style={{ fontSize:14, lineHeight:1.8, color:t.fgMuted, textAlign:LIFE[active].inflection?"center":"left" }}>{LIFE[active].body}</p>
-                </div>
-              </Reveal>
-            ) : (
-              <p style={{ textAlign:"center", fontSize:9, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, letterSpacing:2.5, opacity:.4 }}>hover a moment</p>
-            )}
-          </div>
         </div>
-      </div>
 
-      {/* ── SECTION 4: Connect ── */}
-      <div style={{ padding: mob?"6vh 20px 14vh":"8vh 44px 16vh", maxWidth:900, margin:"0 auto" }}>
-        <Reveal y={20}>
-          <div style={{ height:1, background:t.rule, marginBottom:32 }}/>
-          <div style={{ display:"flex", justifyContent:"flex-end", alignItems:"center", flexWrap:"wrap", gap:16 }}>
-            <div style={{ display:"flex", gap:24 }}>
-              {[{ href:"mailto:tanharchitecture@gmail.com", label:"Email" }, { href:"https://linkedin.com/in/tanhata", label:"LinkedIn", ext:true }].map(l => (
-                <a key={l.label} href={l.href} target={l.ext?"_blank":undefined} rel={l.ext?"noopener noreferrer":undefined}
-                  style={{ fontSize:10, fontFamily:"monospace", color:t.fgMuted, textDecoration:"none", letterSpacing:1.5, transition:"color .2s" }}
-                  onMouseEnter={e=>e.target.style.color=t.accent}
-                  onMouseLeave={e=>e.target.style.color=t.fgMuted}
-                >{l.label}</a>
-              ))}
+        {/* definition card */}
+        <div className="tanha-card" style={{ background:t.frameBg, display:"flex", flexDirection:"column", padding:"clamp(12px,2vw,22px)", overflow:"hidden", border:`1px solid ${t.rule}` }}>
+          <div style={{ display:"inline-block", background:t.fg, padding:"3px 9px", marginBottom:6, alignSelf:"flex-start", flexShrink:0 }}>
+            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"clamp(9px,1vw,12px)", fontWeight:600, color:t.bg, letterSpacing:1.5 }}>TANHA</span>
+          </div>
+          <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"clamp(8px,0.85vw,10px)", color:t.fgMuted, letterSpacing:0.5, marginBottom:"clamp(10px,1.4vw,16px)" }}>
+            /taan·haa/
+          </p>
+          <div style={{ flex:1, display:"flex", flexDirection:"column", gap:"clamp(6px,0.9vw,10px)", overflow:"hidden" }}>
+            <div>
+              <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"clamp(7px,0.75vw,9px)", color:t.fgMuted, letterSpacing:1.5, marginBottom:3 }}>ARABIC · V.</p>
+              <p style={{ fontFamily:"'Space Grotesk',sans-serif", fontStyle:"italic", fontSize:"clamp(12px,1.2vw,14px)", color:t.fg, lineHeight:1.5 }}>To carve or etch.</p>
+              <p style={{ fontFamily:"'Amiri',serif", fontSize:"clamp(16px,1.8vw,22px)", color:t.fgMuted, marginTop:4, direction:"rtl", textAlign:"left" }}>تنحى</p>
+            </div>
+            <div style={{ height:1, background:t.rule, flexShrink:0 }}/>
+            <div>
+              <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"clamp(7px,0.75vw,9px)", color:t.fgMuted, letterSpacing:1.5, marginBottom:3 }}>MATHEMATICS · F.</p>
+              <p style={{ fontFamily:"'Space Grotesk',sans-serif", fontStyle:"italic", fontSize:"clamp(12px,1.2vw,14px)", color:t.fg, lineHeight:1.5 }}>The hyperbolic tangent. Maps any input to (−1,&nbsp;1). Smooth, bounded, always converging.</p>
+              <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"clamp(8px,0.85vw,10px)", color:t.fgMuted, marginTop:4 }}>tanh(x) = eˣ−e⁻ˣ / eˣ+e⁻ˣ</p>
             </div>
           </div>
-        </Reveal>
+        </div>
+
+        {/* photo02 — right of def card */}
+        <div className="tanha-photo" style={{ background:"#1e1e1c", aspectRatio:"3/4", overflow:"hidden", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <img src="/images/pic02.jpg" alt="" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block", filter:"grayscale(100%)" }}
+            onError={e => { e.target.style.display="none"; }} />
+          <svg style={{ position:"absolute", opacity:.08, pointerEvents:"none" }} width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={t.fg} strokeWidth="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+          </svg>
+        </div>
+
+        {/* chapters 1–3 */}
+        {CHAPTERS2.slice(0, 3).map(ch => (
+          <Fragment key={ch.id}>
+            {ch.cells.map((cell, i) => (
+              <AboutGridCell
+                key={i} cell={cell} ch={ch} t={t} mob={mob}
+                cardRef={cell.t === "card" ? el => { cardRefs.current[ch.id] = el; } : undefined}
+              />
+            ))}
+          </Fragment>
+        ))}
+
+        {(() => {
+          const lossCh = CHAPTERS2[3];
+          const nowCh  = CHAPTERS2[4];
+          const P = (n, s, ch, ext) => (
+            <AboutGridCell key={n} cell={{ t:"photo", s, n, ...(ext ? { ext } : {}) }} ch={ch} t={t} mob={mob} />
+          );
+          return (
+            <Fragment>
+              <AboutGridCell cell={{ t:"card" }} ch={lossCh} t={t} mob={mob} cardRef={el => { cardRefs.current["loss"] = el; }} />
+              {P(9,  "#141412", lossCh)}
+              {P(10, "#161614", lossCh)}
+              {P(11, "#141412", lossCh)}
+              {P(12, "#161614", lossCh)}
+              <AboutGridCell cell={{ t:"card" }} ch={nowCh} t={t} mob={mob} cardRef={el => { cardRefs.current["now"] = el; }} />
+              {P(13, "#1a1a18", nowCh)}
+              {P(14, "#1e1e1c", nowCh)}
+              {P(15, "#1e1e1c", nowCh)}
+            </Fragment>
+          );
+        })()}
+
       </div>
 
+      <div style={{ padding:"32px 24px 48px", borderTop:`1px solid ${t.rule}`, display:"flex", justifyContent:"center", gap:28 }}>
+        {[{href:"mailto:tanharchitecture@gmail.com",label:"Email"},{href:"https://linkedin.com/in/tanhata",label:"LinkedIn",ext:true}].map(l=>(
+          <a key={l.label} href={l.href} target={l.ext?"_blank":undefined} rel={l.ext?"noopener noreferrer":undefined}
+            style={{ fontSize:9, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, textDecoration:"none", letterSpacing:2.5, textTransform:"uppercase", transition:"color .2s" }}
+            onMouseEnter={e=>e.currentTarget.style.color=t.accent}
+            onMouseLeave={e=>e.currentTarget.style.color=t.fgMuted}
+          >{l.label}</a>
+        ))}
+      </div>
     </div>
   );
 };
@@ -1721,53 +2209,53 @@ const WritingPage = ({ t, mob }) => (
   </div>
 );
 
+const VisualItem = ({ v, mob, t, i }) => {
+  const [ok, setOk] = useState(true);
+  const [hovered, setHovered] = useState(false);
+  return (
+    <Reveal key={v.id} delay={i * 55}>
+      <div
+        style={{ breakInside:"avoid", marginBottom: mob?12:20, position:"relative", cursor:"none",
+          transform: hovered ? "scale(1.02)" : "scale(1)",
+          transition:"transform .5s cubic-bezier(.4,0,.2,1)",
+        }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <div style={{ borderRadius:6, overflow:"hidden", background:t.frameBg, aspectRatio: v.ratio || "3/4", position:"relative",
+          boxShadow: hovered ? `0 12px 40px rgba(0,0,0,.18)` : "none",
+          transition:"box-shadow .5s cubic-bezier(.4,0,.2,1)",
+        }}>
+          {ok
+            ? <img src={v.img} alt={v.title}
+                style={{ width:"100%", height:"100%", objectFit:"cover", display:"block",
+                  transform: hovered ? "scale(1.03)" : "scale(1)",
+                  transition:"transform .55s cubic-bezier(.4,0,.2,1)",
+                }}
+                onError={() => setOk(false)}
+              />
+            : <div style={{ width:"100%", height:"100%", background:`linear-gradient(145deg,${t.fg}08,${t.fg}03)`, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                <span style={{ fontSize:8, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, letterSpacing:1.5 }}>{v.title}</span>
+              </div>
+          }
+        </div>
+        <div style={{ padding:"6px 2px 0", display:"flex", justifyContent:"space-between", alignItems:"baseline" }}>
+          <span style={{ fontSize: mob?9:10, fontWeight:500, color:t.fg, letterSpacing:"-.01em", lineHeight:1.3 }}>{v.title}</span>
+          <span style={{ fontSize: mob?7:7.5, color:t.fgMuted, fontFamily:"'JetBrains Mono',monospace", letterSpacing:.5, flexShrink:0, marginLeft:8 }}>{v.type}</span>
+        </div>
+      </div>
+    </Reveal>
+  );
+};
+
 const VisualPage = ({ t, mob }) => {
-  const [hoveredId, setHoveredId] = useState(null);
   return (
     <div style={{ paddingTop:80, position:"relative", zIndex:1, minHeight:"100vh" }}>
-      {/* masonry grid — no header */}
       <div style={{ padding: mob?"16px 16px":"24px 44px", maxWidth:1100, margin:"0 auto" }}>
         <div style={{ columns: mob?2:3, columnGap: mob?12:20, columnFill:"balance" }}>
-          {VISUALS.map((v, i) => {
-            const isHovered = hoveredId === v.id;
-            const [ok, setOk] = useState(true);
-            return (
-              <Reveal key={v.id} delay={i * 55}>
-                <div
-                  style={{ breakInside:"avoid", marginBottom: mob?12:20, position:"relative", cursor:"none",
-                    transform: isHovered ? "scale(1.02)" : "scale(1)",
-                    transition:"transform .5s cubic-bezier(.4,0,.2,1)",
-                  }}
-                  onMouseEnter={() => setHoveredId(v.id)}
-                  onMouseLeave={() => setHoveredId(null)}
-                >
-                  {/* image */}
-                  <div style={{ borderRadius:6, overflow:"hidden", background:t.frameBg, aspectRatio: v.ratio || "3/4", position:"relative",
-                    boxShadow: isHovered ? `0 12px 40px rgba(0,0,0,.18)` : "none",
-                    transition:"box-shadow .5s cubic-bezier(.4,0,.2,1)",
-                  }}>
-                    {ok
-                      ? <img src={v.img} alt={v.title}
-                          style={{ width:"100%", height:"100%", objectFit:"cover", display:"block",
-                            transform: isHovered ? "scale(1.03)" : "scale(1)",
-                            transition:"transform .55s cubic-bezier(.4,0,.2,1)",
-                          }}
-                          onError={() => setOk(false)}
-                        />
-                      : <div style={{ width:"100%", height:"100%", background:`linear-gradient(145deg,${t.fg}08,${t.fg}03)`, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                          <span style={{ fontSize:8, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, letterSpacing:1.5 }}>{v.title}</span>
-                        </div>
-                    }
-                  </div>
-                  {/* caption — always visible below image */}
-                  <div style={{ padding:"6px 2px 0", display:"flex", justifyContent:"space-between", alignItems:"baseline" }}>
-                    <span style={{ fontSize: mob?9:10, fontWeight:500, color:t.fg, letterSpacing:"-.01em", lineHeight:1.3 }}>{v.title}</span>
-                    <span style={{ fontSize: mob?7:7.5, color:t.fgMuted, fontFamily:"'JetBrains Mono',monospace", letterSpacing:.5, flexShrink:0, marginLeft:8 }}>{v.type}</span>
-                  </div>
-                </div>
-              </Reveal>
-            );
-          })}
+          {VISUALS.map((v, i) => (
+            <VisualItem key={v.id} v={v} mob={mob} t={t} i={i} />
+          ))}
         </div>
       </div>
 
@@ -1798,9 +2286,17 @@ export default function App() {
   const [dark,          setDark]          = useState(false);
   const [cursorHovered, setCursorHovered] = useState(null);
   const [bgAccent,      setBgAccent]      = useState(null);
+  const [navHidden,     setNavHidden]     = useState(false);
   const mob = useMobile();
   const t   = dark ? THEMES.dark : THEMES.light;
-  const go  = useCallback(p => { setPage(p); setBgAccent(null); setTimeout(() => window.scrollTo({ top:0, behavior:"instant" }), 0); }, []);
+  const go  = useCallback(p => { setPage(p); setBgAccent(null); setNavHidden(false); setTimeout(() => window.scrollTo({ top:0, behavior:"instant" }), 0); }, []);
+
+  useEffect(() => {
+    if (page !== "about") { setNavHidden(false); return; }
+    const onScroll = () => setNavHidden(window.scrollY > 72);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [page]);
 
   useEffect(() => {
     document.body.style.background = t.bg;
@@ -1835,12 +2331,11 @@ export default function App() {
       `}</style>
 
       <CustomCursor hovered={cursorHovered} t={t} />
-      <Nav page={page} go={go} dark={dark} setDark={setDark} t={t} mob={mob} />
+      <Nav page={page} go={go} dark={dark} setDark={setDark} t={t} mob={mob} navHidden={navHidden} />
 
       {page==="home"   && <HomePage   t={t} mob={mob} setCursorHovered={setCursorHovered} go={go} onAccentChange={setBgAccent} />}
       {page==="work"   && <WorkPage   t={t} mob={mob} setCursorHovered={setCursorHovered} />}
-      {page==="about"  && <AboutPage  t={t} mob={mob} />}
-      {page==="play" && <VisualPage t={t} mob={mob} />}
+      {page==="about"  && <AboutPage  t={t} mob={mob} navHidden={navHidden} />}
       {page==="writing" && <WritingPage t={t} mob={mob} />}
     </div>
   );
