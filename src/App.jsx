@@ -2128,10 +2128,10 @@ const AboutPage = ({ t, mob, navHidden }) => {
 ══════════════════════════════════════════════════ */
 const WRITINGS = [
   {
-    title: "The Designer as Operator: Design Systems in the Agentic Stack",
+    title: "Interface vs Inference ",
     date: "Apr 2026",
-    desc: "What happens to design systems when the interface is an agent? On the role of designers in the emerging agentic stack.",
-    url: "https://open.substack.com/pub/talshe/p/the-designer-as-operator?r=2iqmd4&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true",
+    desc: "When your design system becomes a model input",
+    url: "https://open.substack.com/pub/talshe/p/interface-vs-inference?r=2iqmd4&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true",
     tag: "thoughts",
   },
   {
