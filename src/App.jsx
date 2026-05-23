@@ -454,8 +454,8 @@ const CustomCursor = ({ hovered, t }) => {
   }, []);
   return (
     <div ref={el} style={{ position:"fixed", top:0, left:0, zIndex:9999, pointerEvents:"none", willChange:"left,top" }}>
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" style={{ display:"block", filter:"drop-shadow(0 0 8px #c0392b80)" }}>
-        <path d="M3 3L19.5 10.5L12.5 12.5L10.5 19.5L3 3Z" fill="#111" stroke="#8b1a10" strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" paintOrder="stroke"/>
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" style={{ display:"block" }}>
+        <path d="M3 3L19.5 10.5L12.5 12.5L10.5 19.5L3 3Z" fill="#111" stroke={hovered ? hovered.color : t.accent} strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" paintOrder="stroke" style={{ transition:"stroke .25s ease" }}/>
       </svg>
       {hovered && (
         <div style={{
@@ -822,13 +822,16 @@ const HomePage = ({ t, mob, setCursorHovered, go, onAccentChange }) => {
     const onScroll = () => {
       const idx = Math.round(el.scrollLeft / el.clientWidth);
       setActiveIdx(idx);
-      if (FEATURED[idx] && onAccentChange) {
-        onAccentChange(FEATURED[idx].color || gc(FEATURED[idx].cat).color);
-      }
+      const p = FEATURED[idx];
+      if (!p) return;
+      const color = p.color || gc(p.cat).color;
+      if (onAccentChange) onAccentChange(color);
+      // keep cursor outline + bubble synced when user scrolls without moving the mouse
+      setCursorHovered(prev => prev ? { title:p.title, color, sub:p.sub, year:p.year } : prev);
     };
     el.addEventListener('scroll', onScroll, { passive: true });
     return () => el.removeEventListener('scroll', onScroll);
-  }, [onAccentChange]);
+  }, [onAccentChange, setCursorHovered]);
 
   const scrollTo = (idx) => {
     const el = scrollRef.current;
@@ -838,7 +841,7 @@ const HomePage = ({ t, mob, setCursorHovered, go, onAccentChange }) => {
   return (
     <div style={{ position:"relative", zIndex:1, height:"100vh", display:"flex", flexDirection:"column", overflow:"hidden" }}>
       {/* hero */}
-      <div style={{ padding: mob?"88px 24px 0":"100px 52px 0", position:"relative", flexShrink:0, display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", textAlign:"center", gap: mob?14:22 }}>
+      <div style={{ padding: mob?"72px 24px 0":"80px 52px 0", position:"relative", flexShrink:0, display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", textAlign:"center", gap: mob?10:14 }}>
         <div style={{ position:"absolute", inset:0, pointerEvents:"none", backgroundImage:`radial-gradient(circle, ${t.fg}0d 1px, transparent 1px)`, backgroundSize:"28px 28px", WebkitMaskImage:"radial-gradient(ellipse 90% 60% at 50% 0%, black 20%, transparent 100%)", maskImage:"radial-gradient(ellipse 90% 60% at 50% 0%, black 20%, transparent 100%)", animation:"particleDrift 18s ease-in-out infinite" }} />
         {/* greeting — bumped up to feel like a peer headline */}
         <div style={{ animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .05s both", opacity:0, position:"relative", zIndex:1, fontSize: mob?"24px":"40px", fontWeight:500, color:t.fg, fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Inter,sans-serif", letterSpacing:"-.02em" }}>
@@ -848,11 +851,12 @@ const HomePage = ({ t, mob, setCursorHovered, go, onAccentChange }) => {
         <h1 style={{ fontSize: mob?"clamp(28px,6.2vw,42px)":"clamp(36px,4.4vw,60px)", fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Inter,sans-serif", fontWeight:500, letterSpacing:"-.03em", lineHeight:1.15, color:t.fg, position:"relative", zIndex:1, maxWidth:1100, animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .3s both", opacity:0 }}>
           {(() => {
             const current = FEATURED[activeIdx] || FEATURED[0];
+            const currentColor = current.color || gc(current.cat).color;
             const h = current.headline || { before:"I explore ", keyword:"legibility and trust", after:" in AI interfaces." };
             return (
               <span key={activeIdx} style={{ display:"inline-block", animation:"fadeUp .45s cubic-bezier(.4,0,.2,1) both" }}>
                 <span>{h.before}</span>
-                <span style={{ color:t.accent }}>{h.keyword}</span>
+                <span style={{ color:currentColor, transition:"color .5s cubic-bezier(.4,0,.2,1)" }}>{h.keyword}</span>
                 <span>{h.after}</span>
               </span>
             );
@@ -864,14 +868,16 @@ const HomePage = ({ t, mob, setCursorHovered, go, onAccentChange }) => {
         {FEATURED.map((p, i) => {
           const color = p.color || gc(p.cat).color;
           const [hovered, setHovered] = useState(false);
+          const isTallFrame = p.frame === "triplePhone" || p.frame === "laptop";
+          const maxW = mob
+            ? (isTallFrame ? "min(380px, 50vh)" : "min(440px, 60vh)")
+            : (isTallFrame ? "min(680px, 55vh)" : "min(780px, 68vh)");
           return (
             <div key={p.id} style={{ flexShrink:0, width:"100vw", scrollSnapAlign:"start", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-start", padding: mob?"6px 20px 0":"8px 52px 0", position:"relative", minHeight:0, overflowY:"hidden", justifyContent:"center" }}>
               <a href={p.link} target="_blank" rel="noopener noreferrer"
                 onMouseEnter={() => { setHovered(true); setCursorHovered({ title:p.title, color, sub:p.sub, year:p.year }); }}
                 onMouseLeave={() => { setHovered(false); setCursorHovered(null); }}
-                style={{ display:"block", textDecoration:"none", width:"100%", maxWidth: mob?380:680,
-                  transform: hovered ? "translateY(-4px)" : "translateY(0)",
-                  transition:"transform .55s cubic-bezier(.4,0,.2,1)", cursor:"none" }}
+                style={{ display:"block", textDecoration:"none", width:"100%", maxWidth: maxW, cursor:"none" }}
               >
                 <DeviceFrame frame={p.frame} img={p.img} hovered={hovered} t={t} accent={color} screenId={p.id} url={p.link} aspectRatio={p.aspectRatio} />
                 <div style={{ display:"flex", alignItems:"baseline", justifyContent:"space-between", padding:"10px 2px 0", opacity:1, transform:"translateY(0)" }}>
@@ -1488,6 +1494,25 @@ const AboutTopBar = ({ activeCh, navHidden, t }) => {
   );
 };
 
+/* ──────────────────────────────────────────────────
+   PHOTO CELL — image with on-error fallback icon
+────────────────────────────────────────────────── */
+const PhotoCell = ({ src, bg, t }) => {
+  const [failed, setFailed] = useState(false);
+  return (
+    <div className="tanha-photo" style={{ background:bg, aspectRatio:"3/4", overflow:"hidden", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
+      {!failed ? (
+        <img src={src} alt="" onError={() => setFailed(true)}
+          style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block", filter:"grayscale(100%)" }} />
+      ) : (
+        <svg style={{ opacity:.2, pointerEvents:"none" }} width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={t.fg} strokeWidth="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+        </svg>
+      )}
+    </div>
+  );
+};
+
 const AboutGridCell = ({ cell, ch, cardRef, t, mob }) => {
   if (cell.t === "fill") {
     return <div className="tanha-fill" />;
@@ -1517,15 +1542,7 @@ const AboutGridCell = ({ cell, ch, cardRef, t, mob }) => {
   }
   const pad = String(cell.n).padStart(2, "0");
   const ext = cell.ext || "jpg";
-  return (
-    <div className="tanha-photo" style={{ background:cell.s, aspectRatio:"3/4", overflow:"hidden", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
-      <img src={`/images/pic${pad}.${ext}`} alt="" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block", filter:"grayscale(100%)" }}
-        onError={e => { e.target.style.display="none"; }} />
-      <svg style={{ position:"absolute", opacity:.08, pointerEvents:"none" }} width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={t.fg} strokeWidth="1.5">
-        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-      </svg>
-    </div>
-  );
+  return <PhotoCell src={`/images/pic${pad}.${ext}`} bg={cell.s} t={t} />;
 };
 
 const AboutPage = ({ t, mob, navHidden }) => {
@@ -1553,13 +1570,7 @@ const AboutPage = ({ t, mob, navHidden }) => {
       <div className="tanha-grid">
 
         {/* photo01 — left of def card */}
-        <div className="tanha-photo" style={{ background:"#1c1c1a", aspectRatio:"3/4", overflow:"hidden", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
-          <img src="/images/pic01.jpg" alt="" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block", filter:"grayscale(100%)" }}
-            onError={e => { e.target.style.display="none"; }} />
-          <svg style={{ position:"absolute", opacity:.08, pointerEvents:"none" }} width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={t.fg} strokeWidth="1.5">
-            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-          </svg>
-        </div>
+        <PhotoCell src="/images/pic01.jpg" bg="#1c1c1a" t={t} />
 
         {/* definition card */}
         <div className="tanha-card" style={{ background:t.frameBg, display:"flex", flexDirection:"column", padding:"clamp(12px,2vw,22px)", overflow:"hidden", border:`1px solid ${t.rule}` }}>
@@ -1585,13 +1596,7 @@ const AboutPage = ({ t, mob, navHidden }) => {
         </div>
 
         {/* photo02 — right of def card */}
-        <div className="tanha-photo" style={{ background:"#1e1e1c", aspectRatio:"3/4", overflow:"hidden", position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
-          <img src="/images/pic02.jpg" alt="" style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block", filter:"grayscale(100%)" }}
-            onError={e => { e.target.style.display="none"; }} />
-          <svg style={{ position:"absolute", opacity:.08, pointerEvents:"none" }} width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={t.fg} strokeWidth="1.5">
-            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-          </svg>
-        </div>
+        <PhotoCell src="/images/pic02.jpg" bg="#1e1e1c" t={t} />
 
         {/* chapters 1–3 */}
         {CHAPTERS2.slice(0, 3).map(ch => (
