@@ -1244,7 +1244,7 @@ const HomePage = ({ t, mob, setCursorHovered, go }) => {
 
           {/* Blurb */}
           <p style={{
-            fontSize: 20,
+            fontSize: 30,
             color: t.fg,
             lineHeight: 1.5,
             margin: "28px 0 18px",
@@ -1255,7 +1255,7 @@ const HomePage = ({ t, mob, setCursorHovered, go }) => {
 
           {/* Side projects line */}
           <p style={{
-            fontSize: 20,
+            fontSize: 28,
             color: t.fg,
             lineHeight: 1.5,
             margin: "0 0 18px",
@@ -1266,7 +1266,7 @@ const HomePage = ({ t, mob, setCursorHovered, go }) => {
 
           {/* Contact paragraph with inline button */}
           <p style={{
-            fontSize: 20,
+            fontSize: 28,
             color: t.fg,
             lineHeight: 1.5,
             margin: 0,
