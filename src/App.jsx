@@ -13,6 +13,7 @@ const useClipReveal = (_delay = 0) => {
 const CAT = {
   "product-design":             { label:"Product Design", color:"#475569" },
   "ai-ml":                      { label:"AI / ML",        color:"#d97706" },
+  "ai-interaction":             { label:"Interactions",   color:"#db2777" },
   "data-visualization":         { label:"Data Viz",       color:"#7c3aed" },
   "data-analysis":              { label:"Data Analysis",  color:"#0369a1" },
   "mobile-design":              { label:"Mobile",         color:"#059669" },
@@ -22,16 +23,16 @@ const CAT = {
 const gc = id => CAT[id] || CAT["product-design"];
 
 const PROJECTS = [
-  { id:"legibility-interaction", title:"Legibility: Interaction in AI Interfaces", sub:"Research & Writing", desc:"Studying how legibility shapes user interaction with AI interfaces.", cat:"writing", color:"#db2777", img:"/images/legibility.gif", link:"https://tanhata.github.io/legibility-interaction/", year:"2026", frame:"raw", aspectRatio:"1613/1022", headline:{ before:"I explore ", keyword:"legibility and trust", after:" in AI interfaces." }, featured:true },
-  { id:"model-pulse",    title:"ModelPulse",       sub:"AI Performance Platform",      desc:"Enterprise observability — detect drift, monitor accuracy, manage compliance.",      cat:"product-design",            color:"#0369a1", img:"/images/modelpulse.png",      link:"https://tanhata.github.io/modelpulse-case-study/", year:"2025", frame:"raw",          aspectRatio:"1956/1224", headline:{ before:"I turn model weights into ", keyword:"observable tools", after:"." }, featured:true },
-  { id:"plotmind",       title:"Plotmind",         sub:"No-Code Data Intelligence",    desc:"Low-code environment for advanced data visualizations in enterprise pipelines.",    cat:"product-design",            color:"#7c3aed", img:"/images/plotmind.png",        link:"https://tanhata.github.io/plotmind-case-study/",   year:"2025", frame:"raw",          aspectRatio:"2056/1437", headline:{ before:"I bridge the gap between ", keyword:"code and intuition", after:" for data teams." }, featured:true },
-  { id:"lattice",        title:"Lattice",         sub:"Next Gen Experiment Tracking", desc:"ML experiment tracker connecting experiments, papers, and evaluations.",             cat:"product-design",            color:"#0891b2", img:"/images/lattice.png",         link:"https://tanhata.github.io/lattice-case-study/",    year:"2026", frame:"raw",          aspectRatio:"1832/845", headline:{ before:"I prototype ", keyword:"the next gen of experiment tracking", after:"." }, featured:true },
-  { id:"mcp",            title:"Multi-Agent",      sub:"MCP Interface",                desc:"Conversation UIs enabling distributed AI agents to coordinate and refine outputs.", cat:"product-design",            color:"#d97706", img:"/images/mcp.gif",             link:"https://tanhata.github.io/mcp-case-study/",        year:"2024", frame:"laptop",       headline:{ before:"I design ", keyword:"conversation", after:" for multi-agent systems." }, featured:true },
-  { id:"aura",           title:"AURA",             sub:"AR Museum Guide",              desc:"AR museum guide — spatial storytelling through layered narratives.",                cat:"mobile-design",             color:"#059669", img:"/images/aura.png",            link:"https://tanhata.github.io/aura-case-study/",       year:"2022", frame:"triplePhone",        headline:{ before:"I design ", keyword:"storytelling", after:" for spaces." }, featured:true },
+  { id:"legibility-interaction", title:"Legibility: Interaction in AI Interfaces", sub:"Research & Writing", desc:"Studying how legibility shapes user interaction with AI interfaces.", cat:"ai-interaction", color:"#db2777", img:"/images/legibility.gif", link:"https://tanhata.github.io/legibility-interaction/", year:"2026", frame:"raw", aspectRatio:"800/287", headline:{ before:"I explore ", keyword:"legibility and trust", after:" in AI interfaces." }, featured:true },
+  { id:"model-pulse",    title:"ModelPulse",       sub:"AI Performance Platform",      desc:"Enterprise observability — detect drift, monitor accuracy, manage compliance.",      cat:"product-design",            color:"#0369a1", img:"/images/modelpulse2.gif",      link:"https://tanhata.github.io/modelpulse-case-study/", year:"2025", frame:"raw",          aspectRatio:"1956/1054", headline:{ before:"I turn model weights into ", keyword:"observable tools", after:"." }, featured:true },
+  { id:"plotmind",       title:"Plotmind",         sub:"No-Code Data Intelligence",    desc:"Low-code environment for advanced data visualizations in enterprise pipelines.",    cat:"product-design",            color:"#7c3aed", img:"/images/plotmind.png",        link:"https://tanhata.github.io/plotmind-case-study/",   year:"2025", frame:"raw",          aspectRatio:"2056/1437", headline:{ before:"I bridge the gap between ", keyword:"code and intuition", after:" for data teams." } },
+  { id:"lattice",        title:"Lattice",         sub:"Next Gen Experiment Tracking", desc:"ML experiment tracker connecting experiments, papers, and evaluations.",             cat:"product-design",            color:"#0891b2", img:"/images/lattice.png",         link:"https://tanhata.github.io/lattice-case-study/",    year:"2026", frame:"raw",          aspectRatio:"1832/845", headline:{ before:"I prototype ", keyword:"the next gen of experiment tracking", after:"." } },
+  { id:"mcp",            title:"Multi-Agent",      sub:"MCP Interface",                desc:"Conversation UIs enabling distributed AI agents to coordinate and refine outputs.", cat:"product-design",            color:"#d97706", img:"/images/mcp.gif",             link:"https://tanhata.github.io/mcp-case-study/",        year:"2024", frame:"laptop",       headline:{ before:"I design ", keyword:"conversation", after:" for multi-agent systems." }, featured:true, darkText:true },
+  { id:"aura",           title:"AURA",             sub:"AR Museum Guide",              desc:"AR museum guide — spatial storytelling through layered narratives.",                cat:"mobile-design",             color:"#059669", img:"/images/aura.gif",            link:"https://tanhata.github.io/aura-case-study/",       year:"2022", frame:"triplePhone",        headline:{ before:"I design ", keyword:"storytelling", after:" for spaces." }, featured:true },
   { id:"tangent",        title:"Tangent",          sub:"Parametric Geometry",          desc:"Real-time parametric geometry with natural language input and live 3D.",            cat:"product-design",            color:"#b4e000", img:"/images/tangent.png",         link:"https://docs.google.com/presentation/d/e/2PACX-1vRjNEWLMh6TRxoEeeHaeL_ePIp357aN6xCbF96EgSPOmyIOAjsyWw7KoLbwnlk5QlhleyfO8OZxrGbA/pub", year:"2024", frame:"raw"},
-  { id:"recursive-orbit",title:"Recursive Orbit",  sub:"Grief & Memory",              desc:"Interactive visualization exploring grief via generative data.",                    cat:"data-visualization",        color:"#7c3aed", img:"/images/recursiveorbit.png", link:"https://tanhata.github.io/recursive-orbit/",       year:"2024", frame:"raw" },
-  { id:"green-spaces",   title:"The Green Divide", sub:"NYC Park Access",              desc:"Mapping disparities in park access across NYC neighborhoods.",                     cat:"data-analysis",             color:"#059669", img:"/images/greendivide.png",    link:"/green_divide_story.html",                         year:"2021", frame:"raw"  },
-  { id:"living",         title:"Living Computing", sub:"Adaptive Interfaces",          desc:"Interfaces that respond to human behavior and context.",                          cat:"human-computer-interaction",color:"#db2777", img:"/images/pic06.gif",link:"https://www.youtube.com/watch?v=Geo17VbvWtU",       year:"2021", frame:"raw" },
+  { id:"recursive-orbit",title:"Recursive Orbit",  sub:"Grief & Memory",              desc:"Interactive visualization exploring grief via generative data.",                    cat:"data-visualization",        color:"#7c3aed", img:"/images/recursive.gif", link:"https://tanhata.github.io/recursive-orbit/",       year:"2024", frame:"raw" },
+  { id:"green-spaces",   title:"The Green Divide", sub:"NYC Park Access",              desc:"Mapping disparities in park access across NYC neighborhoods.",                     cat:"data-analysis",             color:"#059669", img:"/images/greendivide.png",    link:"/green_divide_story.html",                         year:"2021", frame:"raw", aspectRatio:"1315/879"  },
+  { id:"living",         title:"Living Computing", sub:"Adaptive Interfaces",          desc:"Interfaces that respond to human behavior and context.",                          cat:"human-computer-interaction",color:"#db2777", img:"/images/pic06.gif",link:"https://www.youtube.com/watch?v=Geo17VbvWtU",       year:"2021", frame:"raw", aspectRatio:"1920/1247", featured:true },
 ];
 const FEATURED = PROJECTS.filter(p => p.featured);
 
@@ -64,10 +65,10 @@ const THEMES = {
     laptopKey:"rgba(17,17,17,.06)", screenBg:"#ececec",
   },
   dark: {
-    bg:"#111009", fg:"#ece8e0", fgMuted:"rgba(236,232,224,.36)", fgGhost:"rgba(236,232,224,.055)",
-    rule:"rgba(236,232,224,.07)", accent:"#c4f000", navBg:"rgba(17,16,9,.55)",
-    frameBg:"rgba(255,255,255,.04)", frameBorder:"rgba(236,232,224,.11)", shadow:"rgba(0,0,0,.45)",
-    laptopKey:"rgba(236,232,224,.055)", screenBg:"#0d0c0a",
+    bg:"#000000", fg:"#ffffff", fgMuted:"rgba(255,255,255,.42)", fgGhost:"rgba(255,255,255,.06)",
+    rule:"rgba(255,255,255,.1)", accent:"#c4f000", navBg:"rgba(0,0,0,.55)",
+    frameBg:"rgba(255,255,255,.04)", frameBorder:"rgba(255,255,255,.11)", shadow:"rgba(0,0,0,.5)",
+    laptopKey:"rgba(255,255,255,.055)", screenBg:"#000000",
   },
 };
 
@@ -809,125 +810,504 @@ const AboutTeaser = ({ t, go, mob }) => {
   );
 };
 
+
 /* ══════════════════════════════════════════════════
-   HOME
+   PROJECT TILE — grid-style filled tile, no chrome
 ══════════════════════════════════════════════════ */
-const HomePage = ({ t, mob, setCursorHovered, go, onAccentChange }) => {
-  const scrollRef = useRef(null);
-  const [activeIdx, setActiveIdx] = useState(0);
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const onScroll = () => {
-      const idx = Math.round(el.scrollLeft / el.clientWidth);
-      setActiveIdx(idx);
-      const p = FEATURED[idx];
-      if (!p) return;
-      const color = p.color || gc(p.cat).color;
-      if (onAccentChange) onAccentChange(color);
-      // keep cursor outline + bubble synced when user scrolls without moving the mouse
-      setCursorHovered(prev => prev ? { title:p.title, color, sub:p.sub, year:p.year } : prev);
-    };
-    el.addEventListener('scroll', onScroll, { passive: true });
-    return () => el.removeEventListener('scroll', onScroll);
-  }, [onAccentChange, setCursorHovered]);
-
-  const scrollTo = (idx) => {
-    const el = scrollRef.current;
-    if (el) el.scrollTo({ left: idx * el.clientWidth, behavior: 'smooth' });
-  };
+const ProjectTile = ({ p, t, mob, setCursorHovered, wide, style: extraStyle }) => {
+  const [hovered, setHovered] = useState(false);
+  const [imgError, setImgError] = useState(false);
+  const color = p.color || gc(p.cat).color;
+  // Use project's natural image aspect when present; fall back to wide/default
+  const aspect = p.aspectRatio || (wide ? "16 / 9" : "4 / 3");
 
   return (
-    <div style={{ position:"relative", zIndex:1, height:"100vh", display:"flex", flexDirection:"column", overflow:"hidden" }}>
-      {/* hero */}
-      <div style={{ padding: mob?"72px 24px 0":"80px 52px 0", position:"relative", flexShrink:0, display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", textAlign:"center", gap: mob?10:14 }}>
-        <div style={{ position:"absolute", inset:0, pointerEvents:"none", backgroundImage:`radial-gradient(circle, ${t.fg}0d 1px, transparent 1px)`, backgroundSize:"28px 28px", WebkitMaskImage:"radial-gradient(ellipse 90% 60% at 50% 0%, black 20%, transparent 100%)", maskImage:"radial-gradient(ellipse 90% 60% at 50% 0%, black 20%, transparent 100%)", animation:"particleDrift 18s ease-in-out infinite" }} />
-        {/* greeting — bumped up to feel like a peer headline */}
-        <div style={{ animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .05s both", opacity:0, position:"relative", zIndex:1, fontSize: mob?"24px":"40px", fontWeight:500, color:t.fg, fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Inter,sans-serif", letterSpacing:"-.02em" }}>
-          <TanhaGreetFlip t={t} />
+    <a href={p.link} target="_blank" rel="noopener noreferrer"
+      onMouseEnter={() => { setHovered(true); setCursorHovered({ title: p.title, color, sub: p.sub, year: p.year }); }}
+      onMouseLeave={() => { setHovered(false); setCursorHovered(null); }}
+      style={{
+        position: "relative",
+        aspectRatio: aspect,
+        gridColumn: wide ? "1 / -1" : "auto",
+        overflow: "hidden",
+        borderRadius: 18,
+        textDecoration: "none",
+        cursor: "none",
+        display: "block",
+        background: t.frameBg,
+        ...(extraStyle || {}),
+      }}
+    >
+      {!imgError ? (
+        <img src={p.img} alt=""
+          onError={() => setImgError(true)}
+          style={{
+            width: "100%", height: "100%",
+            objectFit: "cover", display: "block",
+            transform: hovered ? "scale(1.04)" : "scale(1)",
+            transition: "transform .8s cubic-bezier(.4,0,.2,1)",
+          }}
+        />
+      ) : (
+        <div style={{
+          width: "100%", height: "100%",
+          background: `linear-gradient(145deg, ${color}55, ${color}22)`,
+        }} />
+      )}
+
+      {/* Subtle top scrim for title legibility — only on light-text tiles */}
+      {!p.darkText && (
+        <div style={{
+          position: "absolute", top: 0, left: 0, right: 0, height: "40%",
+          background: "linear-gradient(to bottom, rgba(0,0,0,.35) 0%, transparent 100%)",
+          pointerEvents: "none",
+        }} />
+      )}
+
+      {/* Title — top left */}
+      <div style={{ position: "absolute", top: mob ? 14 : (wide ? 22 : 18), left: mob ? 14 : (wide ? 22 : 18), maxWidth: "62%" }}>
+        <div style={{
+          fontSize: mob ? 14 : (wide ? 22 : 17), fontWeight: 500,
+          color: p.darkText ? "#111" : "#fff",
+          letterSpacing: "-.02em", lineHeight: 1.2,
+          textShadow: p.darkText
+            ? "0 1px 3px rgba(255,255,255,.5)"
+            : "0 1px 14px rgba(0,0,0,.55), 0 1px 3px rgba(0,0,0,.4)",
+        }}>{p.title}</div>
+        <div style={{
+          fontSize: mob ? 10 : (wide ? 13 : 11),
+          color: p.darkText ? "rgba(17,17,17,.72)" : "rgba(255,255,255,.88)",
+          letterSpacing: "-.005em", marginTop: 4, fontWeight: 400,
+          textShadow: p.darkText
+            ? "0 1px 2px rgba(255,255,255,.5)"
+            : "0 1px 8px rgba(0,0,0,.5)",
+        }}>{p.sub}</div>
+      </div>
+
+      {/* Category — top right */}
+      <div style={{ position: "absolute", top: mob ? 14 : 20, right: mob ? 14 : 18, textAlign: "right" }}>
+        <div style={{
+          fontSize: 9, fontFamily: "'JetBrains Mono',monospace",
+          color: p.darkText ? "rgba(17,17,17,.7)" : "rgba(255,255,255,.85)",
+          letterSpacing: 1.8, lineHeight: 1.5,
+          textShadow: p.darkText
+            ? "0 1px 2px rgba(255,255,255,.5)"
+            : "0 1px 6px rgba(0,0,0,.5)",
+        }}>{gc(p.cat).label.toUpperCase()}</div>
+      </div>
+
+      {/* Year + dot — bottom right */}
+      <div style={{ position: "absolute", bottom: mob ? 12 : 16, right: mob ? 14 : 18, display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{
+          fontSize: 10, fontFamily: "'JetBrains Mono',monospace",
+          color: p.darkText ? "rgba(17,17,17,.7)" : "rgba(255,255,255,.8)",
+          letterSpacing: 1,
+          textShadow: p.darkText
+            ? "0 1px 2px rgba(255,255,255,.5)"
+            : "0 1px 6px rgba(0,0,0,.5)",
+        }}>{p.year}</span>
+        <div style={{ width: 6, height: 6, borderRadius: "50%", background: color }} />
+      </div>
+
+      {/* Hover accent strip */}
+      <div style={{
+        position: "absolute", top: 0, left: 0, height: 2,
+        background: color,
+        width: hovered ? "100%" : "0%",
+        transition: "width .8s cubic-bezier(.4,0,.2,1)",
+      }} />
+    </a>
+  );
+};
+
+/* ══════════════════════════════════════════════════
+   HOME — single continuous grid (works · writing · before · side)
+══════════════════════════════════════════════════ */
+const HomePage = ({ t, mob, setCursorHovered, go }) => {
+  // ── Source projects (single items each, no longer grouped pairs)
+  const byId = id => PROJECTS.find(p => p.id === id);
+  const works  = ["model-pulse", "mcp"].map(byId);
+  const aura   = byId("aura");
+  const living = byId("living");
+  const legibilityProject = byId("legibility-interaction");
+  const legibilityWriting = WRITINGS[0]; // Legibility article
+
+  // ── ProjectCard: text annotation for its paired tile
+  const ProjectCard = ({ p, style }) => {
+    const cat = gc(p.cat).label.toUpperCase();
+
+    return (
+      <a href={p.link} target="_blank" rel="noopener noreferrer"
+        style={{
+          background: t.frameBg,
+          border: `1px solid ${t.rule}`,
+          borderRadius: 18,
+          padding: "clamp(24px, 2.6vw, 38px)",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          textDecoration: "none",
+          cursor: "none",
+          transition: "background .2s",
+          ...style,
+        }}>
+        <div style={{
+          fontSize: 10,
+          fontFamily: "'JetBrains Mono', monospace",
+          color: p.color,
+          letterSpacing: 2,
+          marginBottom: 20,
+        }}>{p.year} · {cat}</div>
+
+        <div>
+          {p.headline ? (
+            <>
+              <p style={{
+                fontSize: mob ? 18 : 22,
+                fontWeight: 500,
+                lineHeight: 1.3,
+                color: t.fg,
+                letterSpacing: "-.015em",
+                margin: "0 0 14px 0",
+              }}>
+                {p.headline.before}
+                <span style={{ color: p.color }}>{p.headline.keyword}</span>
+                {p.headline.after}
+              </p>
+              <p style={{ fontSize: mob ? 13 : 14, lineHeight: 1.65, color: t.fgMuted, margin: 0 }}>
+                {p.desc}
+              </p>
+            </>
+          ) : (
+            <p style={{
+              fontSize: mob ? 17 : 20,
+              fontWeight: 500,
+              lineHeight: 1.4,
+              color: t.fg,
+              letterSpacing: "-.015em",
+              margin: 0,
+            }}>{p.desc}</p>
+          )}
         </div>
-        {/* main statement — keyword + domain swap with the active carousel project */}
-        <h1 style={{ fontSize: mob?"clamp(28px,6.2vw,42px)":"clamp(36px,4.4vw,60px)", fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Inter,sans-serif", fontWeight:500, letterSpacing:"-.03em", lineHeight:1.15, color:t.fg, position:"relative", zIndex:1, maxWidth:1100, animation:"charReveal .6s cubic-bezier(.4,0,.2,1) .3s both", opacity:0 }}>
-          {(() => {
-            const current = FEATURED[activeIdx] || FEATURED[0];
-            const currentColor = current.color || gc(current.cat).color;
-            const h = current.headline || { before:"I explore ", keyword:"legibility and trust", after:" in AI interfaces." };
-            return (
-              <span key={activeIdx} style={{ display:"inline-block", animation:"fadeUp .45s cubic-bezier(.4,0,.2,1) both" }}>
-                <span>{h.before}</span>
-                <span style={{ color:currentColor, transition:"color .5s cubic-bezier(.4,0,.2,1)" }}>{h.keyword}</span>
-                <span>{h.after}</span>
-              </span>
-            );
-          })()}
-        </h1>
+      </a>
+    );
+  };
+
+  // ── WritingTile: rounded color block with title (no image, since Legibility lives in writing)
+  const WritingTile = ({ w, color, style }) => (
+    <a href={w.url} target="_blank" rel="noopener noreferrer"
+      style={{
+        position: "relative",
+        background: color,
+        borderRadius: 18,
+        overflow: "hidden",
+        textDecoration: "none",
+        cursor: "none",
+        display: "block",
+        aspectRatio: "1956/1054",
+        ...style,
+      }}>
+      {/* Subtle bottom vignette so text reads */}
+      <div style={{
+        position: "absolute", inset: 0,
+        background: "linear-gradient(165deg, transparent 40%, rgba(0,0,0,.22) 100%)",
+        pointerEvents: "none",
+      }} />
+
+      {/* Tag — top right */}
+      <div style={{
+        position: "absolute",
+        top: mob ? 14 : 20, right: mob ? 14 : 22,
+        fontSize: 9,
+        fontFamily: "'JetBrains Mono', monospace",
+        color: "rgba(255,255,255,.9)",
+        letterSpacing: 1.8,
+        textShadow: "0 1px 6px rgba(0,0,0,.35)",
+      }}>{w.tag.toUpperCase()}</div>
+
+      {/* Title — bottom left */}
+      <div style={{
+        position: "absolute",
+        bottom: mob ? 18 : 28, left: mob ? 18 : 28, right: mob ? 14 : 28,
+      }}>
+        <div style={{
+          fontSize: mob ? 20 : "clamp(22px, 2.4vw, 32px)",
+          fontWeight: 500,
+          color: "white",
+          letterSpacing: "-.02em",
+          lineHeight: 1.15,
+          textShadow: "0 1px 14px rgba(0,0,0,.35)",
+        }}>{w.title.trim()}</div>
       </div>
-      {/* horizontal scroll */}
-      <div ref={scrollRef} style={{ flex:1, display:"flex", overflowX:"scroll", overflowY:"hidden", scrollSnapType:"x mandatory", WebkitOverflowScrolling:"touch", scrollbarWidth:"none", msOverflowStyle:"none", minHeight:0 }}>
-        {FEATURED.map((p, i) => {
-          const color = p.color || gc(p.cat).color;
-          const [hovered, setHovered] = useState(false);
-          const isTallFrame = p.frame === "triplePhone" || p.frame === "laptop";
-          const maxW = mob
-            ? (isTallFrame ? "min(380px, 50vh)" : "min(440px, 60vh)")
-            : (isTallFrame ? "min(680px, 55vh)" : "min(780px, 68vh)");
-          return (
-            <div key={p.id} style={{ flexShrink:0, width:"100vw", scrollSnapAlign:"start", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-start", padding: mob?"6px 20px 0":"8px 52px 0", position:"relative", minHeight:0, overflowY:"hidden", justifyContent:"center" }}>
-              <a href={p.link} target="_blank" rel="noopener noreferrer"
-                onMouseEnter={() => { setHovered(true); setCursorHovered({ title:p.title, color, sub:p.sub, year:p.year }); }}
-                onMouseLeave={() => { setHovered(false); setCursorHovered(null); }}
-                style={{ display:"block", textDecoration:"none", width:"100%", maxWidth: maxW, cursor:"none" }}
-              >
-                <DeviceFrame frame={p.frame} img={p.img} hovered={hovered} t={t} accent={color} screenId={p.id} url={p.link} aspectRatio={p.aspectRatio} />
-                <div style={{ display:"flex", alignItems:"baseline", justifyContent:"space-between", padding:"10px 2px 0", opacity:1, transform:"translateY(0)" }}>
-                  <div style={{ display:"flex", alignItems:"baseline", gap:10 }}>
-                    <span style={{ fontSize:15, fontWeight:600, color:t.fg, letterSpacing:"-.02em" }}>{p.title}</span>
-                    <span style={{ fontSize:11, color:t.fgMuted, fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Inter,sans-serif", fontWeight:400, opacity:.6 }}>{p.sub}</span>
-                  </div>
-                  <div style={{ display:"flex", alignItems:"center", gap:7 }}>
-                    <span style={{ fontSize:9, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, opacity:.5 }}>{p.year}</span>
-                    <div style={{ width:6, height:6, borderRadius:"50%", background:color }} />
-                  </div>
-                </div>
-              </a>
-            </div>
-          );
-        })}
+
+      {/* Date + dot — bottom right */}
+      <div style={{
+        position: "absolute",
+        bottom: mob ? 12 : 16, right: mob ? 14 : 22,
+        display: "flex", alignItems: "center", gap: 8,
+      }}>
+        <span style={{
+          fontSize: 10,
+          fontFamily: "'JetBrains Mono', monospace",
+          color: "rgba(255,255,255,.85)",
+          letterSpacing: 1,
+          textShadow: "0 1px 6px rgba(0,0,0,.4)",
+        }}>{w.date.toUpperCase()}</span>
+        <div style={{ width: 6, height: 6, borderRadius: "50%", background: "rgba(255,255,255,.85)" }} />
       </div>
-      {/* dots + arrows */}
-      <div style={{ flexShrink:0, padding:"10px 0 12px", display:"flex", alignItems:"center", justifyContent:"center", gap:16 }}>
-        <button onClick={() => scrollTo(Math.max(0, activeIdx-1))} style={{ background:"none", border:"none", cursor:"none", color: activeIdx===0?t.fgGhost:t.fgMuted, fontSize:16, padding:"0 4px", transition:"color .2s" }}>←</button>
-        <div style={{ display:"flex", gap:7, alignItems:"center" }}>
-          {FEATURED.map((p, i) => (
-            <button key={i} onClick={() => scrollTo(i)} style={{ background:"none", border:"none", cursor:"none", padding:2 }}>
-              <div style={{ width: i===activeIdx?18:6, height:6, borderRadius:99, background: i===activeIdx?(p.color||gc(p.cat).color):t.fgGhost, transition:"all .35s cubic-bezier(.4,0,.2,1)" }} />
-            </button>
-          ))}
+    </a>
+  );
+
+  // ── WritingCard: rounded text card with title + date · tag + description
+  const WritingCard = ({ w, color, style }) => (
+    <a href={w.url} target="_blank" rel="noopener noreferrer"
+      style={{
+        background: t.frameBg,
+        border: `1px solid ${t.rule}`,
+        borderRadius: 18,
+        padding: "clamp(28px, 3vw, 44px)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        gap: "clamp(14px, 1.4vw, 20px)",
+        textDecoration: "none",
+        cursor: "none",
+        transition: "background .2s",
+        ...style,
+      }}>
+      <div style={{
+        fontSize: 10,
+        fontFamily: "'JetBrains Mono', monospace",
+        color: color,
+        letterSpacing: 2,
+      }}>{w.date.toUpperCase()} · {w.tag.toUpperCase()}</div>
+
+      <h2 style={{
+        fontSize: mob ? 22 : "clamp(24px, 2.4vw, 32px)",
+        fontWeight: 500,
+        lineHeight: 1.2,
+        color: t.fg,
+        letterSpacing: "-.02em",
+        margin: 0,
+      }}>{w.title.trim()}</h2>
+
+      <p style={{
+        fontSize: mob ? 14 : 15,
+        fontWeight: 400,
+        lineHeight: 1.55,
+        color: t.fgMuted,
+        letterSpacing: "-.005em",
+        margin: 0,
+      }}>{w.desc}</p>
+    </a>
+  );
+
+  // ── Big intro (single line)
+  const intro = (
+    <h1 style={{
+      fontSize: mob ? "clamp(28px, 7.4vw, 36px)" : "clamp(36px, 4.6vw, 52px)",
+      fontWeight: 500,
+      lineHeight: 1.15,
+      letterSpacing: "-.025em",
+      margin: 0,
+      color: t.fg,
+    }}>
+      <TanhaGreetFlip t={t} />
+      <span style={{ color: t.fgMuted, fontWeight: 400 }}> — a designer at the intersection of </span>
+      <span style={{ color: t.accent }}>ML and interaction</span>
+      <span style={{ color: t.fgMuted, fontWeight: 400 }}>.</span>
+    </h1>
+  );
+
+  // ── Footer
+  const footer = (
+    <div style={{
+      padding: mob ? "24px 16px" : "24px clamp(32px, 4vw, 72px)",
+      borderTop: `1px solid ${t.rule}`,
+      marginTop: mob ? 32 : 56,
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }}>
+      <span style={{
+        fontSize: 9, fontFamily: "'JetBrains Mono',monospace",
+        color: t.fgMuted, letterSpacing: 1.5, opacity: 0.5,
+      }}>© Tanha Alsheikhdallah 2026</span>
+      <div style={{ display: "flex", gap: 18 }}>
+        {[
+          { href:"mailto:tanharchitecture@gmail.com", label:"Email", icon:(
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>
+          )},
+          { href:"https://linkedin.com/in/tanhata", label:"LinkedIn", ext:true, icon:(
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          )},
+        ].map(l => (
+          <a key={l.label} href={l.href} target={l.ext?"_blank":undefined} rel={l.ext?"noopener noreferrer":undefined}
+            aria-label={l.label}
+            style={{
+              display: "flex", alignItems: "center",
+              color: t.fgMuted, textDecoration: "none",
+              opacity: 0.7, transition: "color .2s, opacity .2s",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = t.accent; e.currentTarget.style.opacity = "1"; }}
+            onMouseLeave={e => { e.currentTarget.style.color = t.fgMuted; e.currentTarget.style.opacity = "0.7"; }}
+          >{l.icon}</a>
+        ))}
+      </div>
+    </div>
+  );
+
+  // ── Mobile: stack everything (no sections)
+  if (mob) {
+    return (
+      <div style={{ paddingTop: 72, minHeight: "100vh", position: "relative", zIndex: 1 }}>
+        <div style={{ padding: "24px 16px 28px" }}>{intro}</div>
+
+        <div style={{ padding: "0 16px", display: "flex", flexDirection: "column", gap: 1 }}>
+          {/* ModelPulse — tile only */}
+          <ProjectTile p={works[0]} wide t={t} mob={mob} setCursorHovered={setCursorHovered} />
+
+          {/* Writing — Legibility as text-only card */}
+          <WritingCard w={legibilityWriting} color={legibilityProject.color} />
+
+          {/* MCP — tile only */}
+          <ProjectTile p={works[1]} wide t={t} mob={mob} setCursorHovered={setCursorHovered}
+            style={{ aspectRatio: "1956/1054" }} />
+
+          {/* AURA — tile only */}
+          <ProjectTile p={aura} wide t={t} mob={mob} setCursorHovered={setCursorHovered} />
+
+          {/* Living — tile only */}
+          <ProjectTile p={living} wide t={t} mob={mob} setCursorHovered={setCursorHovered} />
         </div>
-        <button onClick={() => scrollTo(Math.min(FEATURED.length-1, activeIdx+1))} style={{ background:"none", border:"none", cursor:"none", color: activeIdx===FEATURED.length-1?t.fgGhost:t.fgMuted, fontSize:16, padding:"0 4px", transition:"color .2s" }}>→</button>
+
+        {footer}
       </div>
-      {/* footer */}
-      <div style={{ flexShrink:0, padding: mob?"14px 20px":"16px 44px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-        <span style={{ fontSize:9, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, letterSpacing:1.5, opacity:.4 }}>© Tanha Alsheikhdallah 2026</span>
-        <div style={{ display:"flex", gap:18, alignItems:"center" }}>
-          {[
-            { href:"mailto:tanharchitecture@gmail.com", label:"Email", icon:(
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>
-            )},
-            { href:"https://linkedin.com/in/tanhata", label:"LinkedIn", ext:true, icon:(
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-            )},
-          ].map(l => (
-            <a key={l.label} href={l.href} target={l.ext?"_blank":undefined} rel={l.ext?"noopener noreferrer":undefined}
-              aria-label={l.label}
-              style={{ display:"flex", alignItems:"center", color:t.fgMuted, textDecoration:"none", transition:"color .2s", opacity:.7 }}
-              onMouseEnter={e => { e.currentTarget.style.color = t.accent; e.currentTarget.style.opacity = "1"; }}
-              onMouseLeave={e => { e.currentTarget.style.color = t.fgMuted; e.currentTarget.style.opacity = ".7"; }}
-            >{l.icon}</a>
-          ))}
+    );
+  }
+
+  // ── Desktop: sticky intro sidebar + 2-column rounded-box grid
+  return (
+    <div style={{ paddingTop: 80, minHeight: "100vh", position: "relative", zIndex: 1 }}>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "1fr minmax(260px, 32%)",
+        gap: "clamp(40px, 5vw, 80px)",
+        padding: "48px clamp(32px, 4vw, 72px) 16px",
+        alignItems: "start",
+      }}>
+        {/* Grid — 2-col rounded boxes */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 1,
+        }}>
+          {/* ModelPulse — full-width tile */}
+          <ProjectTile p={works[0]} wide t={t} mob={mob}
+            setCursorHovered={setCursorHovered}
+            style={{ gridColumn: "1 / -1" }} />
+
+          {/* Writing — Legibility as a text-only rounded card (no visual) */}
+          <WritingCard w={legibilityWriting} color={legibilityProject.color}
+            style={{ gridColumn: "1 / -1" }} />
+
+          {/* MCP + AURA — paired half-width tiles */}
+          <ProjectTile p={works[1]} wide t={t} mob={mob}
+            setCursorHovered={setCursorHovered}
+            style={{ aspectRatio: "1956/1054", gridColumn: "auto" }} />
+          <ProjectTile p={aura} wide t={t} mob={mob}
+            setCursorHovered={setCursorHovered}
+            style={{ aspectRatio: "1956/1054", gridColumn: "auto" }} />
+
+          {/* Living — full-width tile */}
+          <ProjectTile p={living} wide t={t} mob={mob}
+            setCursorHovered={setCursorHovered}
+            style={{ gridColumn: "1 / -1" }} />
         </div>
+
+        {/* Sidebar — sticky intro on the right */}
+        <aside style={{
+          position: "sticky",
+          top: 104,
+          alignSelf: "start",
+        }}>
+          <h1 style={{
+            fontSize: "clamp(32px, 3.4vw, 46px)",
+            fontWeight: 500,
+            lineHeight: 1.15,
+            letterSpacing: "-.025em",
+            margin: 0,
+            color: t.fg,
+          }}>
+            <TanhaGreetFlip t={t} />
+          </h1>
+
+          {/* Blurb */}
+          <p style={{
+            fontSize: 20,
+            color: t.fg,
+            lineHeight: 1.5,
+            margin: "28px 0 18px",
+            letterSpacing: "-.01em",
+          }}>
+            I design AI tools — turn model weights into <span style={{ color: t.accent }}>observability</span>, explore <span style={{ color: t.accent }}>legibility</span> and <span style={{ color: t.accent }}>trust</span>, and help track <span style={{ color: t.accent }}>research</span>.
+          </p>
+
+          {/* Side projects line */}
+          <p style={{
+            fontSize: 20,
+            color: t.fg,
+            lineHeight: 1.5,
+            margin: "0 0 18px",
+            letterSpacing: "-.01em",
+          }}>
+            I love side projects and tinkering with data, visualizations, and physical computing.
+          </p>
+
+          {/* Contact paragraph with inline button */}
+          <p style={{
+            fontSize: 20,
+            color: t.fg,
+            lineHeight: 1.5,
+            margin: 0,
+            letterSpacing: "-.01em",
+          }}>
+            Always open to chat and explore new ideas :){" "}
+            <a href="mailto:tanharchitecture@gmail.com"
+              style={{
+                display: "inline-block",
+                padding: "3px 16px",
+                background: "transparent",
+                color: t.fg,
+                border: `1.5px solid ${t.fg}`,
+                borderRadius: 999,
+                fontFamily: "inherit",
+                fontSize: 18,
+                fontWeight: 500,
+                letterSpacing: 0,
+                textDecoration: "none",
+                cursor: "none",
+                whiteSpace: "nowrap",
+                verticalAlign: "baseline",
+                marginLeft: 2,
+                transition: "background .25s, color .25s, transform .25s",
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = t.fg;
+                e.currentTarget.style.color = t.bg;
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = t.fg;
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >Get in Touch</a>
+          </p>
+        </aside>
       </div>
+
+      {footer}
     </div>
   );
 };
@@ -945,17 +1325,107 @@ const FILTER_OPTIONS = [
 ];
 
 const WorkPage = ({ t, mob, setCursorHovered }) => {
+  // Lookup helpers + exclude Legibility (lives in /writing) and Plotmind (cut)
+  const byId = id => PROJECTS.find(p => p.id === id);
+  const workProjects = PROJECTS.filter(p =>
+    p.id !== "legibility-interaction" && p.id !== "plotmind"
+  );
+
+  const lattice         = byId("lattice");
+  const modelpulse      = byId("model-pulse");
+  const mcp             = byId("mcp");
+  const aura            = byId("aura");
+  const tangent         = byId("tangent");
+  const recursiveOrbit  = byId("recursive-orbit");
+  const living          = byId("living");
+  const greenSpaces     = byId("green-spaces");
+
   return (
-    <div style={{ paddingTop:80, position:"relative", zIndex:1 }}>
-      <div style={{ paddingTop: mob?20:32 }}>
-        {PROJECTS.map((p, i) => (
-          <div key={p.id} style={{ opacity:0, animation:`fadeUp .5s cubic-bezier(.4,0,.2,1) ${i * 50}ms both` }}>
-            <ProjectRow p={p} index={i} t={t} mob={mob} onEnter={setCursorHovered} onLeave={() => setCursorHovered(null)} />
-          </div>
-        ))}
+    <div style={{ paddingTop: mob ? 72 : 80, minHeight: "100vh", position: "relative", zIndex: 1 }}>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: mob ? "1fr 1fr" : "repeat(6, 1fr)",
+        gap: 1,
+        padding: mob ? "16px 16px 56px" : "32px clamp(32px, 4vw, 72px) 72px",
+      }}>
+        {mob ? (
+          workProjects.map((p, i) => (
+            <ProjectTile key={p.id} p={p} t={t} mob={mob}
+              setCursorHovered={setCursorHovered}
+              wide={i % 3 === 0}
+            />
+          ))
+        ) : (
+          <>
+            {/* Row 1: ModelPulse (3 cols, 1.856) + MCP (3 cols, locked to ModelPulse) */}
+            <ProjectTile p={modelpulse} wide t={t} mob={mob}
+              setCursorHovered={setCursorHovered}
+              style={{ gridColumn: "1 / 4" }} />
+            <ProjectTile p={mcp} wide t={t} mob={mob}
+              setCursorHovered={setCursorHovered}
+              style={{ gridColumn: "4 / 7", aspectRatio: "1956/1054" }} />
+
+            {/* Row 2: Lattice (4 cols, panorama 2.168) + AURA (2 cols, aspect forced to match Lattice's row height) */}
+            <ProjectTile p={lattice} wide t={t} mob={mob}
+              setCursorHovered={setCursorHovered}
+              style={{ gridColumn: "1 / 5" }} />
+            <ProjectTile p={aura} wide t={t} mob={mob}
+              setCursorHovered={setCursorHovered}
+              style={{ gridColumn: "5 / 7", aspectRatio: "1083/1000" }} />
+
+            {/* Row 3: Tangent + Green Spaces (3 cols each, Tangent forced to Green Spaces' aspect) */}
+            <ProjectTile p={tangent} wide t={t} mob={mob}
+              setCursorHovered={setCursorHovered}
+              style={{ gridColumn: "1 / 4", aspectRatio: "1315/879" }} />
+            <ProjectTile p={greenSpaces} wide t={t} mob={mob}
+              setCursorHovered={setCursorHovered}
+              style={{ gridColumn: "4 / 7" }} />
+
+            {/* Row 4: Living + Recursive Orbit (3 cols each, Recursive Orbit locked to Living) */}
+            <ProjectTile p={living} wide t={t} mob={mob}
+              setCursorHovered={setCursorHovered}
+              style={{ gridColumn: "1 / 4" }} />
+            <ProjectTile p={recursiveOrbit} wide t={t} mob={mob}
+              setCursorHovered={setCursorHovered}
+              style={{ gridColumn: "4 / 7", aspectRatio: "1920/1247" }} />
+          </>
+        )}
       </div>
-      <div style={{ padding: mob?"24px 20px":"32px 44px", fontSize:9, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, letterSpacing:1.5, opacity:.5 }}>
-        © Tanha Alsheikhdallah 2026
+
+      {/* Footer */}
+      <div style={{
+        padding: mob ? "20px 16px" : "24px clamp(32px, 4vw, 72px)",
+        borderTop: `1px solid ${t.rule}`,
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}>
+        <span style={{
+          fontSize: 9, fontFamily: "'JetBrains Mono',monospace",
+          color: t.fgMuted, letterSpacing: 1.5, opacity: 0.5,
+        }}>© Tanha Alsheikhdallah 2026</span>
+
+        <div style={{ display: "flex", gap: 18 }}>
+          {[
+            { href:"mailto:tanharchitecture@gmail.com", label:"Email", icon:(
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>
+            )},
+            { href:"https://linkedin.com/in/tanhata", label:"LinkedIn", ext:true, icon:(
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            )},
+          ].map(l => (
+            <a key={l.label} href={l.href} target={l.ext?"_blank":undefined} rel={l.ext?"noopener noreferrer":undefined}
+              aria-label={l.label}
+              style={{
+                display: "flex", alignItems: "center",
+                color: t.fgMuted, textDecoration: "none",
+                opacity: 0.7, transition: "color .2s, opacity .2s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = t.accent; e.currentTarget.style.opacity = "1"; }}
+              onMouseLeave={e => { e.currentTarget.style.color = t.fgMuted; e.currentTarget.style.opacity = "0.7"; }}
+            >{l.icon}</a>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -1452,13 +1922,17 @@ const aboutGridCSS = t => `
 .tanha-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0;
+  gap: 1px;
 }
 .tanha-card {
   aspect-ratio: 3/4;
+  border-radius: 18px;
+  overflow: hidden;
 }
 .tanha-photo {
   aspect-ratio: 3/4;
+  border-radius: 18px;
+  overflow: hidden;
 }
 .tanha-illo {
   display: flex;
@@ -1663,7 +2137,7 @@ const WRITINGS = [
     date: "Apr 2026",
     desc: "As software moves from deterministic execution to probabilistic processes, motion becomes the primary mechanism for making work visible.",
     url: "https://tanhata.github.io/legibility-interaction/",
-    tag: "exploration",
+    tag: "writing",
   },
   {
     title: "Interface vs Inference ",
@@ -1704,45 +2178,81 @@ const WRITINGS = [
 
 const WritingPage = ({ t, mob }) => (
   <div style={{ paddingTop:80, position:"relative", zIndex:1, minHeight:"100vh" }}>
-    <div style={{ maxWidth:720, margin:"0 auto", padding: mob?"6vh 20px 12vh":"10vh 44px 16vh" }}>
+    <div style={{ padding: mob ? "6vh 16px 12vh" : "10vh clamp(32px, 4vw, 72px) 16vh" }}>
 
-      {/* list */}
-      <div style={{ display:"flex", flexDirection:"column" }}>
+      {/* grid of rounded cards */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: mob ? "1fr" : "1fr 1fr",
+        gap: 1,
+      }}>
         {WRITINGS.map((w, i) => (
-          <Reveal key={i} delay={i * 80}>
+          <Reveal key={i} delay={i * 60}>
             <a href={w.url} target="_blank" rel="noopener noreferrer"
-              style={{ textDecoration:"none", display:"block", cursor:"none" }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "clamp(14px, 1.4vw, 20px)",
+                height: "100%",
+                background: t.frameBg,
+                border: `1px solid ${t.rule}`,
+                borderRadius: 18,
+                padding: "clamp(24px, 2.6vw, 38px)",
+                textDecoration: "none",
+                cursor: "none",
+                transition: "background .2s",
+              }}
+              onMouseEnter={e => e.currentTarget.style.opacity = ".75"}
+              onMouseLeave={e => e.currentTarget.style.opacity = "1"}
             >
-              <div style={{ padding:"28px 0", borderTop:`1px solid ${t.rule}`, display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:20 }}
-                onMouseEnter={e => e.currentTarget.style.opacity=".6"}
-                onMouseLeave={e => e.currentTarget.style.opacity="1"}
-              >
-                <div style={{ flex:1 }}>
-                  {/* tag + date */}
-                  <div style={{ display:"flex", gap:10, alignItems:"center", marginBottom:10 }}>
-                    <span style={{ fontSize:7.5, fontFamily:"'JetBrains Mono',monospace", color:t.accent, letterSpacing:2 }}>{w.tag.toUpperCase()}</span>
-                    <span style={{ fontSize:7.5, fontFamily:"'JetBrains Mono',monospace", color:t.fgMuted, opacity:.45 }}>{w.date}</span>
-                  </div>
-                  {/* big title */}
-                  <p style={{ fontSize: mob?18:22, fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Inter,sans-serif", fontWeight:600, color:t.fg, lineHeight:1.2, letterSpacing:"-.02em", marginBottom:10 }}>{w.title}</p>
-                  {/* desc */}
-                  <p style={{ fontSize: mob?13:14, color:t.fgMuted, lineHeight:1.7 }}>{w.desc}</p>
-                </div>
-                {/* arrow */}
-                <span style={{ fontSize:20, color:t.fgMuted, opacity:.35, flexShrink:0, marginTop:4 }}>↗</span>
+              {/* tag + date */}
+              <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                <span style={{
+                  fontSize: 9, fontFamily: "'JetBrains Mono',monospace",
+                  color: t.accent, letterSpacing: 2,
+                }}>{w.tag.toUpperCase()}</span>
+                <span style={{
+                  fontSize: 9, fontFamily: "'JetBrains Mono',monospace",
+                  color: t.fgMuted, opacity: .5, letterSpacing: 1,
+                }}>{w.date.toUpperCase()}</span>
               </div>
+
+              {/* title */}
+              <h2 style={{
+                fontSize: mob ? 18 : 22,
+                fontFamily: "-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Inter,sans-serif",
+                fontWeight: 600,
+                color: t.fg,
+                lineHeight: 1.2,
+                letterSpacing: "-.02em",
+                margin: 0,
+              }}>{w.title.trim()}</h2>
+
+              {/* desc */}
+              <p style={{
+                fontSize: mob ? 13 : 14,
+                color: t.fgMuted,
+                lineHeight: 1.65,
+                margin: 0,
+                flex: 1,
+              }}>{w.desc}</p>
+
+              {/* arrow at bottom */}
+              <span style={{
+                fontSize: 16, color: t.fgMuted, opacity: .35,
+                alignSelf: "flex-end",
+              }}>↗</span>
             </a>
           </Reveal>
         ))}
-        <div style={{ borderTop:`1px solid ${t.rule}` }} />
       </div>
 
       {/* substack cta */}
       <Reveal delay={200}>
-        <div style={{ marginTop:44, display:"flex", alignItems:"center", gap:12 }}>
-          <span style={{ fontSize:13, color:t.fgMuted, fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Inter,sans-serif" }}>More on Substack</span>
+        <div style={{ marginTop: 44, display: "flex", alignItems: "center", gap: 12 }}>
+          <span style={{ fontSize: 13, color: t.fgMuted, fontFamily: "-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Inter,sans-serif" }}>More on Substack</span>
           <a href="https://talshe.substack.com" target="_blank" rel="noopener noreferrer"
-            style={{ fontSize:9, fontFamily:"'JetBrains Mono',monospace", color:t.accent, letterSpacing:2, textDecoration:"none", cursor:"none" }}
+            style={{ fontSize: 9, fontFamily: "'JetBrains Mono',monospace", color: t.accent, letterSpacing: 2, textDecoration: "none", cursor: "none" }}
             onMouseEnter={e=>e.target.style.opacity=".6"}
             onMouseLeave={e=>e.target.style.opacity="1"}>
             FOLLOW →
@@ -1828,7 +2338,7 @@ const VisualPage = ({ t, mob }) => {
 ══════════════════════════════════════════════════ */
 export default function App() {
   const [page,          setPage]          = useState("home");
-  const [dark,          setDark]          = useState(false);
+  const [dark,          setDark]          = useState(true);
   const [cursorHovered, setCursorHovered] = useState(null);
   const [bgAccent,      setBgAccent]      = useState(null);
   const [navHidden,     setNavHidden]     = useState(false);
