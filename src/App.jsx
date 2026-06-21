@@ -814,7 +814,16 @@ const AboutTeaser = ({ t, go, mob }) => {
 /* ══════════════════════════════════════════════════
    PROJECT TILE — grid-style filled tile, no chrome
 ══════════════════════════════════════════════════ */
-const ProjectTile = ({ p, t, mob, setCursorHovered, wide, style: extraStyle }) => {
+const contrastText = (hex) => {
+  if (!hex || !hex.startsWith("#") || hex.length < 7) return "#fff";
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return lum > 0.55 ? "#111" : "#fff";
+};
+
+const ProjectTile = ({ p, t, mob, setCursorHovered, wide, hideCategory, minimal, style: extraStyle }) => {
   const [hovered, setHovered] = useState(false);
   const [imgError, setImgError] = useState(false);
   const color = p.color || gc(p.cat).color;
@@ -855,58 +864,56 @@ const ProjectTile = ({ p, t, mob, setCursorHovered, wide, style: extraStyle }) =
         }} />
       )}
 
-      {/* Subtle top scrim for title legibility — only on light-text tiles */}
-      {!p.darkText && (
-        <div style={{
-          position: "absolute", top: 0, left: 0, right: 0, height: "40%",
-          background: "linear-gradient(to bottom, rgba(0,0,0,.35) 0%, transparent 100%)",
-          pointerEvents: "none",
-        }} />
-      )}
+      {/* Top info strip — bg matches theme negative space, blends with page bg */}
+      <div style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        background: t.bg,
+        padding: mob ? "10px 14px" : (wide ? "13px 18px" : "11px 14px"),
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 10,
+      }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{
+            fontSize: mob ? 15 : (wide ? 20 : 17),
+            fontWeight: 600,
+            color: t.fg,
+            letterSpacing: "-.015em",
+            lineHeight: 1.2,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}>{p.title}</div>
+          {p.sub && (
+            <div style={{
+              fontSize: mob ? 12 : (wide ? 14 : 13),
+              fontWeight: 500,
+              color: t.fgMuted,
+              letterSpacing: "-.005em",
+              lineHeight: 1.3,
+              marginTop: 3,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}>{p.sub}</div>
+          )}
+        </div>
 
-      {/* Title — top left */}
-      <div style={{ position: "absolute", top: mob ? 14 : (wide ? 22 : 18), left: mob ? 14 : (wide ? 22 : 18), maxWidth: "62%" }}>
-        <div style={{
-          fontSize: mob ? 14 : (wide ? 22 : 17), fontWeight: 500,
-          color: p.darkText ? "#111" : "#fff",
-          letterSpacing: "-.02em", lineHeight: 1.2,
-          textShadow: p.darkText
-            ? "0 1px 3px rgba(255,255,255,.5)"
-            : "0 1px 14px rgba(0,0,0,.55), 0 1px 3px rgba(0,0,0,.4)",
-        }}>{p.title}</div>
-        <div style={{
-          fontSize: mob ? 10 : (wide ? 13 : 11),
-          color: p.darkText ? "rgba(17,17,17,.72)" : "rgba(255,255,255,.88)",
-          letterSpacing: "-.005em", marginTop: 4, fontWeight: 400,
-          textShadow: p.darkText
-            ? "0 1px 2px rgba(255,255,255,.5)"
-            : "0 1px 8px rgba(0,0,0,.5)",
-        }}>{p.sub}</div>
-      </div>
-
-      {/* Category — top right */}
-      <div style={{ position: "absolute", top: mob ? 14 : 20, right: mob ? 14 : 18, textAlign: "right" }}>
-        <div style={{
-          fontSize: 9, fontFamily: "'JetBrains Mono',monospace",
-          color: p.darkText ? "rgba(17,17,17,.7)" : "rgba(255,255,255,.85)",
-          letterSpacing: 1.8, lineHeight: 1.5,
-          textShadow: p.darkText
-            ? "0 1px 2px rgba(255,255,255,.5)"
-            : "0 1px 6px rgba(0,0,0,.5)",
-        }}>{gc(p.cat).label.toUpperCase()}</div>
-      </div>
-
-      {/* Year + dot — bottom right */}
-      <div style={{ position: "absolute", bottom: mob ? 12 : 16, right: mob ? 14 : 18, display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{
-          fontSize: 10, fontFamily: "'JetBrains Mono',monospace",
-          color: p.darkText ? "rgba(17,17,17,.7)" : "rgba(255,255,255,.8)",
-          letterSpacing: 1,
-          textShadow: p.darkText
-            ? "0 1px 2px rgba(255,255,255,.5)"
-            : "0 1px 6px rgba(0,0,0,.5)",
-        }}>{p.year}</span>
-        <div style={{ width: 6, height: 6, borderRadius: "50%", background: color }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          {!minimal && !hideCategory && (
+            <span style={{
+              fontSize: 10,
+              fontFamily: "'JetBrains Mono', monospace",
+              color: t.fgMuted,
+              letterSpacing: 1,
+            }}>{p.year}</span>
+          )}
+          <div style={{ width: 6, height: 6, borderRadius: "50%", background: color }} />
+        </div>
       </div>
 
       {/* Hover accent strip */}
@@ -1165,20 +1172,20 @@ const HomePage = ({ t, mob, setCursorHovered, go }) => {
 
         <div style={{ padding: "0 16px", display: "flex", flexDirection: "column", gap: 1 }}>
           {/* ModelPulse — tile only */}
-          <ProjectTile p={works[0]} wide t={t} mob={mob} setCursorHovered={setCursorHovered} />
+          <ProjectTile p={works[0]} wide minimal t={t} mob={mob} setCursorHovered={setCursorHovered} />
 
           {/* Writing — Legibility as text-only card */}
           <WritingCard w={legibilityWriting} color={legibilityProject.color} />
 
           {/* MCP — tile only */}
-          <ProjectTile p={works[1]} wide t={t} mob={mob} setCursorHovered={setCursorHovered}
+          <ProjectTile p={works[1]} wide minimal t={t} mob={mob} setCursorHovered={setCursorHovered}
             style={{ aspectRatio: "1956/1054" }} />
 
           {/* AURA — tile only */}
-          <ProjectTile p={aura} wide t={t} mob={mob} setCursorHovered={setCursorHovered} />
+          <ProjectTile p={aura} wide minimal t={t} mob={mob} setCursorHovered={setCursorHovered} />
 
           {/* Living — tile only */}
-          <ProjectTile p={living} wide t={t} mob={mob} setCursorHovered={setCursorHovered} />
+          <ProjectTile p={living} wide minimal t={t} mob={mob} setCursorHovered={setCursorHovered} />
         </div>
 
         {footer}
@@ -1203,7 +1210,7 @@ const HomePage = ({ t, mob, setCursorHovered, go }) => {
           gap: 1,
         }}>
           {/* ModelPulse — full-width tile */}
-          <ProjectTile p={works[0]} wide t={t} mob={mob}
+          <ProjectTile p={works[0]} wide minimal t={t} mob={mob}
             setCursorHovered={setCursorHovered}
             style={{ gridColumn: "1 / -1" }} />
 
@@ -1211,16 +1218,16 @@ const HomePage = ({ t, mob, setCursorHovered, go }) => {
           <WritingCard w={legibilityWriting} color={legibilityProject.color}
             style={{ gridColumn: "1 / -1" }} />
 
-          {/* MCP + AURA — paired half-width tiles */}
-          <ProjectTile p={works[1]} wide t={t} mob={mob}
+          {/* MCP + AURA — paired half-width tiles, taller for more presence */}
+          <ProjectTile p={works[1]} wide minimal t={t} mob={mob}
             setCursorHovered={setCursorHovered}
-            style={{ aspectRatio: "1956/1054", gridColumn: "auto" }} />
-          <ProjectTile p={aura} wide t={t} mob={mob}
+            style={{ aspectRatio: "4/3", gridColumn: "auto" }} />
+          <ProjectTile p={aura} wide minimal t={t} mob={mob}
             setCursorHovered={setCursorHovered}
-            style={{ aspectRatio: "1956/1054", gridColumn: "auto" }} />
+            style={{ aspectRatio: "4/3", gridColumn: "auto" }} />
 
           {/* Living — full-width tile */}
-          <ProjectTile p={living} wide t={t} mob={mob}
+          <ProjectTile p={living} wide minimal t={t} mob={mob}
             setCursorHovered={setCursorHovered}
             style={{ gridColumn: "1 / -1" }} />
         </div>
@@ -1246,9 +1253,9 @@ const HomePage = ({ t, mob, setCursorHovered, go }) => {
           <p style={{
             fontSize: 30,
             color: t.fg,
-            lineHeight: 1.5,
+            lineHeight: 1.4,
             margin: "28px 0 18px",
-            letterSpacing: "-.01em",
+            letterSpacing: "-.015em",
           }}>
             I design AI tools — turn model weights into <span style={{ color: t.accent }}>observability</span>, explore <span style={{ color: t.accent }}>legibility</span> and <span style={{ color: t.accent }}>trust</span>, and help track <span style={{ color: t.accent }}>research</span>.
           </p>
@@ -1257,9 +1264,9 @@ const HomePage = ({ t, mob, setCursorHovered, go }) => {
           <p style={{
             fontSize: 28,
             color: t.fg,
-            lineHeight: 1.5,
+            lineHeight: 1.4,
             margin: "0 0 18px",
-            letterSpacing: "-.01em",
+            letterSpacing: "-.015em",
           }}>
             I love side projects and tinkering with data, visualizations, and physical computing.
           </p>
@@ -1268,28 +1275,28 @@ const HomePage = ({ t, mob, setCursorHovered, go }) => {
           <p style={{
             fontSize: 28,
             color: t.fg,
-            lineHeight: 1.5,
+            lineHeight: 1.4,
             margin: 0,
-            letterSpacing: "-.01em",
+            letterSpacing: "-.015em",
           }}>
             Always open to chat and explore new ideas :){" "}
             <a href="mailto:tanharchitecture@gmail.com"
               style={{
                 display: "inline-block",
-                padding: "3px 16px",
+                padding: "4px 18px",
                 background: "transparent",
                 color: t.fg,
                 border: `1.5px solid ${t.fg}`,
                 borderRadius: 999,
                 fontFamily: "inherit",
-                fontSize: 18,
+                fontSize: 24,
                 fontWeight: 500,
                 letterSpacing: 0,
                 textDecoration: "none",
                 cursor: "none",
                 whiteSpace: "nowrap",
                 verticalAlign: "baseline",
-                marginLeft: 2,
+                marginLeft: 4,
                 transition: "background .25s, color .25s, transform .25s",
               }}
               onMouseEnter={e => {
