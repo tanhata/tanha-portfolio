@@ -26,8 +26,7 @@ const PROJECTS = [
   { id:"legibility-interaction", title:"Legibility: Interaction in AI Interfaces", sub:"Research & Writing", desc:"Studying how legibility shapes user interaction with AI interfaces.", cat:"ai-interaction", color:"#db2777", img:"/images/legibility.gif", link:"https://tanhata.github.io/legibility-interaction/", year:"2026", frame:"raw", aspectRatio:"800/287", headline:{ before:"I explore ", keyword:"legibility and trust", after:" in AI interfaces." }, featured:true },
   { id:"model-pulse",    title:"ModelPulse",       sub:"AI Performance Platform",      desc:"Enterprise observability — detect drift, monitor accuracy, manage compliance.",      cat:"product-design",            color:"#0369a1", img:"/images/modelpulse2.gif",      link:"https://tanhata.github.io/modelpulse-case-study/", year:"2025", frame:"raw",          aspectRatio:"1956/1054", headline:{ before:"I turn model weights into ", keyword:"observable tools", after:"." }, featured:true },
   { id:"plotmind",       title:"Plotmind",         sub:"No-Code Data Intelligence",    desc:"Low-code environment for advanced data visualizations in enterprise pipelines.",    cat:"product-design",            color:"#7c3aed", img:"/images/plotmind.png",        link:"https://tanhata.github.io/plotmind-case-study/",   year:"2025", frame:"raw",          aspectRatio:"2056/1437", headline:{ before:"I bridge the gap between ", keyword:"code and intuition", after:" for data teams." } },
-  { id:"lattice",        title:"Lattice",         sub:"Next Gen Experiment Tracking", desc:"ML experiment tracker connecting experiments, papers, and evaluations.",             cat:"product-design",            color:"#0891b2", img:"/images/lattice.png",         link:"https://tanhata.github.io/lattice-case-study/",    year:"2026", frame:"raw",          aspectRatio:"1832/845", headline:{ before:"I prototype ", keyword:"the next gen of experiment tracking", after:"." } },
-  { id:"mcp",            title:"Multi-Agent",      sub:"MCP Interface",                desc:"Conversation UIs enabling distributed AI agents to coordinate and refine outputs.", cat:"product-design",            color:"#d97706", img:"/images/mcp.png",             link:"https://tanhata.github.io/mcp-case-study/",        year:"2024", frame:"laptop",       headline:{ before:"I design ", keyword:"conversation", after:" for multi-agent systems." }, featured:true, darkText:true },
+  { id:"mcp",            title:"Multi-Agent",      sub:"MCP Interface",                desc:"Conversation UIs enabling distributed AI agents to coordinate and refine outputs.", cat:"product-design",            color:"#d97706", img:"/images/mcp-hero.svg",             link:"https://tanhata.github.io/mcp-case-study/",        year:"2024", frame:"laptop",       headline:{ before:"I design ", keyword:"conversation", after:" for multi-agent systems." }, featured:true, darkText:true },
   { id:"aura",           title:"AURA",             sub:"AR Museum Guide",              desc:"AR museum guide — spatial storytelling through layered narratives.",                cat:"mobile-design",             color:"#059669", img:"/images/aura.gif",            link:"https://tanhata.github.io/aura-case-study/",       year:"2022", frame:"triplePhone",        headline:{ before:"I design ", keyword:"storytelling", after:" for spaces." }, featured:true },
   { id:"tangent",        title:"Tangent",          sub:"Parametric Geometry",          desc:"Real-time parametric geometry with natural language input and live 3D.",            cat:"product-design",            color:"#b4e000", img:"/images/tangent.png",         link:"https://docs.google.com/presentation/d/e/2PACX-1vRjNEWLMh6TRxoEeeHaeL_ePIp357aN6xCbF96EgSPOmyIOAjsyWw7KoLbwnlk5QlhleyfO8OZxrGbA/pub", year:"2024", frame:"raw"},
   { id:"recursive-orbit",title:"Recursive Orbit",  sub:"Grief & Memory",              desc:"Interactive visualization exploring grief via generative data.",                    cat:"data-visualization",        color:"#7c3aed", img:"/images/recursive.gif", link:"https://tanhata.github.io/recursive-orbit/",       year:"2024", frame:"raw" },
@@ -1335,10 +1334,9 @@ const WorkPage = ({ t, mob, setCursorHovered }) => {
   // Lookup helpers + exclude Legibility (lives in /writing) and Plotmind (cut)
   const byId = id => PROJECTS.find(p => p.id === id);
   const workProjects = PROJECTS.filter(p =>
-    p.id !== "legibility-interaction" && p.id !== "plotmind"
+    p.id !== "legibility-interaction" && p.id !== "plotmind" && p.id !== "lattice"
   );
 
-  const lattice         = byId("lattice");
   const modelpulse      = byId("model-pulse");
   const mcp             = byId("mcp");
   const aura            = byId("aura");
@@ -1372,29 +1370,26 @@ const WorkPage = ({ t, mob, setCursorHovered }) => {
               setCursorHovered={setCursorHovered}
               style={{ gridColumn: "4 / 7", aspectRatio: "1956/1054" }} />
 
-            {/* Row 2: Lattice (4 cols, panorama 2.168) + AURA (2 cols, aspect forced to match Lattice's row height) */}
-            <ProjectTile p={lattice} wide t={t} mob={mob}
-              setCursorHovered={setCursorHovered}
-              style={{ gridColumn: "1 / 5" }} />
+            {/* Row 2: AURA (3 cols) + Tangent (3 cols) */}
             <ProjectTile p={aura} wide t={t} mob={mob}
               setCursorHovered={setCursorHovered}
-              style={{ gridColumn: "5 / 7", aspectRatio: "1083/1000" }} />
-
-            {/* Row 3: Tangent + Green Spaces (3 cols each, Tangent forced to Green Spaces' aspect) */}
+              style={{ gridColumn: "1 / 4" }} />
             <ProjectTile p={tangent} wide t={t} mob={mob}
-              setCursorHovered={setCursorHovered}
-              style={{ gridColumn: "1 / 4", aspectRatio: "1315/879" }} />
-            <ProjectTile p={greenSpaces} wide t={t} mob={mob}
               setCursorHovered={setCursorHovered}
               style={{ gridColumn: "4 / 7" }} />
 
-            {/* Row 4: Living + Recursive Orbit (3 cols each, Recursive Orbit locked to Living) */}
-            <ProjectTile p={living} wide t={t} mob={mob}
+            {/* Row 3: Green Spaces (3 cols) + Recursive Orbit (3 cols) */}
+            <ProjectTile p={greenSpaces} wide t={t} mob={mob}
               setCursorHovered={setCursorHovered}
               style={{ gridColumn: "1 / 4" }} />
             <ProjectTile p={recursiveOrbit} wide t={t} mob={mob}
               setCursorHovered={setCursorHovered}
-              style={{ gridColumn: "4 / 7", aspectRatio: "1920/1247" }} />
+              style={{ gridColumn: "4 / 7" }} />
+
+            {/* Row 4: Living (full width) */}
+            <ProjectTile p={living} wide t={t} mob={mob}
+              setCursorHovered={setCursorHovered}
+              style={{ gridColumn: "1 / 7" }} />
           </>
         )}
       </div>

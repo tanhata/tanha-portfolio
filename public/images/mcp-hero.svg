@@ -1,0 +1,266 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1956 1054" width="1956" height="1054">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#1a1a26"/>
+      <stop offset="100%" stop-color="#0e0e16"/>
+    </radialGradient>
+    <radialGradient id="ga" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d97706" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#d97706" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gb" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gr" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#f43f5e" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gv" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="f1" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="50"/></filter>
+    <filter id="f2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="25"/></filter>
+    <filter id="f3" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="8"/></filter>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="0.6" fill="#ffffff" fill-opacity="0.07"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1956" height="1054" fill="url(#bg)"/>
+  <rect width="1956" height="1054" fill="url(#dots)"/>
+
+  <!-- Deep ambient glows -->
+  <ellipse cx="620" cy="420" rx="380" ry="320" fill="url(#gb)" filter="url(#f1)"/>
+  <ellipse cx="1350" cy="380" rx="340" ry="280" fill="url(#gr)" filter="url(#f1)"/>
+  <ellipse cx="978" cy="620" rx="300" ry="250" fill="url(#ga)" filter="url(#f1)"/>
+  <ellipse cx="350" cy="750" rx="280" ry="220" fill="url(#gg)" filter="url(#f1)" opacity="0.8"/>
+  <ellipse cx="1550" cy="700" rx="250" ry="200" fill="url(#gv)" filter="url(#f1)" opacity="0.7"/>
+
+  <!-- ============ CONNECTION PATHS ============ -->
+  <!-- Primary triangle: 3 main agent nodes -->
+  <!-- Path A→B -->
+  <path id="pAB" d="M 520 400 C 680 280, 860 260, 1020 340" fill="none" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.28"/>
+  <path d="M 520 400 C 680 280, 860 260, 1020 340" fill="none" stroke="#3b82f6" stroke-width="0.5" stroke-opacity="0.06" stroke-dasharray="3 6"/>
+  <!-- Path B→C -->
+  <path id="pBC" d="M 1080 400 C 1020 540, 940 620, 830 680" fill="none" stroke="#f43f5e" stroke-width="1" stroke-opacity="0.28"/>
+  <path d="M 1080 400 C 1020 540, 940 620, 830 680" fill="none" stroke="#f43f5e" stroke-width="0.5" stroke-opacity="0.06" stroke-dasharray="3 6"/>
+  <!-- Path C→A -->
+  <path id="pCA" d="M 720 700 C 600 620, 500 520, 470 420" fill="none" stroke="#10b981" stroke-width="1" stroke-opacity="0.28"/>
+  <path d="M 720 700 C 600 620, 500 520, 470 420" fill="none" stroke="#10b981" stroke-width="0.5" stroke-opacity="0.06" stroke-dasharray="3 6"/>
+
+  <!-- Secondary connections to satellite nodes -->
+  <!-- A → D (top) -->
+  <path id="pAD" d="M 490 360 C 480 280, 560 200, 680 180" fill="none" stroke="#3b82f6" stroke-width="0.8" stroke-opacity="0.2"/>
+  <!-- A → E (left) -->
+  <path id="pAE" d="M 440 430 C 360 470, 280 520, 240 600" fill="none" stroke="#3b82f6" stroke-width="0.8" stroke-opacity="0.2"/>
+  <!-- B → F (right) -->
+  <path id="pBF" d="M 1120 360 C 1200 320, 1300 290, 1400 300" fill="none" stroke="#f43f5e" stroke-width="0.8" stroke-opacity="0.2"/>
+  <!-- B → G (top right) -->
+  <path id="pBG" d="M 1080 310 C 1120 240, 1200 180, 1320 170" fill="none" stroke="#f43f5e" stroke-width="0.8" stroke-opacity="0.14"/>
+  <!-- C → H (bottom) -->
+  <path id="pCH" d="M 780 740 C 820 800, 900 850, 1020 860" fill="none" stroke="#10b981" stroke-width="0.8" stroke-opacity="0.2"/>
+  <!-- C → I (bottom left) -->
+  <path id="pCI" d="M 700 730 C 600 780, 480 810, 380 800" fill="none" stroke="#10b981" stroke-width="0.8" stroke-opacity="0.14"/>
+
+  <!-- Cross connections -->
+  <!-- D → G -->
+  <path id="pDG" d="M 720 175 C 900 140, 1100 130, 1300 165" fill="none" stroke="#d97706" stroke-width="0.6" stroke-opacity="0.14"/>
+  <!-- E → I -->
+  <path id="pEI" d="M 240 640 C 260 720, 310 780, 380 800" fill="none" stroke="#8b5cf6" stroke-width="0.6" stroke-opacity="0.12"/>
+  <!-- F → H -->
+  <path id="pFH" d="M 1400 340 C 1350 520, 1200 740, 1020 860" fill="none" stroke="#d97706" stroke-width="0.6" stroke-opacity="0.12"/>
+  <!-- Hub connections through center -->
+  <path id="pAhub" d="M 520 400 C 650 440, 800 470, 978 480" fill="none" stroke="#d97706" stroke-width="0.7" stroke-opacity="0.18"/>
+  <path id="pBhub" d="M 1050 370 C 1020 410, 1000 440, 978 480" fill="none" stroke="#d97706" stroke-width="0.7" stroke-opacity="0.18"/>
+  <path id="pChub" d="M 770 680 C 840 620, 900 550, 978 480" fill="none" stroke="#d97706" stroke-width="0.7" stroke-opacity="0.18"/>
+
+  <!-- Tertiary faint connections -->
+  <path d="M 1400 300 C 1480 400, 1520 520, 1500 640" fill="none" stroke="#8b5cf6" stroke-width="0.4" stroke-opacity="0.1"/>
+  <path d="M 240 600 C 200 500, 220 380, 320 280" fill="none" stroke="#8b5cf6" stroke-width="0.4" stroke-opacity="0.1"/>
+  <path d="M 680 180 C 820 160, 950 190, 978 480" fill="none" stroke="#d97706" stroke-width="0.4" stroke-opacity="0.1"/>
+
+  <!-- ============ ANIMATED PARTICLES ============ -->
+  <g>
+    <!-- Primary triangle particles -->
+    <circle r="3" fill="#3b82f6" opacity="0.9">
+      <animateMotion dur="5s" repeatCount="indefinite" path="M 520 400 C 680 280, 860 260, 1020 340"/>
+    </circle>
+    <circle r="2" fill="#3b82f6" opacity="0.65">
+      <animateMotion dur="5s" repeatCount="indefinite" begin="2.5s" path="M 520 400 C 680 280, 860 260, 1020 340"/>
+    </circle>
+    <circle r="3" fill="#f43f5e" opacity="0.9">
+      <animateMotion dur="4.5s" repeatCount="indefinite" path="M 1080 400 C 1020 540, 940 620, 830 680"/>
+    </circle>
+    <circle r="2" fill="#f43f5e" opacity="0.65">
+      <animateMotion dur="4.5s" repeatCount="indefinite" begin="2s" path="M 1080 400 C 1020 540, 940 620, 830 680"/>
+    </circle>
+    <circle r="3" fill="#10b981" opacity="0.9">
+      <animateMotion dur="5.5s" repeatCount="indefinite" path="M 720 700 C 600 620, 500 520, 470 420"/>
+    </circle>
+    <circle r="2" fill="#10b981" opacity="0.65">
+      <animateMotion dur="5.5s" repeatCount="indefinite" begin="3s" path="M 720 700 C 600 620, 500 520, 470 420"/>
+    </circle>
+
+    <!-- Hub particles -->
+    <circle r="2.5" fill="#d97706" opacity="0.8">
+      <animateMotion dur="4s" repeatCount="indefinite" path="M 520 400 C 650 440, 800 470, 978 480"/>
+    </circle>
+    <circle r="2.5" fill="#d97706" opacity="0.8">
+      <animateMotion dur="3.5s" repeatCount="indefinite" path="M 1050 370 C 1020 410, 1000 440, 978 480"/>
+    </circle>
+    <circle r="2.5" fill="#d97706" opacity="0.8">
+      <animateMotion dur="4.2s" repeatCount="indefinite" path="M 770 680 C 840 620, 900 550, 978 480"/>
+    </circle>
+
+    <!-- Satellite particles -->
+    <circle r="2" fill="#3b82f6" opacity="0.7">
+      <animateMotion dur="6s" repeatCount="indefinite" path="M 490 360 C 480 280, 560 200, 680 180"/>
+    </circle>
+    <circle r="2" fill="#3b82f6" opacity="0.65">
+      <animateMotion dur="7s" repeatCount="indefinite" path="M 440 430 C 360 470, 280 520, 240 600"/>
+    </circle>
+    <circle r="2" fill="#f43f5e" opacity="0.7">
+      <animateMotion dur="5.5s" repeatCount="indefinite" path="M 1120 360 C 1200 320, 1300 290, 1400 300"/>
+    </circle>
+    <circle r="2" fill="#f43f5e" opacity="0.6">
+      <animateMotion dur="6.5s" repeatCount="indefinite" path="M 1080 310 C 1120 240, 1200 180, 1320 170"/>
+    </circle>
+    <circle r="2" fill="#10b981" opacity="0.7">
+      <animateMotion dur="5s" repeatCount="indefinite" path="M 780 740 C 820 800, 900 850, 1020 860"/>
+    </circle>
+    <circle r="2" fill="#10b981" opacity="0.6">
+      <animateMotion dur="6s" repeatCount="indefinite" path="M 700 730 C 600 780, 480 810, 380 800"/>
+    </circle>
+    <circle r="1.5" fill="#d97706" opacity="0.6">
+      <animateMotion dur="8s" repeatCount="indefinite" path="M 720 175 C 900 140, 1100 130, 1300 165"/>
+    </circle>
+    <circle r="1.5" fill="#8b5cf6" opacity="0.3">
+      <animateMotion dur="7s" repeatCount="indefinite" path="M 1400 340 C 1350 520, 1200 740, 1020 860"/>
+    </circle>
+  </g>
+
+  <!-- ============ NODES ============ -->
+  <!-- Primary node A (blue) -->
+  <g transform="translate(490, 400)">
+    <circle r="60" fill="url(#gb)" filter="url(#f2)"/>
+    <circle r="22" fill="#12121e" stroke="#3b82f6" stroke-width="1.5" stroke-opacity="0.75"/>
+    <circle r="14" fill="#3b82f6" opacity="0.25"/>
+    <circle r="5" fill="#3b82f6" opacity="0.8">
+      <animate attributeName="r" values="5;6;5" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.8;0.5;0.8" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Orbiting ring -->
+    <circle r="34" fill="none" stroke="#3b82f6" stroke-width="0.5" stroke-opacity="0.3" stroke-dasharray="4 8"/>
+  </g>
+
+  <!-- Primary node B (rose) -->
+  <g transform="translate(1060, 370)">
+    <circle r="55" fill="url(#gr)" filter="url(#f2)"/>
+    <circle r="20" fill="#12121e" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+    <circle r="12" fill="#f43f5e" opacity="0.25"/>
+    <circle r="4.5" fill="#f43f5e" opacity="0.8">
+      <animate attributeName="r" values="4.5;5.5;4.5" dur="2.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.8;0.5;0.8" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="32" fill="none" stroke="#f43f5e" stroke-width="0.5" stroke-opacity="0.3" stroke-dasharray="4 8"/>
+  </g>
+
+  <!-- Primary node C (green) -->
+  <g transform="translate(770, 700)">
+    <circle r="50" fill="url(#gg)" filter="url(#f2)"/>
+    <circle r="18" fill="#12121e" stroke="#10b981" stroke-width="1.5" stroke-opacity="0.75"/>
+    <circle r="11" fill="#10b981" opacity="0.25"/>
+    <circle r="4" fill="#10b981" opacity="0.8">
+      <animate attributeName="r" values="4;5;4" dur="3.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.8;0.4;0.8" dur="3.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="28" fill="none" stroke="#10b981" stroke-width="0.5" stroke-opacity="0.3" stroke-dasharray="4 8"/>
+  </g>
+
+  <!-- Hub node (amber, center) -->
+  <g transform="translate(978, 480)">
+    <circle r="45" fill="url(#ga)" filter="url(#f2)"/>
+    <circle r="16" fill="#12121e" stroke="#d97706" stroke-width="1.5" stroke-opacity="0.4"/>
+    <circle r="10" fill="#d97706" opacity="0.22"/>
+    <circle r="3.5" fill="#d97706" opacity="0.7">
+      <animate attributeName="r" values="3.5;5;3.5" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.7;0.4;0.7" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="26" fill="none" stroke="#d97706" stroke-width="0.5" stroke-opacity="0.12" stroke-dasharray="3 6"/>
+    <circle r="40" fill="none" stroke="#d97706" stroke-width="0.3" stroke-opacity="0.06" stroke-dasharray="2 8"/>
+  </g>
+
+  <!-- Satellite node D (top) -->
+  <g transform="translate(680, 178)">
+    <circle r="28" fill="url(#gb)" filter="url(#f2)" opacity="0.6"/>
+    <circle r="10" fill="#12121e" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.3"/>
+    <circle r="3" fill="#3b82f6" opacity="0.7"/>
+  </g>
+
+  <!-- Satellite node E (left) -->
+  <g transform="translate(238, 600)">
+    <circle r="24" fill="url(#gb)" filter="url(#f2)" opacity="0.8"/>
+    <circle r="8" fill="#12121e" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.45"/>
+    <circle r="2.5" fill="#3b82f6" opacity="0.6"/>
+  </g>
+
+  <!-- Satellite node F (right) -->
+  <g transform="translate(1400, 300)">
+    <circle r="26" fill="url(#gr)" filter="url(#f2)" opacity="0.8"/>
+    <circle r="9" fill="#12121e" stroke="#f43f5e" stroke-width="1" stroke-opacity="0.5"/>
+    <circle r="3" fill="#f43f5e" opacity="0.65"/>
+  </g>
+
+  <!-- Satellite node G (top right) -->
+  <g transform="translate(1320, 170)">
+    <circle r="20" fill="url(#gr)" filter="url(#f2)" opacity="0.7"/>
+    <circle r="7" fill="#12121e" stroke="#f43f5e" stroke-width="0.8" stroke-opacity="0.4"/>
+    <circle r="2" fill="#f43f5e" opacity="0.55"/>
+  </g>
+
+  <!-- Satellite node H (bottom right) -->
+  <g transform="translate(1020, 860)">
+    <circle r="22" fill="url(#gg)" filter="url(#f2)" opacity="0.8"/>
+    <circle r="8" fill="#12121e" stroke="#10b981" stroke-width="1" stroke-opacity="0.45"/>
+    <circle r="2.5" fill="#10b981" opacity="0.6"/>
+  </g>
+
+  <!-- Satellite node I (bottom left) -->
+  <g transform="translate(380, 800)">
+    <circle r="20" fill="url(#gg)" filter="url(#f2)" opacity="0.7"/>
+    <circle r="7" fill="#12121e" stroke="#10b981" stroke-width="0.8" stroke-opacity="0.4"/>
+    <circle r="2" fill="#10b981" opacity="0.55"/>
+  </g>
+
+  <!-- Tiny ambient nodes (dust) -->
+  <g>
+    <circle cx="320" cy="280" r="3" fill="#8b5cf6" opacity="0.25"/>
+    <circle cx="1500" cy="640" r="4" fill="#8b5cf6" opacity="0.2"/>
+    <circle cx="180" cy="420" r="2.5" fill="#3b82f6" opacity="0.18"/>
+    <circle cx="1700" cy="250" r="3" fill="#f43f5e" opacity="0.16"/>
+    <circle cx="1600" cy="480" r="2" fill="#d97706" opacity="0.18"/>
+    <circle cx="600" cy="900" r="3" fill="#10b981" opacity="0.16"/>
+    <circle cx="1200" cy="150" r="2" fill="#d97706" opacity="0.14"/>
+    <circle cx="150" cy="700" r="2" fill="#8b5cf6" opacity="0.14"/>
+    <circle cx="1750" cy="800" r="2.5" fill="#f43f5e" opacity="0.12"/>
+    <circle cx="850" cy="120" r="2" fill="#3b82f6" opacity="0.14"/>
+    <circle cx="1150" cy="920" r="2" fill="#d97706" opacity="0.12"/>
+    <circle cx="450" cy="150" r="1.5" fill="#10b981" opacity="0.12"/>
+    <circle cx="1650" cy="150" r="1.5" fill="#8b5cf6" opacity="0.1"/>
+    <circle cx="100" cy="550" r="2" fill="#3b82f6" opacity="0.1"/>
+  </g>
+
+  <!-- Subtle edge vignette -->
+  <radialGradient id="vig" cx="50%" cy="50%" r="55%">
+    <stop offset="0%" stop-color="#0e0e16" stop-opacity="0"/>
+    <stop offset="100%" stop-color="#0e0e16" stop-opacity="0.35"/>
+  </radialGradient>
+  <rect width="1956" height="1054" fill="url(#vig)"/>
+</svg>

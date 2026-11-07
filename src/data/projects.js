@@ -1,16 +1,5 @@
 export const projects = [
   {
-    id: 'lattice',
-    title: 'Lattice: The Next Gen of Experiment Tracking',
-    description: 'A next-gen ML experiment tracker that connects experiments, papers, and evaluations.',
-    category: 'product-design',
-    className: 'web-project',
-    imageData: '/images/lattice.png',
-    externalLink: 'https://tanhata.github.io/lattice-case-study/',
-    year: '2026',
-    tags: ['Product Design']
-  },
-  {
     id: 'model-pulse',
     title: 'ModelPulse: AI Performance Platform',
     description: 'Enterprise observability interface, helping ML teams detect drift, monitor accuracy, and manage model compliance in production',
@@ -50,7 +39,7 @@ export const projects = [
     description: 'Defined interaction patterns and conversation UIs that enable distributed AI agents to coordinate, debate, and refine outputs for enterprise workflows.',
     category: 'product-design',
     className: 'design-project',
-    imageData: '/images/mcp.png',
+    imageData: '/images/mcp-hero.svg',
     externalLink: 'https://tanhata.github.io/mcp-case-study/',
     year: '2024',
     tags: ['Figma',  'Product Design']
